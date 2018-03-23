@@ -8,13 +8,34 @@
         <artifactId>ethereum-resource-adapter</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
-    <name>Ethereum Resource Adapter Demo Web Application</name>
+    <name>Ethereum Resource Adapter Demo EAR</name>
     <groupId>be.e-contract.ethereum-resource-adapter</groupId>
-    <artifactId>ethereum-rar-demo</artifactId>
-    <packaging>war</packaging>
+    <artifactId>ethereum-rar-demo-deploy</artifactId>
+    <packaging>ear</packaging>
     
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-ear-plugin</artifactId>
+                <configuration>
+                    <version>6</version>
+                    <defaultLibBundleDir>lib</defaultLibBundleDir>
+                    <earSourceDirectory>${project.build.outputDirectory}</earSourceDirectory>
+                    <modules>
+                        <webModule>
+                            <groupId>be.e-contract.ethereum-resource-adapter</groupId>
+                            <artifactId>ethereum-rar-demo</artifactId>
+                            <contextRoot>/ethereum-demo</contextRoot>
+                        </webModule>
+                        <rarModule>
+                            <groupId>be.e-contract.ethereum-resource-adapter</groupId>
+                            <artifactId>ethereum-rar</artifactId>
+                            <bundleFileName>ethereum-ra.rar</bundleFileName>
+                        </rarModule>
+                    </modules>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.jboss.as.plugins</groupId>
                 <artifactId>jboss-as-maven-plugin</artifactId>
@@ -32,6 +53,12 @@
             <groupId>org.jboss.ejb3</groupId>
             <artifactId>jboss-ejb3-ext-api</artifactId>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>be.e-contract.ethereum-resource-adapter</groupId>
+            <artifactId>ethereum-rar-demo</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+            <type>war</type>
         </dependency>
         <dependency>
             <groupId>be.e-contract.ethereum-resource-adapter</groupId>
