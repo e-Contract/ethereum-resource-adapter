@@ -6,6 +6,8 @@
  */
 package be.e_contract.ethereum.rar.demo;
 
+import be.e_contract.ethereum.rar.demo.model.EthereumBean;
+import be.e_contract.ethereum.rar.demo.model.RollbackException;
 import java.io.Serializable;
 import java.math.BigInteger;
 import javax.enterprise.context.RequestScoped;

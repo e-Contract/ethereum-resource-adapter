@@ -6,6 +6,8 @@
  */
 package be.e_contract.ethereum.rar.demo;
 
+import be.e_contract.ethereum.rar.demo.model.EthereumBean;
+import be.e_contract.ethereum.rar.demo.model.RollbackException;
 import be.e_contract.ethereum.ra.EthereumConnection;
 import be.e_contract.ethereum.ra.EthereumConnectionFactory;
 import java.io.IOException;

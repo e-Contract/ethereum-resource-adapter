@@ -92,6 +92,11 @@
                     <artifactId>maven-war-plugin</artifactId>
                     <version>3.2.0</version>
                 </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-ejb-plugin</artifactId>
+                    <version>3.0.0</version>
+                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
@@ -200,5 +205,6 @@
         <module>ethereum-rar-demo</module>
         <module>ethereum-rar-demo-deploy</module>
         <module>ethereum-ra</module>
+        <module>ethereum-rar-demo-model</module>
     </modules>
 </project>
