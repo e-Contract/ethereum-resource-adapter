@@ -37,7 +37,7 @@ public class EthereumServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         PrintWriter output = resp.getWriter();
         try {
-            try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
+            try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
                 BigInteger gasPrice = ethereumConnection.getGasPrice();
                 output.println("Gas Price: " + gasPrice);
             }

@@ -6,13 +6,8 @@
  */
 package be.e_contract.ethereum.ra;
 
-import java.io.Serializable;
-import javax.resource.Referenceable;
-import javax.resource.ResourceException;
+import javax.resource.cci.ConnectionFactory;
 
-public interface EthereumConnectionFactory extends Serializable, Referenceable {
+public interface EthereumConnectionFactory extends ConnectionFactory {
 
-    EthereumConnection getConnection() throws ResourceException;
-
-    EthereumConnection getConnection(EthereumConnectionRequestInfo connectionRequestInfo) throws ResourceException;
 }

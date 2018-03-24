@@ -9,6 +9,9 @@ package be.e_contract.ethereum.ra;
 import javax.naming.NamingException;
 import javax.naming.Reference;
 import javax.resource.ResourceException;
+import javax.resource.cci.ConnectionSpec;
+import javax.resource.cci.RecordFactory;
+import javax.resource.cci.ResourceAdapterMetaData;
 import javax.resource.spi.ConnectionManager;
 import javax.resource.spi.ManagedConnectionFactory;
 import org.slf4j.Logger;
@@ -24,7 +27,11 @@ public class EthereumConnectionFactoryImpl implements EthereumConnectionFactory 
 
     private Reference reference;
 
-    EthereumConnectionFactoryImpl(ManagedConnectionFactory managedConnectionFactory, ConnectionManager cxManager) {
+    public EthereumConnectionFactoryImpl() {
+        this(null, null);
+    }
+
+    public EthereumConnectionFactoryImpl(ManagedConnectionFactory managedConnectionFactory, ConnectionManager cxManager) {
         LOGGER.debug("constructor");
         this.managedConnectionFactory = managedConnectionFactory;
         this.connectionManager = cxManager;
@@ -36,9 +43,16 @@ public class EthereumConnectionFactoryImpl implements EthereumConnectionFactory 
     }
 
     @Override
-    public EthereumConnection getConnection(EthereumConnectionRequestInfo connectionRequestInfo) throws ResourceException {
+    public EthereumConnection getConnection(ConnectionSpec connectionSpec) throws ResourceException {
         LOGGER.debug("getConnection");
-        return (EthereumConnection) this.connectionManager.allocateConnection(this.managedConnectionFactory, connectionRequestInfo);
+        EthereumConnectionRequestInfo ethereumConnectionRequestInfo;
+        if (null != connectionSpec) {
+            EthereumConnectionSpec ethereumConnectionSpec = (EthereumConnectionSpec) connectionSpec;
+            ethereumConnectionRequestInfo = new EthereumConnectionRequestInfo(ethereumConnectionSpec.getNodeLocation());
+        } else {
+            ethereumConnectionRequestInfo = null;
+        }
+        return (EthereumConnection) this.connectionManager.allocateConnection(this.managedConnectionFactory, ethereumConnectionRequestInfo);
     }
 
     @Override
@@ -53,4 +67,13 @@ public class EthereumConnectionFactoryImpl implements EthereumConnectionFactory 
         return this.reference;
     }
 
+    @Override
+    public RecordFactory getRecordFactory() throws ResourceException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public ResourceAdapterMetaData getMetaData() throws ResourceException {
+        return new EthereumResourceAdapterMetaData();
+    }
 }

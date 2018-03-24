@@ -7,6 +7,9 @@
 package be.e_contract.ethereum.ra;
 
 import java.io.Serializable;
+import javax.naming.NamingException;
+import javax.naming.Reference;
+import javax.resource.Referenceable;
 import javax.resource.ResourceException;
 import javax.resource.spi.ActivationSpec;
 import javax.resource.spi.BootstrapContext;
@@ -25,7 +28,7 @@ import org.slf4j.LoggerFactory;
 @Connector(
         reauthenticationSupport = false,
         transactionSupport = TransactionSupport.TransactionSupportLevel.NoTransaction)
-public class EthereumResourceAdapter implements ResourceAdapter, Serializable {
+public class EthereumResourceAdapter implements ResourceAdapter, Serializable, Referenceable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EthereumResourceAdapter.class);
 
@@ -33,6 +36,8 @@ public class EthereumResourceAdapter implements ResourceAdapter, Serializable {
     private String nodeLocation;
 
     private BootstrapContext bootstrapContext;
+
+    private Reference reference;
 
     public EthereumResourceAdapter() {
         LOGGER.debug("constructor");
@@ -97,5 +102,15 @@ public class EthereumResourceAdapter implements ResourceAdapter, Serializable {
     @Override
     public int hashCode() {
         return new HashCodeBuilder().append(this.nodeLocation).toHashCode();
+    }
+
+    @Override
+    public void setReference(Reference reference) {
+        this.reference = reference;
+    }
+
+    @Override
+    public Reference getReference() throws NamingException {
+        return this.reference;
     }
 }

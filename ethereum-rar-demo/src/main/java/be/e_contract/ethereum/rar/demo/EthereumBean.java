@@ -8,7 +8,7 @@ package be.e_contract.ethereum.rar.demo;
 
 import be.e_contract.ethereum.ra.EthereumConnection;
 import be.e_contract.ethereum.ra.EthereumConnectionFactory;
-import be.e_contract.ethereum.ra.EthereumConnectionRequestInfo;
+import be.e_contract.ethereum.ra.EthereumConnectionSpec;
 import java.math.BigInteger;
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
@@ -29,13 +29,13 @@ public class EthereumBean {
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public BigInteger getGasPrice(String nodeLocation) {
-        EthereumConnectionRequestInfo ethereumConnectionRequestInfo;
+        EthereumConnectionSpec ethereumConnectionSpec;
         if (StringUtils.isEmpty(nodeLocation)) {
-            ethereumConnectionRequestInfo = null;
+            ethereumConnectionSpec = null;
         } else {
-            ethereumConnectionRequestInfo = new EthereumConnectionRequestInfo(nodeLocation);
+            ethereumConnectionSpec = new EthereumConnectionSpec(nodeLocation);
         }
-        try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection(ethereumConnectionRequestInfo)) {
+        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection(ethereumConnectionSpec)) {
             return ethereumConnection.getGasPrice();
         } catch (ResourceException ex) {
             LOGGER.error("JCA error: " + ex.getMessage(), ex);

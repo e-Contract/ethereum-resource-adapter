@@ -83,14 +83,14 @@ public class EthereumManagedConnection implements ManagedConnection {
 
     @Override
     public void destroy() throws ResourceException {
-        LOGGER.debug("destroy");
+        LOGGER.debug("destroy: {}", this.ethereumConnectionRequestInfo);
         this.ethereumConnection.invalidate();
         this.listeners.clear();
     }
 
     @Override
     public void cleanup() throws ResourceException {
-        LOGGER.debug("cleanup");
+        LOGGER.debug("cleanup: {}", this.ethereumConnectionRequestInfo);
         this.ethereumConnection.invalidate();
     }
 
@@ -197,6 +197,10 @@ public class EthereumManagedConnection implements ManagedConnection {
     public boolean match(ConnectionRequestInfo connectionRequestInfo) {
         if (null == this.ethereumConnectionRequestInfo && null == connectionRequestInfo) {
             return true;
+        }
+        if (connectionRequestInfo == null) {
+            // TODO: should not be hardcoded
+            connectionRequestInfo = new EthereumConnectionRequestInfo("http://localhost:8545");
         }
         return this.ethereumConnectionRequestInfo.equals(connectionRequestInfo);
     }

@@ -32,40 +32,40 @@ import org.slf4j.LoggerFactory;
             connectionImpl = EthereumConnectionImpl.class)
 })
 public class EthereumManagedConnectionFactory implements ManagedConnectionFactory, ResourceAdapterAssociation, Serializable {
-
+    
     private static final Logger LOGGER = LoggerFactory.getLogger(EthereumManagedConnectionFactory.class);
-
+    
     private PrintWriter logWriter;
-
+    
     private EthereumResourceAdapter resourceAdapter;
-
+    
     @ConfigProperty
     private String nodeLocation;
-
+    
     public EthereumManagedConnectionFactory() {
         LOGGER.debug("constructor");
     }
-
+    
     public String getNodeLocation() {
         return this.nodeLocation;
     }
-
+    
     public void setNodeLocation(String nodeLocation) {
         this.nodeLocation = nodeLocation;
     }
-
+    
     @Override
     public Object createConnectionFactory(ConnectionManager cxManager) throws ResourceException {
         LOGGER.debug("createConnectionFactory(ConnectionManager)");
         return new EthereumConnectionFactoryImpl(this, cxManager);
     }
-
+    
     @Override
     public Object createConnectionFactory() throws ResourceException {
         LOGGER.debug("createConnectionFactory()");
         return new EthereumConnectionFactoryImpl(this, null);
     }
-
+    
     @Override
     public ManagedConnection createManagedConnection(Subject subject, ConnectionRequestInfo cxRequestInfo) throws ResourceException {
         LOGGER.debug("createManagedConnection(subject, connectionRequestInfo)");
@@ -81,7 +81,7 @@ public class EthereumManagedConnectionFactory implements ManagedConnectionFactor
         }
         return new EthereumManagedConnection(ethereumConnectionRequestInfo);
     }
-
+    
     @Override
     public ManagedConnection matchManagedConnections(Set connectionSet, Subject subject, ConnectionRequestInfo cxRequestInfo) throws ResourceException {
         LOGGER.debug("matchManagedConnections");
@@ -96,27 +96,28 @@ public class EthereumManagedConnectionFactory implements ManagedConnectionFactor
                 return ethereumManagedConnection;
             }
         }
+        LOGGER.warn("could not match connection: {}", cxRequestInfo);
         return null;
     }
-
+    
     @Override
     public void setLogWriter(PrintWriter out) throws ResourceException {
         LOGGER.debug("setLogWriter");
         this.logWriter = out;
     }
-
+    
     @Override
     public PrintWriter getLogWriter() throws ResourceException {
         LOGGER.debug("getLogWriter");
         return this.logWriter;
     }
-
+    
     @Override
     public ResourceAdapter getResourceAdapter() {
         LOGGER.debug("getResourceAdapter");
         return this.resourceAdapter;
     }
-
+    
     @Override
     public void setResourceAdapter(ResourceAdapter ra) throws ResourceException {
         LOGGER.debug("setResourceAdapter");
@@ -128,7 +129,7 @@ public class EthereumManagedConnectionFactory implements ManagedConnectionFactor
     public boolean equals(Object o) {
         return super.equals(o);
     }
-
+    
     @Override
     public int hashCode() {
         return super.hashCode();
