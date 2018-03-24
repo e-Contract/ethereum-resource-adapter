@@ -29,6 +29,9 @@ public class EthereumServlet extends HttpServlet {
     @Resource(mappedName = "java:/EthereumConnectionFactory")
     private EthereumConnectionFactory ethereumConnectionFactory;
 
+    @Resource(mappedName = "java:/EthereumConnectionFactory")
+    private EthereumConnectionFactory ethereumConnectionFactory2;
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         EthereumConnection ethereumConnection;
@@ -41,6 +44,15 @@ public class EthereumServlet extends HttpServlet {
 
         BigInteger gasPrice = ethereumConnection.getGasPrice();
         PrintWriter output = resp.getWriter();
+        output.println("Gas Price: " + gasPrice);
+
+        try {
+            ethereumConnection = this.ethereumConnectionFactory2.getConnection();
+        } catch (ResourceException ex) {
+            LOGGER.error("error: " + ex.getMessage(), ex);
+            throw new IOException("ethereum connection error: " + ex.getMessage(), ex);
+        }
+        gasPrice = ethereumConnection.getGasPrice();
         output.println("Gas Price: " + gasPrice);
     }
 }

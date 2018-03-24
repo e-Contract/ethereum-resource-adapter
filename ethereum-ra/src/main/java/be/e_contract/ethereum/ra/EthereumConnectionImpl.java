@@ -23,4 +23,11 @@ public class EthereumConnectionImpl implements EthereumConnection {
         LOGGER.debug("getGasPrice");
         return null;
     }
+
+    @Override
+    public BigInteger getGasPrice(int maxDuration) {
+        LOGGER.debug("getGasPrice with max duration: {}", maxDuration);
+        // TODO: later on we implement our own gas price oracle
+        return getGasPrice();
+    }
 }

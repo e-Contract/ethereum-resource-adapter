@@ -10,5 +10,19 @@ import java.math.BigInteger;
 
 public interface EthereumConnection {
 
+    /**
+     * Gives back the node gas price.
+     *
+     * @return
+     */
     BigInteger getGasPrice();
+
+    /**
+     * Gives back a gas price taking into account to maximum duration for a
+     * transaction to be accepted.
+     *
+     * @param maxDuration
+     * @return
+     */
+    BigInteger getGasPrice(int maxDuration);
 }

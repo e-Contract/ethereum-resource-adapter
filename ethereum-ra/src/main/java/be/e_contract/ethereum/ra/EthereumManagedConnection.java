@@ -7,6 +7,8 @@
 package be.e_contract.ethereum.ra;
 
 import java.io.PrintWriter;
+import java.util.HashSet;
+import java.util.Set;
 import javax.resource.ResourceException;
 import javax.resource.spi.ConnectionEventListener;
 import javax.resource.spi.ConnectionRequestInfo;
@@ -26,20 +28,22 @@ public class EthereumManagedConnection implements ManagedConnection {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EthereumManagedConnection.class);
 
+    private final Set<ConnectionEventListener> listeners;
+
     public EthereumManagedConnection() {
         LOGGER.debug("constructor");
+        this.listeners = new HashSet<>();
     }
 
     @Override
     public Object getConnection(Subject subject, ConnectionRequestInfo cxRequestInfo) throws ResourceException {
         LOGGER.debug("getConnection");
-        throw new UnsupportedOperationException();
+        return new EthereumConnectionImpl();
     }
 
     @Override
     public void destroy() throws ResourceException {
         LOGGER.debug("destroy");
-        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -57,13 +61,13 @@ public class EthereumManagedConnection implements ManagedConnection {
     @Override
     public void addConnectionEventListener(ConnectionEventListener listener) {
         LOGGER.debug("addConnectionEventListener");
-        throw new UnsupportedOperationException();
+        this.listeners.add(listener);
     }
 
     @Override
     public void removeConnectionEventListener(ConnectionEventListener listener) {
         LOGGER.debug("removeConnectionEventListener");
-        throw new UnsupportedOperationException();
+        this.listeners.remove(listener);
     }
 
     @Override

@@ -9,6 +9,8 @@ package be.e_contract.ethereum.ra;
 import javax.naming.NamingException;
 import javax.naming.Reference;
 import javax.resource.ResourceException;
+import javax.resource.spi.ConnectionManager;
+import javax.resource.spi.ManagedConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,16 +18,22 @@ public class EthereumConnectionFactoryImpl implements EthereumConnectionFactory 
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EthereumConnectionFactoryImpl.class);
 
+    private final ManagedConnectionFactory managedConnectionFactory;
+
+    private final ConnectionManager connectionManager;
+
     private Reference reference;
 
-    public EthereumConnectionFactoryImpl() {
+    EthereumConnectionFactoryImpl(ManagedConnectionFactory managedConnectionFactory, ConnectionManager cxManager) {
         LOGGER.debug("constructor");
+        this.managedConnectionFactory = managedConnectionFactory;
+        this.connectionManager = cxManager;
     }
 
     @Override
     public EthereumConnection getConnection() throws ResourceException {
         LOGGER.debug("getConnection");
-        return new EthereumConnectionImpl();
+        return (EthereumConnection) this.connectionManager.allocateConnection(this.managedConnectionFactory, null);
     }
 
     @Override

@@ -43,7 +43,7 @@ public class EthereumManagedConnectionFactory implements ManagedConnectionFactor
     @Override
     public Object createConnectionFactory(ConnectionManager cxManager) throws ResourceException {
         LOGGER.debug("createConnectionFactory(ConnectionManager)");
-        return new EthereumConnectionFactoryImpl();
+        return new EthereumConnectionFactoryImpl(this, cxManager);
     }
 
     @Override
@@ -54,8 +54,8 @@ public class EthereumManagedConnectionFactory implements ManagedConnectionFactor
 
     @Override
     public ManagedConnection createManagedConnection(Subject subject, ConnectionRequestInfo cxRequestInfo) throws ResourceException {
-        LOGGER.debug("createManagedConnection");
-        throw new UnsupportedOperationException();
+        LOGGER.debug("createManagedConnection(subject, connectionRequestInfo)");
+        return new EthereumManagedConnection();
     }
 
     @Override
