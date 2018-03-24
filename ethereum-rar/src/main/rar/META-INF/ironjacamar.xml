@@ -9,8 +9,17 @@
         <connection-definition class-name="be.e_contract.ethereum.ra.EthereumManagedConnectionFactory"
                                jndi-name="java:/EthereumConnectionFactory">
             <config-property name="nodeLocation">http://localhost:8545</config-property>
-            <!-- XA config -->
-            <recovery no-recovery="true"/>
+            <!-- next is really required for XA not to whine -->
+            <recovery>
+                <recover-credential>
+                    <user-name>crashrec</user-name>
+                    <password>crashrec</password>
+                </recover-credential>
+            </recovery>
+            <xa-pool>
+                <min-pool-size>5</min-pool-size>
+                <max-pool-size>50</max-pool-size>
+            </xa-pool>
         </connection-definition>
     </connection-definitions>
 

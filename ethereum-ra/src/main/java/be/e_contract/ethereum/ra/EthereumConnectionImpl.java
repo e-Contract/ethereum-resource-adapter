@@ -33,14 +33,7 @@ public class EthereumConnectionImpl implements EthereumConnection {
     @Override
     public BigInteger getGasPrice() throws ResourceException {
         LOGGER.debug("getGasPrice");
-        return this.ethereumManagedConnection.getGasPrice(null);
-    }
-
-    @Override
-    public BigInteger getGasPrice(int maxDuration) throws ResourceException {
-        LOGGER.debug("getGasPrice with max duration: {}", maxDuration);
-        // TODO: later on we implement our own gas price oracle
-        return this.ethereumManagedConnection.getGasPrice(maxDuration);
+        return this.ethereumManagedConnection.getGasPrice();
     }
 
     @Override

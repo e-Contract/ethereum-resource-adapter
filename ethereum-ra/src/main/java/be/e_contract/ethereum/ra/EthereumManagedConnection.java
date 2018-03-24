@@ -170,7 +170,7 @@ public class EthereumManagedConnection implements ManagedConnection {
         }
     }
 
-    public BigInteger getGasPrice(Integer maxDuration) throws ResourceException {
+    public BigInteger getGasPrice() throws ResourceException {
         Web3j web3j;
         try {
             web3j = getWeb3j();

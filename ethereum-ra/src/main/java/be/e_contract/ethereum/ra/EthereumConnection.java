@@ -19,14 +19,4 @@ public interface EthereumConnection extends Connection, AutoCloseable {
      * @throws javax.resource.ResourceException
      */
     BigInteger getGasPrice() throws ResourceException;
-
-    /**
-     * Gives back a gas price taking into account to maximum duration for a
-     * transaction to be accepted.
-     *
-     * @param maxDuration
-     * @return
-     * @throws javax.resource.ResourceException
-     */
-    BigInteger getGasPrice(int maxDuration) throws ResourceException;
 }
