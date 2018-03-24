@@ -7,7 +7,6 @@
 package be.e_contract.ethereum.ra;
 
 import javax.resource.ResourceException;
-import javax.resource.spi.Activation;
 import javax.resource.spi.ActivationSpec;
 import javax.resource.spi.InvalidPropertyException;
 import javax.resource.spi.ResourceAdapter;

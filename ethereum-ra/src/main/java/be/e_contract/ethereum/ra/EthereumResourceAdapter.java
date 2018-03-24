@@ -63,4 +63,15 @@ public class EthereumResourceAdapter implements ResourceAdapter, Serializable {
         LOGGER.debug("getXAResources");
         throw new UnsupportedOperationException();
     }
+
+    // hashCode and equals have to be implemented
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }

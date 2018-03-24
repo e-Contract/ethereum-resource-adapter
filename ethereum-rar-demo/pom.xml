@@ -35,9 +35,9 @@
         </dependency>
         <dependency>
             <groupId>be.e-contract.ethereum-resource-adapter</groupId>
-            <artifactId>ethereum-rar</artifactId>
+            <artifactId>ethereum-ra</artifactId>
             <version>1.0.0-SNAPSHOT</version>
-            <type>rar</type>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

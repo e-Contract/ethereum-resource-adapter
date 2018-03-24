@@ -83,4 +83,15 @@ public class EthereumManagedConnectionFactory implements ManagedConnectionFactor
         LOGGER.debug("setResourceAdapter");
         throw new UnsupportedOperationException();
     }
+
+    // implementation of equals and hashCode has to be provided
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }
