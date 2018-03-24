@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.util.Iterator;
 import java.util.Set;
 import javax.resource.ResourceException;
+import javax.resource.spi.ConfigProperty;
 import javax.resource.spi.ConnectionDefinition;
 import javax.resource.spi.ConnectionDefinitions;
 import javax.resource.spi.ConnectionManager;
@@ -20,6 +21,7 @@ import javax.resource.spi.ManagedConnectionFactory;
 import javax.resource.spi.ResourceAdapter;
 import javax.resource.spi.ResourceAdapterAssociation;
 import javax.security.auth.Subject;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,10 +37,21 @@ public class EthereumManagedConnectionFactory implements ManagedConnectionFactor
 
     private PrintWriter logWriter;
 
-    private ResourceAdapter resourceAdapter;
+    private EthereumResourceAdapter resourceAdapter;
+
+    @ConfigProperty
+    private String nodeLocation;
 
     public EthereumManagedConnectionFactory() {
         LOGGER.debug("constructor");
+    }
+
+    public String getNodeLocation() {
+        return this.nodeLocation;
+    }
+
+    public void setNodeLocation(String nodeLocation) {
+        this.nodeLocation = nodeLocation;
     }
 
     @Override
@@ -58,7 +71,14 @@ public class EthereumManagedConnectionFactory implements ManagedConnectionFactor
         LOGGER.debug("createManagedConnection(subject, connectionRequestInfo)");
         LOGGER.debug("subject: {}", subject);
         LOGGER.debug("connection request info: {}", cxRequestInfo);
-        EthereumConnectionRequestInfo ethereumConnectionRequestInfo = (EthereumConnectionRequestInfo) cxRequestInfo;
+        EthereumConnectionRequestInfo ethereumConnectionRequestInfo;
+        if (null != cxRequestInfo) {
+            ethereumConnectionRequestInfo = (EthereumConnectionRequestInfo) cxRequestInfo;
+        } else if (StringUtils.isEmpty(this.nodeLocation)) {
+            ethereumConnectionRequestInfo = new EthereumConnectionRequestInfo(this.resourceAdapter.getNodeLocation());
+        } else {
+            ethereumConnectionRequestInfo = new EthereumConnectionRequestInfo(this.nodeLocation);
+        }
         return new EthereumManagedConnection(ethereumConnectionRequestInfo);
     }
 
@@ -100,7 +120,7 @@ public class EthereumManagedConnectionFactory implements ManagedConnectionFactor
     @Override
     public void setResourceAdapter(ResourceAdapter ra) throws ResourceException {
         LOGGER.debug("setResourceAdapter");
-        this.resourceAdapter = ra;
+        this.resourceAdapter = (EthereumResourceAdapter) ra;
     }
 
     // implementation of equals and hashCode has to be provided

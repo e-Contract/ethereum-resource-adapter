@@ -18,6 +18,8 @@ public class EthereumActivationSpec implements ActivationSpec {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EthereumActivationSpec.class);
 
+    private ResourceAdapter resourceAdapter;
+
     public EthereumActivationSpec() {
         LOGGER.debug("constructor");
     }
@@ -31,12 +33,12 @@ public class EthereumActivationSpec implements ActivationSpec {
     @Override
     public ResourceAdapter getResourceAdapter() {
         LOGGER.debug("getResourceAdapter");
-        throw new UnsupportedOperationException();
+        return this.resourceAdapter;
     }
 
     @Override
     public void setResourceAdapter(ResourceAdapter ra) throws ResourceException {
         LOGGER.debug("setResourceAdapter");
-        throw new UnsupportedOperationException();
+        this.resourceAdapter = ra;
     }
 }
