@@ -17,6 +17,8 @@ import javax.resource.spi.ResourceAdapterInternalException;
 import javax.resource.spi.endpoint.MessageEndpointFactory;
 import javax.transaction.xa.XAResource;
 import javax.resource.spi.TransactionSupport;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,16 +29,27 @@ public class EthereumResourceAdapter implements ResourceAdapter, Serializable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EthereumResourceAdapter.class);
 
-    //@ConfigProperty(defaultValue = "http://localhost:8545")
+    @ConfigProperty(defaultValue = "http://localhost:8545")
     private String nodeLocation;
+
+    private BootstrapContext bootstrapContext;
 
     public EthereumResourceAdapter() {
         LOGGER.debug("constructor");
     }
 
+    public String getNodeLocation() {
+        return this.nodeLocation;
+    }
+
+    public void setNodeLocation(String nodeLocation) {
+        this.nodeLocation = nodeLocation;
+    }
+
     @Override
     public void start(BootstrapContext ctx) throws ResourceAdapterInternalException {
         LOGGER.debug("start");
+        this.bootstrapContext = ctx;
     }
 
     @Override
@@ -59,17 +72,30 @@ public class EthereumResourceAdapter implements ResourceAdapter, Serializable {
     @Override
     public XAResource[] getXAResources(ActivationSpec[] specs) throws ResourceException {
         LOGGER.debug("getXAResources");
-        throw new UnsupportedOperationException();
+        // This method is called by the application server during crash recovery.
+        return new XAResource[0];
     }
 
     // hashCode and equals have to be implemented
     @Override
-    public boolean equals(Object o) {
-        return super.equals(o);
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (obj == this) {
+            return true;
+        }
+        if (obj.getClass() != getClass()) {
+            return false;
+        }
+        EthereumResourceAdapter rhs = (EthereumResourceAdapter) obj;
+        return new EqualsBuilder()
+                .append(this.nodeLocation, rhs.nodeLocation)
+                .isEquals();
     }
 
     @Override
     public int hashCode() {
-        return super.hashCode();
+        return new HashCodeBuilder().append(this.nodeLocation).toHashCode();
     }
 }

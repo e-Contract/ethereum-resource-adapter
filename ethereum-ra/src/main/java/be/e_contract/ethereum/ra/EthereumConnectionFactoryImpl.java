@@ -32,8 +32,13 @@ public class EthereumConnectionFactoryImpl implements EthereumConnectionFactory 
 
     @Override
     public EthereumConnection getConnection() throws ResourceException {
+        return getConnection(null);
+    }
+
+    @Override
+    public EthereumConnection getConnection(EthereumConnectionRequestInfo connectionRequestInfo) throws ResourceException {
         LOGGER.debug("getConnection");
-        return (EthereumConnection) this.connectionManager.allocateConnection(this.managedConnectionFactory, null);
+        return (EthereumConnection) this.connectionManager.allocateConnection(this.managedConnectionFactory, connectionRequestInfo);
     }
 
     @Override
@@ -47,4 +52,5 @@ public class EthereumConnectionFactoryImpl implements EthereumConnectionFactory 
         LOGGER.debug("getReference");
         return this.reference;
     }
+
 }

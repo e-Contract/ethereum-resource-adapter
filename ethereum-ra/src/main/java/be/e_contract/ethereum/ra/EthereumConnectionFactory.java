@@ -12,5 +12,7 @@ import javax.resource.ResourceException;
 
 public interface EthereumConnectionFactory extends Serializable, Referenceable {
 
-    public EthereumConnection getConnection() throws ResourceException;
+    EthereumConnection getConnection() throws ResourceException;
+
+    EthereumConnection getConnection(EthereumConnectionRequestInfo connectionRequestInfo) throws ResourceException;
 }

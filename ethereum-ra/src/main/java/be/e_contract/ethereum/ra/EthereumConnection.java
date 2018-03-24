@@ -7,8 +7,9 @@
 package be.e_contract.ethereum.ra;
 
 import java.math.BigInteger;
+import javax.resource.cci.Connection;
 
-public interface EthereumConnection {
+public interface EthereumConnection extends Connection, AutoCloseable {
 
     /**
      * Gives back the node gas price.
