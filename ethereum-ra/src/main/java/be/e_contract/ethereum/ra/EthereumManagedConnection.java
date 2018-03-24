@@ -75,7 +75,9 @@ public class EthereumManagedConnection implements ManagedConnection {
             this.ethereumConnection.invalidate();
         }
         this.listeners.clear();
-        this.web3.shutdown();
+        if (null != this.web3) {
+            this.web3.shutdown();
+        }
     }
 
     @Override

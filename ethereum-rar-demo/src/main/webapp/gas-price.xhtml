@@ -18,8 +18,11 @@
         <h:body>
             <h:messages/>
             <h:panelGrid columns="2">
-                <h:outputText value="gas price:"/>
+                <h:outputText value="node gas price:"/>
                 <h:outputText value="#{ethereumController.gasPrice}"/>
+
+                <h:outputText value="oracle gas price:"/>
+                <h:outputText value="#{ethereumController.oracleGasPrice}"/>
             </h:panelGrid>
             <h:form>
                 <h:commandButton value="Back" action="/index"/>

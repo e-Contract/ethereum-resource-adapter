@@ -55,4 +55,14 @@ public class EthereumController implements Serializable {
         }
         return null;
     }
+
+    public BigInteger getOracleGasPrice() {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        try {
+            return this.ethereumBean.getGasPrice(this.nodeLocation, this.rollback);
+        } catch (RollbackException ex) {
+            facesContext.addMessage(null, new FacesMessage("rollback error"));
+        }
+        return null;
+    }
 }
