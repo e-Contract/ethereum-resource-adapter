@@ -28,6 +28,12 @@ public class EthereumActivationSpec implements ActivationSpec {
     @ConfigProperty(type = Boolean.class)
     private Boolean fullBlock;
 
+    @ConfigProperty(type = Boolean.class)
+    private Boolean deliverPending;
+
+    @ConfigProperty(type = Boolean.class)
+    private Boolean deliverBlock;
+
     public EthereumActivationSpec() {
         LOGGER.debug("constructor");
     }
@@ -46,6 +52,22 @@ public class EthereumActivationSpec implements ActivationSpec {
 
     public void setFullBlock(Boolean fullBlock) {
         this.fullBlock = fullBlock;
+    }
+
+    public Boolean getDeliverPending() {
+        return this.deliverPending;
+    }
+
+    public void setDeliverPending(Boolean deliverPending) {
+        this.deliverPending = deliverPending;
+    }
+
+    public Boolean getDeliverBlock() {
+        return this.deliverBlock;
+    }
+
+    public void setDeliverBlock(Boolean deliverBlock) {
+        this.deliverBlock = deliverBlock;
     }
 
     @Override

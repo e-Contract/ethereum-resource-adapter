@@ -11,7 +11,7 @@ import org.web3j.protocol.core.methods.response.Transaction;
 
 public interface EthereumMessageListener {
 
-    void block(EthBlock.Block block);
+    void block(EthBlock.Block block) throws Exception;
 
-    void pendingTransaction(Transaction transaction);
+    void pendingTransaction(Transaction transaction) throws Exception;
 }

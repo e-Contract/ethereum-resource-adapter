@@ -28,7 +28,7 @@ public class EthereumBean {
     private EthereumConnectionFactory ethereumConnectionFactory;
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public BigInteger getGasPrice(String nodeLocation) {
+    public BigInteger getGasPrice(String nodeLocation, boolean rollback) throws RollbackException {
         EthereumConnectionSpec ethereumConnectionSpec;
         if (StringUtils.isEmpty(nodeLocation)) {
             ethereumConnectionSpec = null;
@@ -36,6 +36,9 @@ public class EthereumBean {
             ethereumConnectionSpec = new EthereumConnectionSpec(nodeLocation);
         }
         try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection(ethereumConnectionSpec)) {
+            if (rollback) {
+                throw new RollbackException();
+            }
             return ethereumConnection.getGasPrice();
         } catch (ResourceException ex) {
             LOGGER.error("JCA error: " + ex.getMessage(), ex);

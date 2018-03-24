@@ -58,38 +58,58 @@ public class EthereumWork implements Work {
         ScheduledExecutorService scheduledExecutorService
                 = Executors.newScheduledThreadPool(cpuCount, new EthereumThreadFactory(this.workManager));
         this.web3j = Web3jFactory.createWeb3j(nodeLocation, scheduledExecutorService);
-        this.web3j.pendingTransactionObservable().subscribe(tx -> {
-            MessageEndpoint messageEndpoint;
-            try {
-                messageEndpoint = this.endpointFactory.createEndpoint(null);
-            } catch (UnavailableException ex) {
-                LOGGER.error("unavailable error: " + ex.getMessage(), ex);
-                return;
-            }
-            EthereumMessageListener ethereumMessageListener = (EthereumMessageListener) messageEndpoint;
-            ethereumMessageListener.pendingTransaction(tx);
-        }, error -> {
-            LOGGER.error("error: " + error.getMessage(), error);
-        });
+        Boolean deliverPending = this.ethereumActivationSpec.getDeliverPending();
+        if (null == deliverPending) {
+            deliverPending = false;
+        }
+        if (deliverPending) {
+            this.web3j.pendingTransactionObservable().subscribe(tx -> {
+                MessageEndpoint messageEndpoint;
+                try {
+                    messageEndpoint = this.endpointFactory.createEndpoint(null);
+                } catch (UnavailableException ex) {
+                    LOGGER.error("unavailable error: " + ex.getMessage(), ex);
+                    return;
+                }
+                EthereumMessageListener ethereumMessageListener = (EthereumMessageListener) messageEndpoint;
+                try {
+                    ethereumMessageListener.pendingTransaction(tx);
+                } catch (Exception e) {
+                    LOGGER.error("MDB exception: " + e.getMessage(), e);
+                }
+            }, error -> {
+                LOGGER.error("error: " + error.getMessage(), error);
+            });
+        }
         // full block should be activation parameter
         Boolean fullBlock = this.ethereumActivationSpec.getFullBlock();
         if (null == fullBlock) {
             fullBlock = false;
         }
-        LOGGER.debug("full block: {}", fullBlock);
-        this.web3j.blockObservable(fullBlock).subscribe(ethBlock -> {
-            EthBlock.Block block = ethBlock.getBlock();
-            MessageEndpoint messageEndpoint;
-            try {
-                messageEndpoint = this.endpointFactory.createEndpoint(null);
-            } catch (UnavailableException ex) {
-                LOGGER.error("unavailable error: " + ex.getMessage(), ex);
-                return;
-            }
-            EthereumMessageListener ethereumMessageListener = (EthereumMessageListener) messageEndpoint;
-            ethereumMessageListener.block(block);
-        }, error -> {
-            LOGGER.error("error: " + error.getMessage(), error);
-        });
+        Boolean deliverBlock = this.ethereumActivationSpec.getDeliverBlock();
+        if (null == deliverBlock) {
+            deliverBlock = false;
+        }
+        if (deliverBlock) {
+            LOGGER.debug("full block: {}", fullBlock);
+            this.web3j.blockObservable(fullBlock).subscribe(ethBlock -> {
+                EthBlock.Block block = ethBlock.getBlock();
+                MessageEndpoint messageEndpoint;
+                try {
+                    messageEndpoint = this.endpointFactory.createEndpoint(null);
+                } catch (UnavailableException ex) {
+                    LOGGER.error("unavailable error: " + ex.getMessage(), ex);
+                    return;
+                }
+                EthereumMessageListener ethereumMessageListener = (EthereumMessageListener) messageEndpoint;
+                try {
+                    ethereumMessageListener.block(block);
+                } catch (Exception e) {
+                    LOGGER.error("MDB exception: " + e.getMessage(), e);
+                }
+            }, error -> {
+                LOGGER.error("error: " + error.getMessage(), error);
+            });
+        }
     }
 }

@@ -75,6 +75,7 @@ public class EthereumManagedConnection implements ManagedConnection {
             this.ethereumConnection.invalidate();
         }
         this.listeners.clear();
+        this.web3.shutdown();
     }
 
     @Override
@@ -107,12 +108,14 @@ public class EthereumManagedConnection implements ManagedConnection {
     @Override
     public XAResource getXAResource() throws ResourceException {
         LOGGER.debug("getXAResource");
+        // for outbound only
         return new EthereumXAResource();
     }
 
     @Override
     public LocalTransaction getLocalTransaction() throws ResourceException {
         LOGGER.debug("getLocalTransaction");
+        // for outbound only
         return new EthereumLocalTransaction();
     }
 

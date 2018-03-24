@@ -20,6 +20,9 @@
                 <h:panelGrid columns="2">
                     <h:outputText value="Node location:"/>
                     <h:inputText value="#{ethereumController.nodeLocation}" size="60"/>
+
+                    <h:outputText value="Rollback transaction:"/>
+                    <h:selectBooleanCheckbox value="#{ethereumController.rollback}"/>
                 </h:panelGrid>
                 <h:commandButton value="Get Gas Price" action="/gas-price"/>
             </h:form>

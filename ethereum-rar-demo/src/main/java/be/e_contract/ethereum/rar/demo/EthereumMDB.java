@@ -18,7 +18,9 @@ import org.web3j.protocol.core.methods.response.Transaction;
 
 @MessageDriven(messageListenerInterface = EthereumMessageListener.class, activationConfig = {
     @ActivationConfigProperty(propertyName = "nodeLocation", propertyValue = "http://localhost:8545"),
-    @ActivationConfigProperty(propertyName = "fullBlock", propertyValue = "true")
+    @ActivationConfigProperty(propertyName = "fullBlock", propertyValue = "true"),
+    @ActivationConfigProperty(propertyName = "deliverPending", propertyValue = "false"),
+    @ActivationConfigProperty(propertyName = "deliverBlock", propertyValue = "false")
 })
 public class EthereumMDB implements EthereumMessageListener {
 
@@ -28,16 +30,18 @@ public class EthereumMDB implements EthereumMessageListener {
     private EthereumBean ethereumBean;
 
     @Override
-    public void pendingTransaction(Transaction transaction) {
+    public void pendingTransaction(Transaction transaction) throws Exception {
         String transactionHash = transaction.getHash();
         LOGGER.debug("pending transaction: {}", transactionHash);
-        BigInteger gasPrice = this.ethereumBean.getGasPrice(null);
+        BigInteger gasPrice = this.ethereumBean.getGasPrice(null, false);
         LOGGER.debug("gas price: {}", gasPrice);
     }
 
     @Override
-    public void block(EthBlock.Block block) {
+    public void block(EthBlock.Block block) throws Exception {
         BigInteger blockNumber = block.getNumber();
         LOGGER.debug("block number: {}", blockNumber);
+        BigInteger gasPrice = this.ethereumBean.getGasPrice(null, false);
+        LOGGER.debug("gas price: {}", gasPrice);
     }
 }

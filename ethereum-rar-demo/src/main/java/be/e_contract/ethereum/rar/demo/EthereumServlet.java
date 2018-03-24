@@ -46,7 +46,13 @@ public class EthereumServlet extends HttpServlet {
             throw new IOException("ethereum connection error: " + ex.getMessage(), ex);
         }
 
-        BigInteger gasPrice = this.ethereumBean.getGasPrice(null);
+        BigInteger gasPrice;
+        try {
+            gasPrice = this.ethereumBean.getGasPrice(null, false);
+        } catch (RollbackException ex) {
+            LOGGER.error("rollback exception: " + ex.getMessage(), ex);
+            return;
+        }
         output.println("gas price via EJB bean: " + gasPrice);
     }
 }
