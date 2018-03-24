@@ -10,14 +10,11 @@ import be.e_contract.ethereum.ra.EthereumMessageListener;
 import java.math.BigInteger;
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.MessageDriven;
-import org.jboss.ejb3.annotation.ResourceAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.web3j.protocol.core.methods.response.EthBlock;
 import org.web3j.protocol.core.methods.response.Transaction;
 
-// TODO: should find a cleaner way to refer to the RAR
-@ResourceAdapter(value = "ethereum-rar-demo-deploy-1.0.0-SNAPSHOT.ear#ethereum-ra.rar")
 @MessageDriven(messageListenerInterface = EthereumMessageListener.class, activationConfig = {
     @ActivationConfigProperty(propertyName = "nodeLocation", propertyValue = "http://localhost:8545"),
     @ActivationConfigProperty(propertyName = "fullBlock", propertyValue = "true")
