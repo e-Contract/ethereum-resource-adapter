@@ -16,6 +16,8 @@ public class EthereumConnectionFactoryImpl implements EthereumConnectionFactory 
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EthereumConnectionFactoryImpl.class);
 
+    private Reference reference;
+
     public EthereumConnectionFactoryImpl() {
         LOGGER.debug("constructor");
     }
@@ -23,18 +25,18 @@ public class EthereumConnectionFactoryImpl implements EthereumConnectionFactory 
     @Override
     public EthereumConnection getConnection() throws ResourceException {
         LOGGER.debug("getConnection");
-        throw new UnsupportedOperationException();
+        return new EthereumConnectionImpl();
     }
 
     @Override
     public void setReference(Reference reference) {
         LOGGER.debug("setReference");
-        throw new UnsupportedOperationException();
+        this.reference = reference;
     }
 
     @Override
     public Reference getReference() throws NamingException {
         LOGGER.debug("getReference");
-        throw new UnsupportedOperationException();
+        return this.reference;
     }
 }

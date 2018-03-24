@@ -6,6 +6,9 @@
  */
 package be.e_contract.ethereum.ra;
 
+import java.math.BigInteger;
+
 public interface EthereumConnection {
 
+    BigInteger getGasPrice();
 }

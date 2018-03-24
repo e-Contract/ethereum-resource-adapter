@@ -37,13 +37,11 @@ public class EthereumResourceAdapter implements ResourceAdapter, Serializable {
     @Override
     public void start(BootstrapContext ctx) throws ResourceAdapterInternalException {
         LOGGER.debug("start");
-        throw new UnsupportedOperationException();
     }
 
     @Override
     public void stop() {
         LOGGER.debug("stop");
-        throw new UnsupportedOperationException();
     }
 
     @Override

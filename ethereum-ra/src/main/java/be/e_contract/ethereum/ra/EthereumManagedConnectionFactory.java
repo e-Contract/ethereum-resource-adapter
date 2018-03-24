@@ -32,19 +32,23 @@ public class EthereumManagedConnectionFactory implements ManagedConnectionFactor
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EthereumManagedConnectionFactory.class);
 
+    private PrintWriter logWriter;
+
+    private ResourceAdapter resourceAdapter;
+
     public EthereumManagedConnectionFactory() {
         LOGGER.debug("constructor");
     }
 
     @Override
     public Object createConnectionFactory(ConnectionManager cxManager) throws ResourceException {
-        LOGGER.debug("createConnectionFactory");
-        throw new UnsupportedOperationException();
+        LOGGER.debug("createConnectionFactory(ConnectionManager)");
+        return new EthereumConnectionFactoryImpl();
     }
 
     @Override
     public Object createConnectionFactory() throws ResourceException {
-        LOGGER.debug("createConnectionFactory");
+        LOGGER.debug("createConnectionFactory()");
         throw new UnsupportedOperationException();
     }
 
@@ -63,25 +67,25 @@ public class EthereumManagedConnectionFactory implements ManagedConnectionFactor
     @Override
     public void setLogWriter(PrintWriter out) throws ResourceException {
         LOGGER.debug("setLogWriter");
-        throw new UnsupportedOperationException();
+        this.logWriter = out;
     }
 
     @Override
     public PrintWriter getLogWriter() throws ResourceException {
         LOGGER.debug("getLogWriter");
-        throw new UnsupportedOperationException();
+        return this.logWriter;
     }
 
     @Override
     public ResourceAdapter getResourceAdapter() {
         LOGGER.debug("getResourceAdapter");
-        throw new UnsupportedOperationException();
+        return this.resourceAdapter;
     }
 
     @Override
     public void setResourceAdapter(ResourceAdapter ra) throws ResourceException {
         LOGGER.debug("setResourceAdapter");
-        throw new UnsupportedOperationException();
+        this.resourceAdapter = ra;
     }
 
     // implementation of equals and hashCode has to be provided
