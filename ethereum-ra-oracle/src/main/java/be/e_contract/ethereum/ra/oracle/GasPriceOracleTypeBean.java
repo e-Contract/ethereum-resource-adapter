@@ -6,6 +6,7 @@
  */
 package be.e_contract.ethereum.ra.oracle;
 
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -25,7 +26,7 @@ public class GasPriceOracleTypeBean {
     @Any
     private Instance<GasPriceOracle> gasPriceOracleTypes;
 
-    public Map<String, GasPriceOracle> getAccountTypes() {
+    public Map<String, GasPriceOracle> getGasPriceOracles() {
         Map<String, GasPriceOracle> result = new HashMap<>();
         Iterator<GasPriceOracle> gasPriceOracleIterator = this.gasPriceOracleTypes.iterator();
         while (gasPriceOracleIterator.hasNext()) {
@@ -35,5 +36,15 @@ public class GasPriceOracleTypeBean {
             result.put(gasPriceOracleType, gasTypeOracle);
         }
         return result;
+    }
+
+    public Map<String, BigInteger> getGasPrices(Integer maxDuration) {
+        Map<String, GasPriceOracle> gasPriceOracles = getGasPriceOracles();
+        Map<String, BigInteger> gasPrices = new HashMap<>();
+        for (Map.Entry<String, GasPriceOracle> gasPriceOracleEntry : gasPriceOracles.entrySet()) {
+            BigInteger gasPrice = gasPriceOracleEntry.getValue().getGasPrice(maxDuration);
+            gasPrices.put(gasPriceOracleEntry.getKey(), gasPrice);
+        }
+        return gasPrices;
     }
 }

@@ -20,10 +20,21 @@
             <h:panelGrid columns="2">
                 <h:outputText value="node gas price:"/>
                 <h:outputText value="#{ethereumController.gasPrice}"/>
-
-                <h:outputText value="oracle gas price:"/>
-                <h:outputText value="#{ethereumController.oracleGasPrice}"/>
             </h:panelGrid>
+            <h:dataTable value="#{ethereumController.gasPrices}" var="gasPriceEntry">
+                <h:column>
+                    <f:facet name="header">
+                        Oracle
+                    </f:facet>
+                    <h:outputText value="#{gasPriceEntry.oracle}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        Price
+                    </f:facet>
+                    <h:outputText value="#{gasPriceEntry.gasPrice}"/>
+                </h:column>
+            </h:dataTable>
             <h:form>
                 <h:commandButton value="Back" action="/index"/>
             </h:form>

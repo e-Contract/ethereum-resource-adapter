@@ -30,7 +30,7 @@ public class NodeGasPriceOracle implements GasPriceOracle {
     private EthereumConnectionFactory ethereumConnectionFactory;
 
     @Override
-    public BigInteger getGasPrice(int maxDuration) {
+    public BigInteger getGasPrice(Integer maxDuration) {
         try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
             return ethereumConnection.getGasPrice();
         } catch (ResourceException ex) {

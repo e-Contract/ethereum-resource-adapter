@@ -6,11 +6,14 @@
  */
 package be.e_contract.ethereum.rar.demo;
 
+import be.e_contract.ethereum.ra.oracle.GasPriceOracleTypeBean;
 import be.e_contract.ethereum.rar.demo.model.EthereumBean;
-import be.e_contract.ethereum.rar.demo.model.EthereumGasPriceOracleBean;
 import be.e_contract.ethereum.rar.demo.model.RollbackException;
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
@@ -29,7 +32,7 @@ public class EthereumController implements Serializable {
     private EthereumBean ethereumBean;
 
     @EJB
-    private EthereumGasPriceOracleBean ethereumGasPriceOracleBean;
+    private GasPriceOracleTypeBean gasPriceOracleTypeBean;
 
     private String nodeLocation;
 
@@ -62,7 +65,13 @@ public class EthereumController implements Serializable {
         return null;
     }
 
-    public BigInteger getOracleGasPrice() {
-        return this.ethereumGasPriceOracleBean.getGasPrice();
+    public List<GasPrice> getGasPrices() {
+        Map<String, BigInteger> gasPrices = this.gasPriceOracleTypeBean.getGasPrices(null);
+        List<GasPrice> result = new LinkedList<>();
+        for (Map.Entry<String, BigInteger> gasPriceEntry : gasPrices.entrySet()) {
+            GasPrice gasPrice = new GasPrice(gasPriceEntry.getKey(), gasPriceEntry.getValue());
+            result.add(gasPrice);
+        }
+        return result;
     }
 }

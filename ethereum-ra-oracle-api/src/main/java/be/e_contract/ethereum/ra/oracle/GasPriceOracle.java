@@ -19,8 +19,8 @@ public interface GasPriceOracle extends Serializable {
     /**
      * Gives back the oracle gas price, given the maximum transaction duration.
      *
-     * @param maxDuration
+     * @param maxDuration the optional maximal transaction duration.
      * @return
      */
-    BigInteger getGasPrice(int maxDuration);
+    BigInteger getGasPrice(Integer maxDuration);
 }
