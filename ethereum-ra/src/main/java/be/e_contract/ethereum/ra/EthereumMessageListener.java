@@ -6,11 +6,12 @@
  */
 package be.e_contract.ethereum.ra;
 
-import java.math.BigInteger;
+import org.web3j.protocol.core.methods.response.EthBlock;
+import org.web3j.protocol.core.methods.response.Transaction;
 
 public interface EthereumMessageListener {
 
-    void pendingTransaction(String transactionHash);
-    
-    void block(BigInteger blockNumber);
+    void block(EthBlock.Block block);
+
+    void pendingTransaction(Transaction transaction);
 }

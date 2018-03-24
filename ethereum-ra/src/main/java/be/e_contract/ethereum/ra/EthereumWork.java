@@ -6,7 +6,6 @@
  */
 package be.e_contract.ethereum.ra;
 
-import java.math.BigInteger;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import javax.resource.spi.UnavailableException;
@@ -17,6 +16,7 @@ import javax.resource.spi.work.WorkManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.methods.response.EthBlock;
 
 public class EthereumWork implements Work {
 
@@ -43,7 +43,10 @@ public class EthereumWork implements Work {
 
     public void shutdown() {
         LOGGER.debug("shutdown");
-        this.web3j.shutdown();
+        if (this.web3j != null) {
+            this.web3j.shutdown();
+            this.web3j = null;
+        }
     }
 
     @Override
@@ -64,13 +67,18 @@ public class EthereumWork implements Work {
                 return;
             }
             EthereumMessageListener ethereumMessageListener = (EthereumMessageListener) messageEndpoint;
-            ethereumMessageListener.pendingTransaction(tx.getHash());
+            ethereumMessageListener.pendingTransaction(tx);
         }, error -> {
             LOGGER.error("error: " + error.getMessage(), error);
         });
         // full block should be activation parameter
-        this.web3j.blockObservable(true).subscribe(ethBlock -> {
-            BigInteger blockNumber = ethBlock.getBlock().getNumber();
+        Boolean fullBlock = this.ethereumActivationSpec.getFullBlock();
+        if (null == fullBlock) {
+            fullBlock = false;
+        }
+        LOGGER.debug("full block: {}", fullBlock);
+        this.web3j.blockObservable(fullBlock).subscribe(ethBlock -> {
+            EthBlock.Block block = ethBlock.getBlock();
             MessageEndpoint messageEndpoint;
             try {
                 messageEndpoint = this.endpointFactory.createEndpoint(null);
@@ -79,7 +87,7 @@ public class EthereumWork implements Work {
                 return;
             }
             EthereumMessageListener ethereumMessageListener = (EthereumMessageListener) messageEndpoint;
-            ethereumMessageListener.block(blockNumber);
+            ethereumMessageListener.block(block);
         }, error -> {
             LOGGER.error("error: " + error.getMessage(), error);
         });

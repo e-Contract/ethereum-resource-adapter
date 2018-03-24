@@ -25,6 +25,9 @@ public class EthereumActivationSpec implements ActivationSpec {
     @ConfigProperty
     private String nodeLocation;
 
+    @ConfigProperty(type = Boolean.class)
+    private Boolean fullBlock;
+
     public EthereumActivationSpec() {
         LOGGER.debug("constructor");
     }
@@ -35,6 +38,14 @@ public class EthereumActivationSpec implements ActivationSpec {
 
     public void setNodeLocation(String nodeLocation) {
         this.nodeLocation = nodeLocation;
+    }
+
+    public Boolean getFullBlock() {
+        return this.fullBlock;
+    }
+
+    public void setFullBlock(Boolean fullBlock) {
+        this.fullBlock = fullBlock;
     }
 
     @Override
