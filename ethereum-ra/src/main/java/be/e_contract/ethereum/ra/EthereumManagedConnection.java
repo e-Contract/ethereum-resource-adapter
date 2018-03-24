@@ -23,10 +23,6 @@ import javax.transaction.xa.XAResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.web3j.protocol.Web3j;
-import org.web3j.protocol.Web3jService;
-import org.web3j.protocol.http.HttpService;
-import org.web3j.protocol.ipc.UnixIpcService;
-import org.web3j.utils.Async;
 
 /**
  *
@@ -54,7 +50,6 @@ public class EthereumManagedConnection implements ManagedConnection {
         if (this.web3 != null) {
             return this.web3;
         }
-        Web3jService service;
         String location;
         if (null == this.ethereumConnectionRequestInfo) {
             // TODO: get this from the resource adapter config
@@ -62,15 +57,7 @@ public class EthereumManagedConnection implements ManagedConnection {
         } else {
             location = this.ethereumConnectionRequestInfo.getNodeLocation();
         }
-        if (location.startsWith("http")) {
-            service = new HttpService(location);
-        } else {
-            // https://github.com/web3j/web3j/pull/245
-            LOGGER.warn("web3j IPC is not really stable");
-            service = new UnixIpcService(location);
-        }
-        // poll every half second
-        this.web3 = Web3j.build(service, 500, Async.defaultExecutorService());
+        this.web3 = Web3jFactory.createWeb3j(location);
         return this.web3;
     }
 

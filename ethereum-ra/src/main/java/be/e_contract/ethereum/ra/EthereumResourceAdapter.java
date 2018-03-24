@@ -7,6 +7,8 @@
 package be.e_contract.ethereum.ra;
 
 import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.List;
 import javax.naming.NamingException;
 import javax.naming.Reference;
 import javax.resource.Referenceable;
@@ -20,6 +22,7 @@ import javax.resource.spi.ResourceAdapterInternalException;
 import javax.resource.spi.endpoint.MessageEndpointFactory;
 import javax.transaction.xa.XAResource;
 import javax.resource.spi.TransactionSupport;
+import javax.resource.spi.work.WorkManager;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.slf4j.Logger;
@@ -39,8 +42,11 @@ public class EthereumResourceAdapter implements ResourceAdapter, Serializable, R
 
     private Reference reference;
 
+    private final List<EthereumWork> ethereumWorkList;
+
     public EthereumResourceAdapter() {
         LOGGER.debug("constructor");
+        this.ethereumWorkList = new LinkedList<>();
     }
 
     public String getNodeLocation() {
@@ -60,18 +66,27 @@ public class EthereumResourceAdapter implements ResourceAdapter, Serializable, R
     @Override
     public void stop() {
         LOGGER.debug("stop");
+        for (EthereumWork ethereumWork : this.ethereumWorkList) {
+            ethereumWork.shutdown();
+        }
     }
 
     @Override
     public void endpointActivation(MessageEndpointFactory endpointFactory, ActivationSpec spec) throws ResourceException {
         LOGGER.debug("endpointActivation");
-        throw new UnsupportedOperationException();
+        LOGGER.debug("message endpoint factory: {}", endpointFactory);
+        LOGGER.debug("activation spec: {}", spec);
+        EthereumActivationSpec ethereumActivationSpec = (EthereumActivationSpec) spec;
+        LOGGER.debug("node location: {}", ethereumActivationSpec.getNodeLocation());
+        WorkManager workManager = this.bootstrapContext.getWorkManager();
+        EthereumWork ethereumWork = new EthereumWork(endpointFactory, ethereumActivationSpec, workManager);
+        this.ethereumWorkList.add(ethereumWork);
+        workManager.scheduleWork(ethereumWork);
     }
 
     @Override
     public void endpointDeactivation(MessageEndpointFactory endpointFactory, ActivationSpec spec) {
         LOGGER.debug("endpointDeactivation");
-        throw new UnsupportedOperationException();
     }
 
     @Override
