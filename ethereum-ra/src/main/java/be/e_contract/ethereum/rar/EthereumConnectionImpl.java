@@ -6,6 +6,14 @@
  */
 package be.e_contract.ethereum.rar;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class EthereumConnectionImpl implements EthereumConnection {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(EthereumConnectionImpl.class);
+
+    public EthereumConnectionImpl() {
+        LOGGER.debug("constructor");
+    }
 }
