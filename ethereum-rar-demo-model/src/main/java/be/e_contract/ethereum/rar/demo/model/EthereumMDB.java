@@ -30,7 +30,6 @@ public class EthereumMDB implements EthereumMessageListener {
 
     @Override
     public void pendingTransaction(Transaction transaction) throws Exception {
-        LOGGER.debug("pending transaction: {}", transaction.getHash());
         this.gasPriceOracleBean.pendingTransaction(transaction);
     }
 
