@@ -15,6 +15,8 @@ public class EthereumManagedConnectionMetaData implements ManagedConnectionMetaD
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EthereumManagedConnectionMetaData.class);
 
+    public static final String EIS_PRODUCT_NAME = "Ethereum";
+
     public EthereumManagedConnectionMetaData() {
         LOGGER.debug("constructor");
     }
@@ -22,13 +24,13 @@ public class EthereumManagedConnectionMetaData implements ManagedConnectionMetaD
     @Override
     public String getEISProductName() throws ResourceException {
         LOGGER.debug("getEISProductName");
-        throw new UnsupportedOperationException();
+        return EIS_PRODUCT_NAME;
     }
 
     @Override
     public String getEISProductVersion() throws ResourceException {
         LOGGER.debug("getEISProductVersion");
-        throw new UnsupportedOperationException();
+        return Version.getImplementationVersion();
     }
 
     @Override

@@ -9,6 +9,8 @@
         <connection-definition class-name="be.e_contract.ethereum.ra.EthereumManagedConnectionFactory"
                                jndi-name="java:/EthereumConnectionFactory">
             <config-property name="nodeLocation">http://localhost:8545</config-property>
+            <!-- XA config -->
+            <recovery no-recovery="true"/>
         </connection-definition>
     </connection-definitions>
 

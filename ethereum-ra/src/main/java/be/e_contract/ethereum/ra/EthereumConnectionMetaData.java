@@ -6,6 +6,7 @@
  */
 package be.e_contract.ethereum.ra;
 
+import static be.e_contract.ethereum.ra.EthereumManagedConnectionMetaData.EIS_PRODUCT_NAME;
 import javax.resource.ResourceException;
 import javax.resource.cci.ConnectionMetaData;
 import org.slf4j.Logger;
@@ -18,13 +19,13 @@ public class EthereumConnectionMetaData implements ConnectionMetaData {
     @Override
     public String getEISProductName() throws ResourceException {
         LOGGER.debug("getEISProductName");
-        throw new UnsupportedOperationException();
+        return EIS_PRODUCT_NAME;
     }
 
     @Override
     public String getEISProductVersion() throws ResourceException {
         LOGGER.debug("getEISProductName");
-        throw new UnsupportedOperationException();
+        return Version.getImplementationVersion();
     }
 
     @Override

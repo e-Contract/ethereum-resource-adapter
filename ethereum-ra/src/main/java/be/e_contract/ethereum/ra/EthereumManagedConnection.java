@@ -71,14 +71,18 @@ public class EthereumManagedConnection implements ManagedConnection {
     @Override
     public void destroy() throws ResourceException {
         LOGGER.debug("destroy: {}", this.ethereumConnectionRequestInfo);
-        this.ethereumConnection.invalidate();
+        if (null != this.ethereumConnection) {
+            this.ethereumConnection.invalidate();
+        }
         this.listeners.clear();
     }
 
     @Override
     public void cleanup() throws ResourceException {
         LOGGER.debug("cleanup: {}", this.ethereumConnectionRequestInfo);
-        this.ethereumConnection.invalidate();
+        if (null != this.ethereumConnection) {
+            this.ethereumConnection.invalidate();
+        }
     }
 
     @Override
@@ -103,13 +107,13 @@ public class EthereumManagedConnection implements ManagedConnection {
     @Override
     public XAResource getXAResource() throws ResourceException {
         LOGGER.debug("getXAResource");
-        throw new UnsupportedOperationException();
+        return new EthereumXAResource();
     }
 
     @Override
     public LocalTransaction getLocalTransaction() throws ResourceException {
         LOGGER.debug("getLocalTransaction");
-        throw new UnsupportedOperationException();
+        return new EthereumLocalTransaction();
     }
 
     @Override

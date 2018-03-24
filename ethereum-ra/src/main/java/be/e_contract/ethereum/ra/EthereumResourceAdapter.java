@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 
 @Connector(
         reauthenticationSupport = false,
-        transactionSupport = TransactionSupport.TransactionSupportLevel.NoTransaction)
+        transactionSupport = TransactionSupport.TransactionSupportLevel.LocalTransaction)
 public class EthereumResourceAdapter implements ResourceAdapter, Serializable, Referenceable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EthereumResourceAdapter.class);
