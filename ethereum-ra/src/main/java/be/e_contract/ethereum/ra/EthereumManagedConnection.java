@@ -38,21 +38,30 @@ public class EthereumManagedConnection implements ManagedConnection {
 
     private final Set<ConnectionEventListener> listeners;
 
+    private final EthereumConnectionRequestInfo ethereumConnectionRequestInfo;
+
     private EthereumConnectionImpl ethereumConnection;
 
     private Web3j web3;
 
-    public EthereumManagedConnection() {
+    public EthereumManagedConnection(EthereumConnectionRequestInfo ethereumConnectionRequestInfo) {
         LOGGER.debug("constructor");
         this.listeners = new HashSet<>();
+        this.ethereumConnectionRequestInfo = ethereumConnectionRequestInfo;
     }
 
-    private Web3j getWeb3j() {
+    private Web3j getWeb3j() throws Exception {
         if (this.web3 != null) {
             return this.web3;
         }
         Web3jService service;
-        String location = "http://localhost:8545";
+        String location;
+        if (null == this.ethereumConnectionRequestInfo) {
+            // TODO: get this from the resource adapter config
+            location = "http://localhost:8545";
+        } else {
+            location = this.ethereumConnectionRequestInfo.getNodeLocation();
+        }
         if (location.startsWith("http")) {
             service = new HttpService(location);
         } else {
@@ -168,7 +177,13 @@ public class EthereumManagedConnection implements ManagedConnection {
     }
 
     public BigInteger getGasPrice(Integer maxDuration) throws ResourceException {
-        Web3j web3j = getWeb3j();
+        Web3j web3j;
+        try {
+            web3j = getWeb3j();
+        } catch (Exception ex) {
+            LOGGER.error("error retrieving gas price: " + ex.getMessage(), ex);
+            throw new ResourceException(ex);
+        }
         BigInteger gasPrice;
         try {
             gasPrice = web3j.ethGasPrice().send().getGasPrice();
@@ -177,5 +192,12 @@ public class EthereumManagedConnection implements ManagedConnection {
             throw new ResourceException(ex);
         }
         return gasPrice;
+    }
+
+    public boolean match(ConnectionRequestInfo connectionRequestInfo) {
+        if (null == this.ethereumConnectionRequestInfo && null == connectionRequestInfo) {
+            return true;
+        }
+        return this.ethereumConnectionRequestInfo.equals(connectionRequestInfo);
     }
 }

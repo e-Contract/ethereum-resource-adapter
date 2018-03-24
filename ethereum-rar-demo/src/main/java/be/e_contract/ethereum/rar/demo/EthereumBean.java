@@ -8,12 +8,14 @@ package be.e_contract.ethereum.rar.demo;
 
 import be.e_contract.ethereum.ra.EthereumConnection;
 import be.e_contract.ethereum.ra.EthereumConnectionFactory;
+import be.e_contract.ethereum.ra.EthereumConnectionRequestInfo;
 import java.math.BigInteger;
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.resource.ResourceException;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,8 +28,14 @@ public class EthereumBean {
     private EthereumConnectionFactory ethereumConnectionFactory;
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public BigInteger getGasPrice() {
-        try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
+    public BigInteger getGasPrice(String nodeLocation) {
+        EthereumConnectionRequestInfo ethereumConnectionRequestInfo;
+        if (StringUtils.isEmpty(nodeLocation)) {
+            ethereumConnectionRequestInfo = null;
+        } else {
+            ethereumConnectionRequestInfo = new EthereumConnectionRequestInfo(nodeLocation);
+        }
+        try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection(ethereumConnectionRequestInfo)) {
             return ethereumConnection.getGasPrice();
         } catch (ResourceException ex) {
             LOGGER.error("JCA error: " + ex.getMessage(), ex);

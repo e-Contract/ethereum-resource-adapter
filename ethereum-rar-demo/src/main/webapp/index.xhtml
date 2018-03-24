@@ -17,6 +17,10 @@
 
         <h:body>
             <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputText value="Node location:"/>
+                    <h:inputText value="#{ethereumController.nodeLocation}"/>
+                </h:panelGrid>
                 <h:commandButton value="Get Gas Price" action="/gas-price"/>
             </h:form>
         </h:body>

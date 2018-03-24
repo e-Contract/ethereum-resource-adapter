@@ -58,7 +58,8 @@ public class EthereumManagedConnectionFactory implements ManagedConnectionFactor
         LOGGER.debug("createManagedConnection(subject, connectionRequestInfo)");
         LOGGER.debug("subject: {}", subject);
         LOGGER.debug("connection request info: {}", cxRequestInfo);
-        return new EthereumManagedConnection();
+        EthereumConnectionRequestInfo ethereumConnectionRequestInfo = (EthereumConnectionRequestInfo) cxRequestInfo;
+        return new EthereumManagedConnection(ethereumConnectionRequestInfo);
     }
 
     @Override
@@ -67,13 +68,15 @@ public class EthereumManagedConnectionFactory implements ManagedConnectionFactor
         LOGGER.debug("connection set size: {}", connectionSet.size());
         LOGGER.debug("subject: {}", subject);
         LOGGER.debug("connection request info: {}", cxRequestInfo);
-        ManagedConnection match = null;
         Iterator iterator = connectionSet.iterator();
-        if (iterator.hasNext()) {
-            match = (ManagedConnection) iterator.next();
+        while (iterator.hasNext()) {
+            EthereumManagedConnection ethereumManagedConnection = (EthereumManagedConnection) iterator.next();
+            if (ethereumManagedConnection.match(cxRequestInfo)) {
+                LOGGER.debug("returning: {}", ethereumManagedConnection);
+                return ethereumManagedConnection;
+            }
         }
-        LOGGER.debug("returning: {}", match);
-        return match;
+        return null;
     }
 
     @Override

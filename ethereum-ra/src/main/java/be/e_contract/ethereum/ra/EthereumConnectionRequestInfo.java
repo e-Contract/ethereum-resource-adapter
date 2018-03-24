@@ -7,6 +7,8 @@
 package be.e_contract.ethereum.ra;
 
 import javax.resource.spi.ConnectionRequestInfo;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 
 public class EthereumConnectionRequestInfo implements ConnectionRequestInfo {
 
@@ -18,5 +20,27 @@ public class EthereumConnectionRequestInfo implements ConnectionRequestInfo {
 
     public String getNodeLocation() {
         return this.nodeLocation;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (obj == this) {
+            return true;
+        }
+        if (obj.getClass() != getClass()) {
+            return false;
+        }
+        EthereumConnectionRequestInfo rhs = (EthereumConnectionRequestInfo) obj;
+        return new EqualsBuilder()
+                .append(this.nodeLocation, rhs.nodeLocation)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().append(this.nodeLocation).toHashCode();
     }
 }
