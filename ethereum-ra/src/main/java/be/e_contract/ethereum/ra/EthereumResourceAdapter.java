@@ -27,7 +27,7 @@ public class EthereumResourceAdapter implements ResourceAdapter, Serializable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EthereumResourceAdapter.class);
 
-    @ConfigProperty(defaultValue = "http://localhost:8545")
+    //@ConfigProperty(defaultValue = "http://localhost:8545")
     private String nodeLocation;
 
     public EthereumResourceAdapter() {

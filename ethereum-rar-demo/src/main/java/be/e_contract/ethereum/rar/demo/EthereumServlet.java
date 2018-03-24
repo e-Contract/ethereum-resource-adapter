@@ -24,7 +24,7 @@ public class EthereumServlet extends HttpServlet {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EthereumServlet.class);
 
-    @Resource(mappedName = "java:/ethereum")
+    @Resource(mappedName = "java:/EthereumConnectionFactory")
     private EthereumConnectionFactory ethereumConnectionFactory;
 
     @Override
