@@ -10,4 +10,13 @@ import javax.resource.spi.ConnectionRequestInfo;
 
 public class EthereumConnectionRequestInfo implements ConnectionRequestInfo {
 
+    private final String nodeLocation;
+
+    public EthereumConnectionRequestInfo(String nodeLocation) {
+        this.nodeLocation = nodeLocation;
+    }
+
+    public String getNodeLocation() {
+        return this.nodeLocation;
+    }
 }

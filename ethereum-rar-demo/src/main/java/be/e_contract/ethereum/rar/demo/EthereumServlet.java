@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigInteger;
 import javax.annotation.Resource;
+import javax.ejb.EJB;
 import javax.resource.ResourceException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -29,20 +30,23 @@ public class EthereumServlet extends HttpServlet {
     @Resource(mappedName = "java:/EthereumConnectionFactory")
     private EthereumConnectionFactory ethereumConnectionFactory;
 
-    @Resource(mappedName = "java:/EthereumConnectionFactory")
-    private EthereumConnectionFactory ethereumConnectionFactory2;
+    @EJB
+    private EthereumBean ethereumBean;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        PrintWriter output = resp.getWriter();
         try {
             try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
                 BigInteger gasPrice = ethereumConnection.getGasPrice();
-                PrintWriter output = resp.getWriter();
                 output.println("Gas Price: " + gasPrice);
             }
         } catch (ResourceException ex) {
             LOGGER.error("error: " + ex.getMessage(), ex);
             throw new IOException("ethereum connection error: " + ex.getMessage(), ex);
         }
+
+        BigInteger gasPrice = this.ethereumBean.getGasPrice();
+        output.println("gas price via EJB bean: " + gasPrice);
     }
 }

@@ -64,11 +64,15 @@ public class EthereumManagedConnectionFactory implements ManagedConnectionFactor
     @Override
     public ManagedConnection matchManagedConnections(Set connectionSet, Subject subject, ConnectionRequestInfo cxRequestInfo) throws ResourceException {
         LOGGER.debug("matchManagedConnections");
+        LOGGER.debug("connection set size: {}", connectionSet.size());
+        LOGGER.debug("subject: {}", subject);
+        LOGGER.debug("connection request info: {}", cxRequestInfo);
         ManagedConnection match = null;
         Iterator iterator = connectionSet.iterator();
         if (iterator.hasNext()) {
             match = (ManagedConnection) iterator.next();
         }
+        LOGGER.debug("returning: {}", match);
         return match;
     }
 
