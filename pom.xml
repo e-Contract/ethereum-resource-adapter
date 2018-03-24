@@ -213,5 +213,6 @@
         <module>ethereum-rar-demo-model</module>
         <module>ethereum-ra-oracle-api</module>
         <module>ethereum-ra-oracle-node</module>
+        <module>ethereum-ra-oracle</module>
     </modules>
 </project>
