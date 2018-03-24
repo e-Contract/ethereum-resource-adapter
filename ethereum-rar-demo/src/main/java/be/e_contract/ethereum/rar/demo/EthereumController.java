@@ -7,13 +7,14 @@
 package be.e_contract.ethereum.rar.demo;
 
 import be.e_contract.ethereum.rar.demo.model.EthereumBean;
+import be.e_contract.ethereum.rar.demo.model.EthereumGasPriceOracleBean;
 import be.e_contract.ethereum.rar.demo.model.RollbackException;
 import java.io.Serializable;
 import java.math.BigInteger;
+import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
-import javax.inject.Inject;
 import javax.inject.Named;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,8 +25,11 @@ public class EthereumController implements Serializable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EthereumController.class);
 
-    @Inject
+    @EJB
     private EthereumBean ethereumBean;
+
+    @EJB
+    private EthereumGasPriceOracleBean ethereumGasPriceOracleBean;
 
     private String nodeLocation;
 
@@ -59,12 +63,6 @@ public class EthereumController implements Serializable {
     }
 
     public BigInteger getOracleGasPrice() {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        try {
-            return this.ethereumBean.getGasPrice(this.nodeLocation, this.rollback);
-        } catch (RollbackException ex) {
-            facesContext.addMessage(null, new FacesMessage("rollback error"));
-        }
-        return null;
+        return this.ethereumGasPriceOracleBean.getGasPrice();
     }
 }

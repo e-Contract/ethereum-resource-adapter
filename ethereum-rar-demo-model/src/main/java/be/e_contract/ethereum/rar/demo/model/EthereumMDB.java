@@ -8,6 +8,7 @@ package be.e_contract.ethereum.rar.demo.model;
 
 import be.e_contract.ethereum.ra.EthereumMessageListener;
 import javax.ejb.ActivationConfigProperty;
+import javax.ejb.EJB;
 import javax.ejb.MessageDriven;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,18 +25,18 @@ public class EthereumMDB implements EthereumMessageListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EthereumMDB.class);
 
-    //@Inject
-    //private EthereumGasPriceOracleBean gasPriceOracleBean;
+    @EJB
+    private EthereumGasPriceOracleBean gasPriceOracleBean;
 
     @Override
     public void pendingTransaction(Transaction transaction) throws Exception {
         LOGGER.debug("pending transaction: {}", transaction.getHash());
-        //this.gasPriceOracleBean.pendingTransaction(transaction);
+        this.gasPriceOracleBean.pendingTransaction(transaction);
     }
 
     @Override
     public void block(EthBlock.Block block) throws Exception {
         LOGGER.debug("block: {}", block.getNumber());
-        //this.gasPriceOracleBean.block(block);
+        this.gasPriceOracleBean.block(block);
     }
 }
