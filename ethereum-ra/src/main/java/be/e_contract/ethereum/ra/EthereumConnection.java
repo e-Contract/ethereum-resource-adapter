@@ -7,6 +7,7 @@
 package be.e_contract.ethereum.ra;
 
 import java.math.BigInteger;
+import javax.resource.ResourceException;
 import javax.resource.cci.Connection;
 
 public interface EthereumConnection extends Connection, AutoCloseable {
@@ -15,8 +16,9 @@ public interface EthereumConnection extends Connection, AutoCloseable {
      * Gives back the node gas price.
      *
      * @return
+     * @throws javax.resource.ResourceException
      */
-    BigInteger getGasPrice();
+    BigInteger getGasPrice() throws ResourceException;
 
     /**
      * Gives back a gas price taking into account to maximum duration for a
@@ -24,6 +26,7 @@ public interface EthereumConnection extends Connection, AutoCloseable {
      *
      * @param maxDuration
      * @return
+     * @throws javax.resource.ResourceException
      */
-    BigInteger getGasPrice(int maxDuration);
+    BigInteger getGasPrice(int maxDuration) throws ResourceException;
 }

@@ -8,6 +8,7 @@ package be.e_contract.ethereum.ra;
 
 import java.io.PrintWriter;
 import java.io.Serializable;
+import java.util.Iterator;
 import java.util.Set;
 import javax.resource.ResourceException;
 import javax.resource.spi.ConnectionDefinition;
@@ -63,7 +64,12 @@ public class EthereumManagedConnectionFactory implements ManagedConnectionFactor
     @Override
     public ManagedConnection matchManagedConnections(Set connectionSet, Subject subject, ConnectionRequestInfo cxRequestInfo) throws ResourceException {
         LOGGER.debug("matchManagedConnections");
-        throw new UnsupportedOperationException();
+        ManagedConnection match = null;
+        Iterator iterator = connectionSet.iterator();
+        if (iterator.hasNext()) {
+            match = (ManagedConnection) iterator.next();
+        }
+        return match;
     }
 
     @Override

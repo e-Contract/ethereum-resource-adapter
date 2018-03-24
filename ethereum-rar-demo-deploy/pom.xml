@@ -67,6 +67,11 @@
             <type>rar</type>
         </dependency>
         <dependency>
+            <!-- jffi within the RAR makes the VM crash in JBoss EAP, moving web3j to the EAR level fixes the issue -->
+            <groupId>org.web3j</groupId>
+            <artifactId>core</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <scope>provided</scope>

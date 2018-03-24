@@ -6,7 +6,9 @@
  */
 package be.e_contract.ethereum.ra;
 
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.Set;
 import javax.resource.ResourceException;
@@ -20,6 +22,11 @@ import javax.security.auth.Subject;
 import javax.transaction.xa.XAResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.web3j.protocol.Web3j;
+import org.web3j.protocol.Web3jService;
+import org.web3j.protocol.http.HttpService;
+import org.web3j.protocol.ipc.UnixIpcService;
+import org.web3j.utils.Async;
 
 /**
  *
@@ -31,32 +38,58 @@ public class EthereumManagedConnection implements ManagedConnection {
 
     private final Set<ConnectionEventListener> listeners;
 
+    private EthereumConnectionImpl ethereumConnection;
+
+    private Web3j web3;
+
     public EthereumManagedConnection() {
         LOGGER.debug("constructor");
         this.listeners = new HashSet<>();
     }
 
+    private Web3j getWeb3j() {
+        if (this.web3 != null) {
+            return this.web3;
+        }
+        Web3jService service;
+        String location = "http://localhost:8545";
+        if (location.startsWith("http")) {
+            service = new HttpService(location);
+        } else {
+            // https://github.com/web3j/web3j/pull/245
+            LOGGER.warn("web3j IPC is not really stable");
+            service = new UnixIpcService(location);
+        }
+        // poll every half second
+        this.web3 = Web3j.build(service, 500, Async.defaultExecutorService());
+        return this.web3;
+    }
+
     @Override
     public Object getConnection(Subject subject, ConnectionRequestInfo cxRequestInfo) throws ResourceException {
         LOGGER.debug("getConnection");
-        return new EthereumConnectionImpl(this);
+        this.ethereumConnection = new EthereumConnectionImpl(this);
+        return this.ethereumConnection;
     }
 
     @Override
     public void destroy() throws ResourceException {
         LOGGER.debug("destroy");
+        this.ethereumConnection.invalidate();
         this.listeners.clear();
     }
 
     @Override
     public void cleanup() throws ResourceException {
         LOGGER.debug("cleanup");
+        this.ethereumConnection.invalidate();
     }
 
     @Override
     public void associateConnection(Object connection) throws ResourceException {
         LOGGER.debug("associateConnection");
-        throw new UnsupportedOperationException();
+        EthereumConnectionImpl ethereumConnection = (EthereumConnectionImpl) connection;
+        ethereumConnection.setManagedConnection(this);
     }
 
     @Override
@@ -109,7 +142,7 @@ public class EthereumManagedConnection implements ManagedConnection {
             event = new ConnectionEvent(this, eventId, exception);
         }
         event.setConnectionHandle(connection);
-        for (ConnectionEventListener listener : listeners) {
+        for (ConnectionEventListener listener : this.listeners) {
             switch (eventId) {
                 case ConnectionEvent.CONNECTION_CLOSED:
                     listener.connectionClosed(event);
@@ -132,5 +165,17 @@ public class EthereumManagedConnection implements ManagedConnection {
                     break;
             }
         }
+    }
+
+    public BigInteger getGasPrice(Integer maxDuration) throws ResourceException {
+        Web3j web3j = getWeb3j();
+        BigInteger gasPrice;
+        try {
+            gasPrice = web3j.ethGasPrice().send().getGasPrice();
+        } catch (IOException ex) {
+            LOGGER.error("error retrieving gas price: " + ex.getMessage(), ex);
+            throw new ResourceException(ex);
+        }
+        return gasPrice;
     }
 }

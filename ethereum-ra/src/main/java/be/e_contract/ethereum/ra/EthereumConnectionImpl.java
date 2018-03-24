@@ -20,24 +20,27 @@ public class EthereumConnectionImpl implements EthereumConnection {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EthereumConnectionImpl.class);
 
-    private final EthereumManagedConnection ethereumManagedConnection;
+    private EthereumManagedConnection ethereumManagedConnection;
+
+    private boolean valid;
 
     public EthereumConnectionImpl(EthereumManagedConnection ethereumManagedConnection) {
         LOGGER.debug("constructor");
         this.ethereumManagedConnection = ethereumManagedConnection;
+        this.valid = true;
     }
 
     @Override
-    public BigInteger getGasPrice() {
+    public BigInteger getGasPrice() throws ResourceException {
         LOGGER.debug("getGasPrice");
-        return null;
+        return this.ethereumManagedConnection.getGasPrice(null);
     }
 
     @Override
-    public BigInteger getGasPrice(int maxDuration) {
+    public BigInteger getGasPrice(int maxDuration) throws ResourceException {
         LOGGER.debug("getGasPrice with max duration: {}", maxDuration);
         // TODO: later on we implement our own gas price oracle
-        return getGasPrice();
+        return this.ethereumManagedConnection.getGasPrice(maxDuration);
     }
 
     @Override
@@ -55,7 +58,11 @@ public class EthereumConnectionImpl implements EthereumConnection {
     @Override
     public ConnectionMetaData getMetaData() throws ResourceException {
         LOGGER.debug("getMetaData");
-        throw new UnsupportedOperationException();
+        if (this.valid) {
+            return new EthereumConnectionMetaData();
+        } else {
+            throw new ResourceException();
+        }
     }
 
     @Override
@@ -68,5 +75,16 @@ public class EthereumConnectionImpl implements EthereumConnection {
     public void close() throws ResourceException {
         LOGGER.debug("close");
         this.ethereumManagedConnection.fireConnectionEvent(this, ConnectionEvent.CONNECTION_CLOSED, null);
+    }
+
+    void setManagedConnection(EthereumManagedConnection ethereumManagedConnection) {
+        LOGGER.debug("setManagedConnection");
+        this.ethereumManagedConnection = ethereumManagedConnection;
+    }
+
+    public void invalidate() {
+        LOGGER.debug("invalidate");
+        this.valid = false;
+        this.ethereumManagedConnection = null;
     }
 }

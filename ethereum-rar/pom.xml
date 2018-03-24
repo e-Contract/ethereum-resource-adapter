@@ -29,6 +29,12 @@
             <artifactId>slf4j-api</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <!-- jffi within the RAR makes the VM crash in JBoss EAP, moving web3j to the EAR level fixes the issue -->
+            <groupId>org.web3j</groupId>
+            <artifactId>core</artifactId>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
     
 </project>
