@@ -211,5 +211,7 @@
         <module>ethereum-rar-demo-deploy</module>
         <module>ethereum-ra</module>
         <module>ethereum-rar-demo-model</module>
+        <module>ethereum-ra-oracle-api</module>
+        <module>ethereum-ra-oracle-node</module>
     </modules>
 </project>
