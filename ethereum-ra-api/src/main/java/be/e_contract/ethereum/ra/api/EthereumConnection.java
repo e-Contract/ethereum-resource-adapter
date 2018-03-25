@@ -19,4 +19,12 @@ public interface EthereumConnection extends Connection, AutoCloseable {
      * @throws javax.resource.ResourceException
      */
     BigInteger getGasPrice() throws ResourceException;
+
+    /**
+     * Gives back the latest block number.
+     *
+     * @return
+     * @throws ResourceException
+     */
+    BigInteger getBlockNumber() throws ResourceException;
 }

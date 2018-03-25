@@ -81,4 +81,9 @@ public class EthereumConnectionImpl implements EthereumConnection {
         this.valid = false;
         this.ethereumManagedConnection = null;
     }
+
+    @Override
+    public BigInteger getBlockNumber() throws ResourceException {
+       return this.ethereumManagedConnection.getBlockNumber();
+    }
 }

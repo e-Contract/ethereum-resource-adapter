@@ -201,4 +201,22 @@ public class EthereumManagedConnection implements ManagedConnection {
         }
         return this.ethereumConnectionRequestInfo.equals(connectionRequestInfo);
     }
+
+    BigInteger getBlockNumber() throws ResourceException {
+        Web3j web3j;
+        try {
+            web3j = getWeb3j();
+        } catch (Exception ex) {
+            LOGGER.error("error retrieving block number: " + ex.getMessage(), ex);
+            throw new ResourceException(ex);
+        }
+        BigInteger blockNumber;
+        try {
+            blockNumber = web3j.ethBlockNumber().send().getBlockNumber();
+        } catch (IOException ex) {
+            LOGGER.error("error retrieving block number: " + ex.getMessage(), ex);
+            throw new ResourceException(ex);
+        }
+        return blockNumber;
+    }
 }
