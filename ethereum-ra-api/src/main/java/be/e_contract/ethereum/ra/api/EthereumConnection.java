@@ -27,4 +27,13 @@ public interface EthereumConnection extends Connection, AutoCloseable {
      * @throws ResourceException
      */
     BigInteger getBlockNumber() throws ResourceException;
+
+    /**
+     * Sends a raw transaction. Supports local JCA transactions.
+     *
+     * @param rawTransaction
+     * @return
+     * @throws ResourceException
+     */
+    String sendRawTransaction(String rawTransaction) throws ResourceException;
 }

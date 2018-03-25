@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
@@ -43,6 +44,13 @@ public class EthereumController implements Serializable {
     private Integer maxDuration;
 
     private String oracle;
+
+    private String rawTransaction;
+
+    @PostConstruct
+    public void postConstruct() {
+        this.rawTransaction = "Raw transaction here...";
+    }
 
     public String getNodeLocation() {
         return this.nodeLocation;
@@ -76,6 +84,14 @@ public class EthereumController implements Serializable {
         this.oracle = oracle;
     }
 
+    public String getRawTransaction() {
+        return this.rawTransaction;
+    }
+
+    public void setRawTransaction(String rawTransaction) {
+        this.rawTransaction = rawTransaction;
+    }
+
     public BigInteger getGasPrice() {
         LOGGER.debug("node location: {}", this.nodeLocation);
         FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -104,5 +120,16 @@ public class EthereumController implements Serializable {
             result.add(gasPrice);
         }
         return result;
+    }
+
+    public String sendRawTransaction() {
+        LOGGER.debug("send raw transaction: {}", this.rawTransaction);
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        try {
+            this.ethereumBean.sendRawTransaction(this.rawTransaction, this.rollback);
+        } catch (RollbackException ex) {
+            facesContext.addMessage(null, new FacesMessage("rollback error"));
+        }
+        return "/index";
     }
 }

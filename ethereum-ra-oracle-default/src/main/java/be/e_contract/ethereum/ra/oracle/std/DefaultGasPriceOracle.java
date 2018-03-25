@@ -130,6 +130,7 @@ public class DefaultGasPriceOracle implements GasPriceOracle {
             }
         }
 
+        // TODO: we should cleanup old timings here... moving window
         if (!updated) {
             // only redo the table on changes
             return;

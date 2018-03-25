@@ -6,7 +6,6 @@
  */
 package be.e_contract.ethereum.rar.demo.model;
 
-import be.e_contract.ethereum.rar.demo.model.RollbackException;
 import be.e_contract.ethereum.ra.api.EthereumConnection;
 import be.e_contract.ethereum.ra.api.EthereumConnectionFactory;
 import be.e_contract.ethereum.ra.api.EthereumConnectionSpec;
@@ -45,5 +44,19 @@ public class EthereumBean {
             LOGGER.error("JCA error: " + ex.getMessage(), ex);
             return null;
         }
+    }
+
+    public String sendRawTransaction(String rawTransaction, boolean rollback) throws RollbackException {
+        String transactionHash;
+        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+            transactionHash = ethereumConnection.sendRawTransaction(rawTransaction);
+        } catch (ResourceException ex) {
+            LOGGER.error("JCA error: " + ex.getMessage(), ex);
+            return null;
+        }
+        if (rollback) {
+            throw new RollbackException();
+        }
+        return transactionHash;
     }
 }

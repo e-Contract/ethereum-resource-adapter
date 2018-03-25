@@ -41,13 +41,17 @@ public class EthereumManagedConnection implements ManagedConnection {
 
     private Web3j web3;
 
+    private EthereumLocalTransaction ethereumLocalTransaction;
+
+    private PrintWriter logWriter;
+
     public EthereumManagedConnection(EthereumConnectionRequestInfo ethereumConnectionRequestInfo) {
         LOGGER.debug("constructor");
         this.listeners = new HashSet<>();
         this.ethereumConnectionRequestInfo = ethereumConnectionRequestInfo;
     }
 
-    private Web3j getWeb3j() throws Exception {
+    public Web3j getWeb3j() throws Exception {
         if (this.web3 != null) {
             return this.web3;
         }
@@ -119,7 +123,11 @@ public class EthereumManagedConnection implements ManagedConnection {
     public LocalTransaction getLocalTransaction() throws ResourceException {
         LOGGER.debug("getLocalTransaction");
         // for outbound only
-        return new EthereumLocalTransaction();
+        if (null != this.ethereumLocalTransaction) {
+            return this.ethereumLocalTransaction;
+        }
+        this.ethereumLocalTransaction = new EthereumLocalTransaction(this);
+        return this.ethereumLocalTransaction;
     }
 
     @Override
@@ -131,13 +139,13 @@ public class EthereumManagedConnection implements ManagedConnection {
     @Override
     public void setLogWriter(PrintWriter out) throws ResourceException {
         LOGGER.debug("setLogWriter");
-        throw new UnsupportedOperationException();
+        this.logWriter = out;
     }
 
     @Override
     public PrintWriter getLogWriter() throws ResourceException {
         LOGGER.debug("getLogWriter");
-        throw new UnsupportedOperationException();
+        return this.logWriter;
     }
 
     public void fireConnectionEvent(final EthereumConnection connection, final int eventId, final Exception exception) {
@@ -202,7 +210,7 @@ public class EthereumManagedConnection implements ManagedConnection {
         return this.ethereumConnectionRequestInfo.equals(connectionRequestInfo);
     }
 
-    BigInteger getBlockNumber() throws ResourceException {
+    public BigInteger getBlockNumber() throws ResourceException {
         Web3j web3j;
         try {
             web3j = getWeb3j();
@@ -218,5 +226,25 @@ public class EthereumManagedConnection implements ManagedConnection {
             throw new ResourceException(ex);
         }
         return blockNumber;
+    }
+
+    public String sendRawTransaction(String rawTransaction) throws ResourceException {
+        LOGGER.debug("send raw transaction: {}", rawTransaction);
+        // we want to support JCA transactions here
+        if (null != this.ethereumLocalTransaction) {
+            LOGGER.debug("scheduling for local transaction");
+            this.ethereumLocalTransaction.scheduleRawTransaction(rawTransaction);
+            return null;
+        }
+        LOGGER.debug("directly sending transaction");
+        Web3j web3j;
+        try {
+            web3j = getWeb3j();
+        } catch (Exception ex) {
+            LOGGER.error("web3j error: " + ex.getMessage(), ex);
+            throw new ResourceException(ex);
+        }
+        web3j.ethSendRawTransaction(rawTransaction);
+        return null;
     }
 }

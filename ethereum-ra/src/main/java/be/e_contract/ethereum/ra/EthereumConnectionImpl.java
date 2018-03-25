@@ -84,6 +84,11 @@ public class EthereumConnectionImpl implements EthereumConnection {
 
     @Override
     public BigInteger getBlockNumber() throws ResourceException {
-       return this.ethereumManagedConnection.getBlockNumber();
+        return this.ethereumManagedConnection.getBlockNumber();
+    }
+
+    @Override
+    public String sendRawTransaction(String rawTransaction) throws ResourceException {
+        return this.ethereumManagedConnection.sendRawTransaction(rawTransaction);
     }
 }
