@@ -9,6 +9,8 @@ package be.e_contract.ethereum.ra.oracle;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import javax.ejb.Stateless;
 import javax.enterprise.inject.Any;
@@ -43,6 +45,22 @@ public class GasPriceOracleBean {
         return result;
     }
 
+    public List<String> getGasPriceOracleNames() {
+        List<String> result = new LinkedList<>();
+        Iterator<GasPriceOracle> gasPriceOracleIterator = this.gasPriceOracleTypes.iterator();
+        while (gasPriceOracleIterator.hasNext()) {
+            GasPriceOracle gasTypeOracle = gasPriceOracleIterator.next();
+            GasPriceOracleType gasPriceOracleTypeAnnotation = findGasPriceOracleTypeAnnotation(gasTypeOracle.getClass());
+            if (null == gasPriceOracleTypeAnnotation) {
+                // seems like this can happen
+                continue;
+            }
+            String gasPriceOracleType = gasPriceOracleTypeAnnotation.value();
+            result.add(gasPriceOracleType);
+        }
+        return result;
+    }
+
     public Map<String, BigInteger> getGasPrices(Integer maxDuration) {
         Map<String, GasPriceOracle> gasPriceOracles = getGasPriceOracles();
         Map<String, BigInteger> gasPrices = new HashMap<>();
@@ -51,6 +69,19 @@ public class GasPriceOracleBean {
             gasPrices.put(gasPriceOracleEntry.getKey(), gasPrice);
         }
         return gasPrices;
+    }
+
+    public BigInteger getGasPrice(String oracle, Integer maxDuration) {
+        Instance<GasPriceOracle> gasPriceOracleInstance = this.gasPriceOracleTypes.select(new GasPriceOracleTypeQualifier(oracle));
+        if (gasPriceOracleInstance.isUnsatisfied()) {
+            return null;
+        }
+        if (gasPriceOracleInstance.isAmbiguous()) {
+            return null;
+        }
+        GasPriceOracle gasPriceOracle = gasPriceOracleInstance.get();
+        BigInteger gasPrice = gasPriceOracle.getGasPrice(maxDuration);
+        return gasPrice;
     }
 
     /**

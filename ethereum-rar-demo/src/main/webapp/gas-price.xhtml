@@ -20,6 +20,9 @@
             <h:panelGrid columns="2">
                 <h:outputText value="node gas price:"/>
                 <h:outputText value="#{ethereumController.gasPrice}"/>
+
+                <h:outputText value="maximum transaction duration:"/>
+                <h:outputText value="#{ethereumController.maxDuration}"/>
             </h:panelGrid>
             <h:dataTable value="#{ethereumController.gasPrices}" var="gasPriceEntry">
                 <h:column>

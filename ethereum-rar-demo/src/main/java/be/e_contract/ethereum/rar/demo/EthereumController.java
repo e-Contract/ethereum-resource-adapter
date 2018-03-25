@@ -11,6 +11,7 @@ import be.e_contract.ethereum.rar.demo.model.EthereumBean;
 import be.e_contract.ethereum.rar.demo.model.RollbackException;
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,6 +41,8 @@ public class EthereumController implements Serializable {
     private boolean rollback;
 
     private Integer maxDuration;
+
+    private String oracle;
 
     public String getNodeLocation() {
         return this.nodeLocation;
@@ -64,6 +68,14 @@ public class EthereumController implements Serializable {
         this.maxDuration = maxDuration;
     }
 
+    public String getOracle() {
+        return this.oracle;
+    }
+
+    public void setOracle(String oracle) {
+        this.oracle = oracle;
+    }
+
     public BigInteger getGasPrice() {
         LOGGER.debug("node location: {}", this.nodeLocation);
         FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -76,7 +88,16 @@ public class EthereumController implements Serializable {
     }
 
     public List<GasPrice> getGasPrices() {
-        Map<String, BigInteger> gasPrices = this.gasPriceOracleBean.getGasPrices(this.maxDuration);
+        Map<String, BigInteger> gasPrices;
+        if (StringUtils.isEmpty(this.oracle)) {
+            gasPrices = this.gasPriceOracleBean.getGasPrices(this.maxDuration);
+        } else {
+            gasPrices = new HashMap<>();
+            BigInteger gasPrice = this.gasPriceOracleBean.getGasPrice(this.oracle, this.maxDuration);
+            if (null != gasPrice) {
+                gasPrices.put(this.oracle, gasPrice);
+            }
+        }
         List<GasPrice> result = new LinkedList<>();
         for (Map.Entry<String, BigInteger> gasPriceEntry : gasPrices.entrySet()) {
             GasPrice gasPrice = new GasPrice(gasPriceEntry.getKey(), gasPriceEntry.getValue());
