@@ -6,6 +6,7 @@
  */
 package be.e_contract.ethereum.ra;
 
+import be.e_contract.ethereum.ra.api.EthereumMessageListener;
 import javax.resource.ResourceException;
 import javax.resource.spi.Activation;
 import javax.resource.spi.ActivationSpec;

@@ -59,13 +59,13 @@ public class EthereumResourceAdapter implements ResourceAdapter, Serializable, R
 
     @Override
     public void start(BootstrapContext ctx) throws ResourceAdapterInternalException {
-        LOGGER.debug("start");
+        LOGGER.info("Starting Ethereum JCA Resource Adapter version " + Version.getImplementationVersion());
         this.bootstrapContext = ctx;
     }
 
     @Override
     public void stop() {
-        LOGGER.debug("stop");
+        LOGGER.info("Stopping Ethereum JCA Resource Adapter");
         for (EthereumWork ethereumWork : this.ethereumWorkList) {
             ethereumWork.shutdown();
         }

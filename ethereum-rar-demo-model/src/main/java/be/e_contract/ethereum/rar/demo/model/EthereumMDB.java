@@ -6,7 +6,7 @@
  */
 package be.e_contract.ethereum.rar.demo.model;
 
-import be.e_contract.ethereum.ra.EthereumMessageListener;
+import be.e_contract.ethereum.ra.api.EthereumMessageListener;
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.EJB;
 import javax.ejb.MessageDriven;
@@ -27,6 +27,10 @@ public class EthereumMDB implements EthereumMessageListener {
 
     @EJB
     private EthereumGasPriceOracleBean gasPriceOracleBean;
+
+    public EthereumMDB() {
+        LOGGER.debug("constructor");
+    }
 
     @Override
     public void pendingTransaction(Transaction transaction) throws Exception {

@@ -6,6 +6,8 @@
  */
 package be.e_contract.ethereum.ra;
 
+import be.e_contract.ethereum.ra.api.EthereumConnectionFactory;
+import be.e_contract.ethereum.ra.api.EthereumConnection;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.util.Iterator;

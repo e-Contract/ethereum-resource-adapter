@@ -6,8 +6,11 @@
  */
 package be.e_contract.ethereum.ra;
 
+import be.e_contract.ethereum.ra.api.EthereumMessageListener;
+import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.logging.Level;
 import javax.resource.spi.UnavailableException;
 import javax.resource.spi.endpoint.MessageEndpoint;
 import javax.resource.spi.endpoint.MessageEndpointFactory;
@@ -57,7 +60,12 @@ public class EthereumWork implements Work {
         int cpuCount = Runtime.getRuntime().availableProcessors();
         ScheduledExecutorService scheduledExecutorService
                 = Executors.newScheduledThreadPool(cpuCount, new EthereumThreadFactory(this.workManager));
-        this.web3j = Web3jFactory.createWeb3j(nodeLocation, scheduledExecutorService);
+        try {
+            this.web3j = Web3jFactory.createWeb3j(nodeLocation, scheduledExecutorService);
+        } catch (IOException ex) {
+            LOGGER.error("error creating web3j client: {}", ex.getMessage(), ex);
+            return;
+        }
         Boolean deliverPending = this.ethereumActivationSpec.getDeliverPending();
         if (null == deliverPending) {
             deliverPending = false;

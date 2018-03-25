@@ -6,6 +6,7 @@
  */
 package be.e_contract.ethereum.ra;
 
+import be.e_contract.ethereum.ra.api.EthereumConnection;
 import java.math.BigInteger;
 import javax.resource.ResourceException;
 import javax.resource.cci.ConnectionMetaData;

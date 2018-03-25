@@ -6,8 +6,8 @@
  */
 package be.e_contract.ethereum.ra.oracle.node;
 
-import be.e_contract.ethereum.ra.EthereumConnection;
-import be.e_contract.ethereum.ra.EthereumConnectionFactory;
+import be.e_contract.ethereum.ra.api.EthereumConnection;
+import be.e_contract.ethereum.ra.api.EthereumConnectionFactory;
 import be.e_contract.ethereum.ra.oracle.GasPriceOracle;
 import be.e_contract.ethereum.ra.oracle.GasPriceOracleType;
 import java.math.BigInteger;

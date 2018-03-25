@@ -6,6 +6,7 @@
  */
 package be.e_contract.ethereum.ra;
 
+import be.e_contract.ethereum.ra.api.EthereumConnection;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigInteger;

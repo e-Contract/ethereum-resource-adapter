@@ -7,9 +7,9 @@
 package be.e_contract.ethereum.rar.demo.model;
 
 import be.e_contract.ethereum.rar.demo.model.RollbackException;
-import be.e_contract.ethereum.ra.EthereumConnection;
-import be.e_contract.ethereum.ra.EthereumConnectionFactory;
-import be.e_contract.ethereum.ra.EthereumConnectionSpec;
+import be.e_contract.ethereum.ra.api.EthereumConnection;
+import be.e_contract.ethereum.ra.api.EthereumConnectionFactory;
+import be.e_contract.ethereum.ra.api.EthereumConnectionSpec;
 import java.math.BigInteger;
 import javax.annotation.Resource;
 import javax.ejb.Stateless;

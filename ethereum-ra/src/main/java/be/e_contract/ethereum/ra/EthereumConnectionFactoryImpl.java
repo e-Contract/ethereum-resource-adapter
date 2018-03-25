@@ -6,6 +6,9 @@
  */
 package be.e_contract.ethereum.ra;
 
+import be.e_contract.ethereum.ra.api.EthereumConnectionSpec;
+import be.e_contract.ethereum.ra.api.EthereumConnectionFactory;
+import be.e_contract.ethereum.ra.api.EthereumConnection;
 import javax.naming.NamingException;
 import javax.naming.Reference;
 import javax.resource.ResourceException;

@@ -8,8 +8,8 @@ package be.e_contract.ethereum.rar.demo;
 
 import be.e_contract.ethereum.rar.demo.model.EthereumBean;
 import be.e_contract.ethereum.rar.demo.model.RollbackException;
-import be.e_contract.ethereum.ra.EthereumConnection;
-import be.e_contract.ethereum.ra.EthereumConnectionFactory;
+import be.e_contract.ethereum.ra.api.EthereumConnection;
+import be.e_contract.ethereum.ra.api.EthereumConnectionFactory;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigInteger;
