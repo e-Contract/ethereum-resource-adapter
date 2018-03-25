@@ -9,6 +9,8 @@ package be.e_contract.ethereum.rar.demo.model;
 import be.e_contract.ethereum.ra.api.EthereumMessageListener;
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.MessageDriven;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.web3j.protocol.core.methods.response.EthBlock;
@@ -20,6 +22,7 @@ import org.web3j.protocol.core.methods.response.Transaction;
     @ActivationConfigProperty(propertyName = "deliverPending", propertyValue = "true"),
     @ActivationConfigProperty(propertyName = "deliverBlock", propertyValue = "true")
 })
+@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 public class EthereumMDB implements EthereumMessageListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EthereumMDB.class);

@@ -8,6 +8,8 @@ package be.e_contract.ethereum.ra;
 
 import be.e_contract.ethereum.ra.api.EthereumMessageListener;
 import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import javax.naming.NamingException;
@@ -47,7 +49,7 @@ public class EthereumResourceAdapter implements ResourceAdapter, Serializable, R
 
     public EthereumResourceAdapter() {
         LOGGER.debug("constructor");
-        this.ethereumWorkList = new LinkedList<>();
+        this.ethereumWorkList = Collections.synchronizedList(new LinkedList<>());
     }
 
     public String getNodeLocation() {
@@ -81,6 +83,20 @@ public class EthereumResourceAdapter implements ResourceAdapter, Serializable, R
         LOGGER.debug("node location: {}", ethereumActivationSpec.getNodeLocation());
         WorkManager workManager = this.bootstrapContext.getWorkManager();
         EthereumMessageListener ethereumMessageListener = (EthereumMessageListener) endpointFactory.createEndpoint(null);
+        Method[] methods = EthereumMessageListener.class.getDeclaredMethods();
+        for (Method method : methods) {
+            boolean deliveryTransacted;
+            try {
+                deliveryTransacted = endpointFactory.isDeliveryTransacted(method);
+            } catch (NoSuchMethodException ex) {
+                continue;
+            }
+            if (deliveryTransacted) {
+                LOGGER.warn("not supporting transacted delivery for method: {} on MDB {}",
+                        method.getName(), ethereumMessageListener.getClass().getName());
+                // TODO: implement this
+            }
+        }
         EthereumWork ethereumWork = new EthereumWork(ethereumMessageListener, ethereumActivationSpec, workManager);
         this.ethereumWorkList.add(ethereumWork);
         ethereumActivationSpec.setEthereumWork(ethereumWork);
@@ -93,6 +109,7 @@ public class EthereumResourceAdapter implements ResourceAdapter, Serializable, R
         EthereumActivationSpec ethereumActivationSpec = (EthereumActivationSpec) spec;
         EthereumWork ethereumWork = ethereumActivationSpec.getEthereumWork();
         ethereumWork.shutdown();
+        this.ethereumWorkList.remove(ethereumWork);
     }
 
     @Override
