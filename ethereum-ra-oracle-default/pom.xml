@@ -8,9 +8,9 @@
         <artifactId>ethereum-resource-adapter</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
-    <name>Ethereum Resource Adapter Oracle Node</name>
+    <name>Ethereum Resource Adapter Oracle Default</name>
     <groupId>be.e-contract.ethereum-resource-adapter</groupId>
-    <artifactId>ethereum-ra-oracle-node</artifactId>
+    <artifactId>ethereum-ra-oracle-default</artifactId>
     
     <dependencies>
         <dependency>
@@ -24,7 +24,7 @@
         </dependency>
         <dependency>
             <groupId>be.e-contract.ethereum-resource-adapter</groupId>
-            <artifactId>ethereum-ra-api</artifactId>
+            <artifactId>ethereum-ra</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
     </dependencies>

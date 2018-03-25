@@ -215,5 +215,6 @@
         <module>ethereum-ra-oracle-node</module>
         <module>ethereum-ra-oracle</module>
         <module>ethereum-ra-api</module>
+        <module>ethereum-ra-oracle-default</module>
     </modules>
 </project>
