@@ -16,6 +16,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.resource.ResourceException;
+import javax.resource.cci.LocalTransaction;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,6 +58,24 @@ public class EthereumBean {
         }
         if (rollback) {
             throw new RollbackException();
+        }
+        return transactionHash;
+    }
+
+    public String sendRawTransactionLocalTransaction(String rawTransaction, boolean rollback) throws RollbackException {
+        String transactionHash;
+        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+            LocalTransaction localTransaction = ethereumConnection.getLocalTransaction();
+            localTransaction.begin();
+            transactionHash = ethereumConnection.sendRawTransaction(rawTransaction);
+            if (rollback) {
+                localTransaction.rollback();
+            } else {
+                localTransaction.commit();
+            }
+        } catch (ResourceException ex) {
+            LOGGER.error("JCA error: " + ex.getMessage(), ex);
+            return null;
         }
         return transactionHash;
     }

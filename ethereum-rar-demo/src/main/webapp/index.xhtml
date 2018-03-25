@@ -30,6 +30,9 @@
                     <h:outputText value="Rollback transaction:"/>
                     <h:selectBooleanCheckbox value="#{ethereumController.rollback}"/>
 
+                    <h:outputText value="Local transaction:"/>
+                    <h:selectBooleanCheckbox value="#{ethereumController.localTransaction}"/>
+
                     <h:outputText value="Transaction hash:"/>
                     <h:inputText value="#{ethereumController.transactionHash}" size="70"/>
                 </h:panelGrid>

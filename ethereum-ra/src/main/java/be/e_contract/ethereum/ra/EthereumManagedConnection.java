@@ -252,14 +252,15 @@ public class EthereumManagedConnection implements ManagedConnection {
     public String sendRawTransaction(String rawTransaction) throws ResourceException {
         LOGGER.debug("send raw transaction: {}", rawTransaction);
         // we want to support JCA transactions here
-        if (null != this.ethereumXAResource) {
-            LOGGER.debug("scheduling for XA transaction");
-            this.ethereumXAResource.scheduleRawTransaction(rawTransaction);
-            return null;
-        }
+        // important to check local transaction first because of CCI local transactions
         if (null != this.ethereumLocalTransaction) {
             LOGGER.debug("scheduling for local transaction");
             this.ethereumLocalTransaction.scheduleRawTransaction(rawTransaction);
+            return null;
+        }
+        if (null != this.ethereumXAResource) {
+            LOGGER.debug("scheduling for XA transaction");
+            this.ethereumXAResource.scheduleRawTransaction(rawTransaction);
             return null;
         }
         LOGGER.debug("directly sending transaction");

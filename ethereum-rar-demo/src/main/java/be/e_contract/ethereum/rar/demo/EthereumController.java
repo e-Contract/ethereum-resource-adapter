@@ -50,6 +50,8 @@ public class EthereumController implements Serializable {
 
     private String transactionHash;
 
+    private boolean localTransaction;
+
     @PostConstruct
     public void postConstruct() {
         this.rawTransaction = "Raw transaction here...";
@@ -103,6 +105,14 @@ public class EthereumController implements Serializable {
         this.transactionHash = transactionHash;
     }
 
+    public boolean isLocalTransaction() {
+        return this.localTransaction;
+    }
+
+    public void setLocalTransaction(boolean localTransaction) {
+        this.localTransaction = localTransaction;
+    }
+
     public BigInteger getGasPrice() {
         LOGGER.debug("node location: {}", this.nodeLocation);
         FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -137,7 +147,11 @@ public class EthereumController implements Serializable {
         LOGGER.debug("send raw transaction: {}", this.rawTransaction);
         FacesContext facesContext = FacesContext.getCurrentInstance();
         try {
-            this.ethereumBean.sendRawTransaction(this.rawTransaction, this.rollback);
+            if (this.localTransaction) {
+                this.ethereumBean.sendRawTransactionLocalTransaction(this.rawTransaction, this.rollback);
+            } else {
+                this.ethereumBean.sendRawTransaction(this.rawTransaction, this.rollback);
+            }
         } catch (RollbackException ex) {
             facesContext.addMessage(null, new FacesMessage("rollback error"));
         }
