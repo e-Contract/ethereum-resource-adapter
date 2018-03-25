@@ -45,6 +45,8 @@ public class EthereumManagedConnection implements ManagedConnection {
 
     private PrintWriter logWriter;
 
+    private EthereumXAResource ethereumXAResource;
+
     public EthereumManagedConnection(EthereumConnectionRequestInfo ethereumConnectionRequestInfo) {
         LOGGER.debug("constructor");
         this.listeners = new HashSet<>();
@@ -83,6 +85,12 @@ public class EthereumManagedConnection implements ManagedConnection {
         if (null != this.web3) {
             this.web3.shutdown();
         }
+        if (this.ethereumLocalTransaction != null) {
+            this.ethereumLocalTransaction = null;
+        }
+        if (null != this.ethereumXAResource) {
+            this.ethereumXAResource = null;
+        }
     }
 
     @Override
@@ -116,7 +124,11 @@ public class EthereumManagedConnection implements ManagedConnection {
     public XAResource getXAResource() throws ResourceException {
         LOGGER.debug("getXAResource");
         // for outbound only
-        return new EthereumXAResource();
+        if (null != this.ethereumXAResource) {
+            return this.ethereumXAResource;
+        }
+        this.ethereumXAResource = new EthereumXAResource(this);
+        return this.ethereumXAResource;
     }
 
     @Override
@@ -231,6 +243,11 @@ public class EthereumManagedConnection implements ManagedConnection {
     public String sendRawTransaction(String rawTransaction) throws ResourceException {
         LOGGER.debug("send raw transaction: {}", rawTransaction);
         // we want to support JCA transactions here
+        if (null != this.ethereumXAResource) {
+            LOGGER.debug("scheduling for XA transaction");
+            this.ethereumXAResource.scheduleRawTransaction(rawTransaction);
+            return null;
+        }
         if (null != this.ethereumLocalTransaction) {
             LOGGER.debug("scheduling for local transaction");
             this.ethereumLocalTransaction.scheduleRawTransaction(rawTransaction);

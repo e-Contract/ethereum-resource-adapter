@@ -6,11 +6,14 @@
  */
 package be.e_contract.ethereum.ra;
 
+import java.util.LinkedList;
+import java.util.List;
 import javax.transaction.xa.XAException;
 import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.web3j.protocol.Web3j;
 
 public class EthereumXAResource implements XAResource {
 
@@ -18,9 +21,29 @@ public class EthereumXAResource implements XAResource {
 
     private int transactionTimeout;
 
+    private final EthereumManagedConnection ethereumManagedConnection;
+
+    private final List<String> rawTransactions;
+
+    public EthereumXAResource(EthereumManagedConnection ethereumManagedConnection) {
+        this.ethereumManagedConnection = ethereumManagedConnection;
+        this.rawTransactions = new LinkedList<>();
+    }
+
     @Override
     public void commit(Xid xid, boolean onePhase) throws XAException {
         LOGGER.debug("commit: {} - one phase {}", xid, onePhase);
+        for (String rawTransaction : this.rawTransactions) {
+            LOGGER.debug("commit raw transaction: {}", rawTransaction);
+            try {
+                Web3j web3j = this.ethereumManagedConnection.getWeb3j();
+                web3j.ethSendRawTransaction(rawTransaction);
+            } catch (Exception ex) {
+                LOGGER.error("web3j error: " + ex.getMessage(), ex);
+                throw new XAException();
+            }
+        }
+        this.rawTransactions.clear();
     }
 
     @Override
@@ -60,6 +83,8 @@ public class EthereumXAResource implements XAResource {
     @Override
     public void rollback(Xid xid) throws XAException {
         LOGGER.debug("rollback: {}", xid);
+        LOGGER.debug("number of raw transactions in queue: {}", this.rawTransactions.size());
+        this.rawTransactions.clear();
     }
 
     @Override
@@ -72,5 +97,11 @@ public class EthereumXAResource implements XAResource {
     @Override
     public void start(Xid xid, int flags) throws XAException {
         LOGGER.debug("start: {} - flags {}", xid, flags);
+        this.rawTransactions.clear();
+    }
+
+    void scheduleRawTransaction(String rawTransaction) {
+        LOGGER.debug("schedule raw transaction: {}", rawTransaction);
+        this.rawTransactions.add(rawTransaction);
     }
 }
