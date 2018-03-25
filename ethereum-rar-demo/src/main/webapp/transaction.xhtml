@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html">
+
+    <f:view>
+        <h:head>
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <meta http-equiv="Content-Script-Type" content="text/javascript" />
+            <meta http-equiv="Content-Style-Type" content="text/css" />
+            <meta http-equiv="Expires" content="-1" />
+            <meta http-equiv="Cache-Control"
+                  content="no-cache, no-store, max-age=0, must-revalidate" />
+            <meta http-equiv="Pragma" content="no-cache" />
+            <title>Ethereum Resource Adapter Demo Web Application</title>
+        </h:head>
+
+        <h:body>
+            <h:messages/>
+            <h:panelGrid columns="2">
+                <h:outputText value="transaction hash:"/>
+                <h:outputText value="#{ethereumController.transactionHash}"/>
+
+                <h:outputText value="failed:"/>
+                <h:outputText value="#{ethereumController.transactionConfirmation.failed}"/>
+
+                <h:outputText value="pending:"/>
+                <h:outputText value="#{ethereumController.transactionConfirmation.pendingTransaction}"/>
+
+                <h:outputText value="to:"/>
+                <h:outputText value="#{ethereumController.transactionConfirmation.to}"/>
+
+                <h:outputText value="from:"/>
+                <h:outputText value="#{ethereumController.transactionConfirmation.from}"/>
+
+                <h:outputText value="gas used:"/>
+                <h:outputText value="#{ethereumController.transactionConfirmation.gasUsed}"/>
+
+                <h:outputText value="block number:"/>
+                <h:outputText value="#{ethereumController.transactionConfirmation.blockNumber}"/>
+
+                <h:outputText value="number of confirming blocks:"/>
+                <h:outputText value="#{ethereumController.transactionConfirmation.confirmingBlocks}"/>
+
+                <h:outputText value="timestamp:"/>
+                <h:outputText value="#{ethereumController.transactionConfirmation.timestamp}"/>
+            </h:panelGrid>
+            <h:form>
+                <h:commandButton value="Back" action="/index"/>
+            </h:form>
+        </h:body>
+    </f:view>
+
+</html>

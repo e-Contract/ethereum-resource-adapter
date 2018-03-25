@@ -29,11 +29,15 @@
 
                     <h:outputText value="Rollback transaction:"/>
                     <h:selectBooleanCheckbox value="#{ethereumController.rollback}"/>
+
+                    <h:outputText value="Transaction hash:"/>
+                    <h:inputText value="#{ethereumController.transactionHash}" size="70"/>
                 </h:panelGrid>
                 <h:inputTextarea value="#{ethereumController.rawTransaction}" cols="60" rows="5"/>
-                <h:panelGrid columns="2">
+                <h:panelGrid columns="3">
                     <h:commandButton value="Get Gas Price" action="/gas-price"/>
                     <h:commandButton value="Send Raw Transaction" action="#{ethereumController.sendRawTransaction}"/>
+                    <h:commandButton value="Get Transaction Confirmation" action="/transaction"/>
                 </h:panelGrid>
             </h:form>
         </h:body>

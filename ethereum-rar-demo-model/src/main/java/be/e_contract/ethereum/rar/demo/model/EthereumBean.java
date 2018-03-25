@@ -9,6 +9,7 @@ package be.e_contract.ethereum.rar.demo.model;
 import be.e_contract.ethereum.ra.api.EthereumConnection;
 import be.e_contract.ethereum.ra.api.EthereumConnectionFactory;
 import be.e_contract.ethereum.ra.api.EthereumConnectionSpec;
+import be.e_contract.ethereum.ra.api.TransactionConfirmation;
 import java.math.BigInteger;
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
@@ -58,5 +59,14 @@ public class EthereumBean {
             throw new RollbackException();
         }
         return transactionHash;
+    }
+
+    public TransactionConfirmation getTransactionConfirmation(String transactionHash) {
+        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+            return ethereumConnection.getTransactionConfirmation(transactionHash);
+        } catch (ResourceException ex) {
+            LOGGER.error("JCA error: " + ex.getMessage(), ex);
+            return null;
+        }
     }
 }

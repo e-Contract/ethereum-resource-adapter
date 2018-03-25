@@ -7,6 +7,7 @@
 package be.e_contract.ethereum.ra;
 
 import be.e_contract.ethereum.ra.api.EthereumConnection;
+import be.e_contract.ethereum.ra.api.TransactionConfirmation;
 import java.math.BigInteger;
 import javax.resource.ResourceException;
 import javax.resource.cci.ConnectionMetaData;
@@ -90,5 +91,15 @@ public class EthereumConnectionImpl implements EthereumConnection {
     @Override
     public String sendRawTransaction(String rawTransaction) throws ResourceException {
         return this.ethereumManagedConnection.sendRawTransaction(rawTransaction);
+    }
+
+    @Override
+    public TransactionConfirmation getTransactionConfirmation(String transactionHash) throws ResourceException {
+        try {
+            return this.ethereumManagedConnection.getTransactionConfirmation(transactionHash);
+        } catch (Exception ex) {
+            LOGGER.error("error: " + ex.getMessage(), ex);
+            throw new ResourceException(ex);
+        }
     }
 }

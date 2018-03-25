@@ -36,4 +36,13 @@ public interface EthereumConnection extends Connection, AutoCloseable {
      * @throws ResourceException
      */
     String sendRawTransaction(String rawTransaction) throws ResourceException;
+
+    /**
+     * Gives back the status of a transaction.
+     *
+     * @param transactionHash
+     * @return
+     * @throws ResourceException
+     */
+    TransactionConfirmation getTransactionConfirmation(String transactionHash) throws ResourceException;
 }

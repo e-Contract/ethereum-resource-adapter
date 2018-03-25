@@ -7,10 +7,13 @@
 package be.e_contract.ethereum.ra;
 
 import be.e_contract.ethereum.ra.api.EthereumConnection;
+import be.e_contract.ethereum.ra.api.TransactionConfirmation;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigInteger;
+import java.util.Date;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import javax.resource.ResourceException;
 import javax.resource.spi.ConnectionEvent;
@@ -24,6 +27,12 @@ import javax.transaction.xa.XAResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.DefaultBlockParameter;
+import org.web3j.protocol.core.DefaultBlockParameterName;
+import org.web3j.protocol.core.methods.response.EthBlock;
+import org.web3j.protocol.core.methods.response.EthGetTransactionReceipt;
+import org.web3j.protocol.core.methods.response.Transaction;
+import org.web3j.protocol.core.methods.response.TransactionReceipt;
 
 /**
  *
@@ -263,5 +272,54 @@ public class EthereumManagedConnection implements ManagedConnection {
         }
         web3j.ethSendRawTransaction(rawTransaction);
         return null;
+    }
+
+    public TransactionConfirmation getTransactionConfirmation(String transactionHash) throws Exception {
+        Web3j web3j = getWeb3j();
+
+        TransactionConfirmation transactionConfirmation = new TransactionConfirmation(transactionHash);
+
+        EthGetTransactionReceipt getTransactionReceipt = web3j.ethGetTransactionReceipt(transactionHash).send();
+        Optional<TransactionReceipt> transactionReceiptOptional = getTransactionReceipt.getTransactionReceipt();
+        if (!transactionReceiptOptional.isPresent()) {
+            LOGGER.debug("transaction receipt not available");
+            EthBlock pendingEthBlock = web3j.ethGetBlockByNumber(DefaultBlockParameterName.PENDING, true).send();
+            EthBlock.Block pendingBlock = pendingEthBlock.getBlock();
+            boolean pendingTransaction = false;
+            for (EthBlock.TransactionResult transactionResult : pendingBlock.getTransactions()) {
+                EthBlock.TransactionObject transactionObject = (EthBlock.TransactionObject) transactionResult;
+                Transaction transaction = transactionObject.get();
+                if (transactionHash.equals(transaction.getHash())) {
+                    pendingTransaction = true;
+                    break;
+                }
+            }
+            transactionConfirmation.setPendingTransaction(pendingTransaction);
+            return transactionConfirmation;
+        }
+        TransactionReceipt transactionReceipt = transactionReceiptOptional.get();
+        if (!"0x1".equals(transactionReceipt.getStatus())) {
+            LOGGER.debug("Transaction has failed with status: " + transactionReceipt.getStatus());
+            transactionConfirmation.setFailed(true);
+            return transactionConfirmation;
+        }
+        String from = transactionReceipt.getFrom();
+        String to = transactionReceipt.getTo();
+        BigInteger transactionBlockNumber = transactionReceipt.getBlockNumber();
+        BigInteger gasUsed = transactionReceipt.getGasUsed();
+
+        EthBlock ethBlock = web3j.ethGetBlockByNumber(DefaultBlockParameter.valueOf(transactionBlockNumber), false).send();
+        EthBlock.Block block = ethBlock.getBlock();
+
+        BigInteger timestamp = block.getTimestamp();
+        Date timestampDate = new Date(timestamp.multiply(BigInteger.valueOf(1000)).longValue());
+
+        BigInteger latestBlockNumber = web3j.ethBlockNumber().send().getBlockNumber();
+        // add one, since the transaction block also serves as confirmation
+        BigInteger blocksOnTop = latestBlockNumber.subtract(transactionBlockNumber).add(BigInteger.ONE);
+
+        transactionConfirmation.setInfo(from, to, transactionBlockNumber, gasUsed, blocksOnTop.longValueExact(), timestampDate);
+
+        return transactionConfirmation;
     }
 }
