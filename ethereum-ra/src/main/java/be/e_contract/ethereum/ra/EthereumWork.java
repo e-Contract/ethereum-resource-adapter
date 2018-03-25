@@ -67,6 +67,7 @@ public class EthereumWork implements Work {
             deliverPending = false;
         }
         if (deliverPending) {
+            // TODO: manually use the filters here, to be able to detect a down node.
             this.web3j.pendingTransactionObservable().subscribe(tx -> {
                 try {
                     this.ethereumMessageListener.pendingTransaction(tx);
