@@ -51,7 +51,7 @@ public class DefaultGasPriceOracle implements GasPriceOracle {
     private Map<BigInteger, Timing> gasPrices;
 
     @PostConstruct
-    public void postConstruct() throws Exception {
+    public void postConstruct() {
         LOGGER.debug("postConstruct");
         this.pendingTransactions = new ConcurrentHashMap<>();
         this.gasPrices = new HashMap<>();

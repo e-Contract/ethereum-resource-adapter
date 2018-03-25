@@ -35,6 +35,8 @@ public class EthereumActivationSpec implements ActivationSpec {
     @ConfigProperty(type = Boolean.class)
     private Boolean deliverBlock;
 
+    private EthereumWork ethereumWork;
+
     public EthereumActivationSpec() {
         LOGGER.debug("constructor");
     }
@@ -86,5 +88,13 @@ public class EthereumActivationSpec implements ActivationSpec {
     public void setResourceAdapter(ResourceAdapter ra) throws ResourceException {
         LOGGER.debug("setResourceAdapter");
         this.resourceAdapter = ra;
+    }
+
+    public EthereumWork getEthereumWork() {
+        return this.ethereumWork;
+    }
+
+    public void setEthereumWork(EthereumWork ethereumWork) {
+        this.ethereumWork = ethereumWork;
     }
 }

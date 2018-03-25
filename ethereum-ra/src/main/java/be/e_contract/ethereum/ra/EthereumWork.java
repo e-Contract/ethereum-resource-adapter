@@ -10,10 +10,6 @@ import be.e_contract.ethereum.ra.api.EthereumMessageListener;
 import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.logging.Level;
-import javax.resource.spi.UnavailableException;
-import javax.resource.spi.endpoint.MessageEndpoint;
-import javax.resource.spi.endpoint.MessageEndpointFactory;
 import javax.resource.spi.work.Work;
 import javax.resource.spi.work.WorkManager;
 import org.slf4j.Logger;
@@ -29,12 +25,12 @@ public class EthereumWork implements Work {
 
     private final WorkManager workManager;
 
-    private final MessageEndpointFactory endpointFactory;
+    private final EthereumMessageListener ethereumMessageListener;
 
     private Web3j web3j;
 
-    public EthereumWork(MessageEndpointFactory endpointFactory, EthereumActivationSpec ethereumActivationSpec, WorkManager workManager) {
-        this.endpointFactory = endpointFactory;
+    public EthereumWork(EthereumMessageListener ethereumMessageListener, EthereumActivationSpec ethereumActivationSpec, WorkManager workManager) {
+        this.ethereumMessageListener = ethereumMessageListener;
         this.ethereumActivationSpec = ethereumActivationSpec;
         this.workManager = workManager;
     }
@@ -72,16 +68,8 @@ public class EthereumWork implements Work {
         }
         if (deliverPending) {
             this.web3j.pendingTransactionObservable().subscribe(tx -> {
-                MessageEndpoint messageEndpoint;
                 try {
-                    messageEndpoint = this.endpointFactory.createEndpoint(null);
-                } catch (UnavailableException ex) {
-                    LOGGER.error("unavailable error: " + ex.getMessage(), ex);
-                    return;
-                }
-                EthereumMessageListener ethereumMessageListener = (EthereumMessageListener) messageEndpoint;
-                try {
-                    ethereumMessageListener.pendingTransaction(tx);
+                    this.ethereumMessageListener.pendingTransaction(tx);
                 } catch (Exception e) {
                     LOGGER.error("MDB exception: " + e.getMessage(), e);
                 }
@@ -102,16 +90,8 @@ public class EthereumWork implements Work {
             LOGGER.debug("full block: {}", fullBlock);
             this.web3j.blockObservable(fullBlock).subscribe(ethBlock -> {
                 EthBlock.Block block = ethBlock.getBlock();
-                MessageEndpoint messageEndpoint;
                 try {
-                    messageEndpoint = this.endpointFactory.createEndpoint(null);
-                } catch (UnavailableException ex) {
-                    LOGGER.error("unavailable error: " + ex.getMessage(), ex);
-                    return;
-                }
-                EthereumMessageListener ethereumMessageListener = (EthereumMessageListener) messageEndpoint;
-                try {
-                    ethereumMessageListener.block(block);
+                    this.ethereumMessageListener.block(block);
                 } catch (Exception e) {
                     LOGGER.error("MDB exception: " + e.getMessage(), e);
                 }

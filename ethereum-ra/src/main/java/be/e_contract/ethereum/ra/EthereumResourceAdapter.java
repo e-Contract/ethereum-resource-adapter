@@ -6,6 +6,7 @@
  */
 package be.e_contract.ethereum.ra;
 
+import be.e_contract.ethereum.ra.api.EthereumMessageListener;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
@@ -79,14 +80,19 @@ public class EthereumResourceAdapter implements ResourceAdapter, Serializable, R
         EthereumActivationSpec ethereumActivationSpec = (EthereumActivationSpec) spec;
         LOGGER.debug("node location: {}", ethereumActivationSpec.getNodeLocation());
         WorkManager workManager = this.bootstrapContext.getWorkManager();
-        EthereumWork ethereumWork = new EthereumWork(endpointFactory, ethereumActivationSpec, workManager);
+        EthereumMessageListener ethereumMessageListener = (EthereumMessageListener) endpointFactory.createEndpoint(null);
+        EthereumWork ethereumWork = new EthereumWork(ethereumMessageListener, ethereumActivationSpec, workManager);
         this.ethereumWorkList.add(ethereumWork);
+        ethereumActivationSpec.setEthereumWork(ethereumWork);
         workManager.scheduleWork(ethereumWork);
     }
 
     @Override
     public void endpointDeactivation(MessageEndpointFactory endpointFactory, ActivationSpec spec) {
         LOGGER.debug("endpointDeactivation");
+        EthereumActivationSpec ethereumActivationSpec = (EthereumActivationSpec) spec;
+        EthereumWork ethereumWork = ethereumActivationSpec.getEthereumWork();
+        ethereumWork.shutdown();
     }
 
     @Override
