@@ -74,7 +74,6 @@ public class EthereumActivationSpec implements ActivationSpec {
     @Override
     public void validate() throws InvalidPropertyException {
         LOGGER.debug("validate");
-        throw new UnsupportedOperationException();
     }
 
     @Override

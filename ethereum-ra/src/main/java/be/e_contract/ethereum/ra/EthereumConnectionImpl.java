@@ -9,6 +9,7 @@ package be.e_contract.ethereum.ra;
 import be.e_contract.ethereum.ra.api.EthereumConnection;
 import be.e_contract.ethereum.ra.api.TransactionConfirmation;
 import java.math.BigInteger;
+import javax.resource.NotSupportedException;
 import javax.resource.ResourceException;
 import javax.resource.cci.ConnectionMetaData;
 import javax.resource.cci.Interaction;
@@ -41,13 +42,14 @@ public class EthereumConnectionImpl implements EthereumConnection {
     @Override
     public Interaction createInteraction() throws ResourceException {
         LOGGER.debug("createInteraction");
-        throw new UnsupportedOperationException();
+        throw new NotSupportedException();
     }
 
     @Override
     public LocalTransaction getLocalTransaction() throws ResourceException {
         LOGGER.debug("getLocalTransaction");
-        throw new UnsupportedOperationException();
+        // TODO
+        throw new NotSupportedException();
     }
 
     @Override
@@ -63,7 +65,7 @@ public class EthereumConnectionImpl implements EthereumConnection {
     @Override
     public ResultSetInfo getResultSetInfo() throws ResourceException {
         LOGGER.debug("getResultSetInfo");
-        throw new UnsupportedOperationException();
+        throw new NotSupportedException();
     }
 
     @Override

@@ -17,54 +17,54 @@ public class EthereumResourceAdapterMetaData implements ResourceAdapterMetaData 
     @Override
     public String getAdapterVersion() {
         LOGGER.debug("getAdapterVersion");
-        throw new UnsupportedOperationException();
+        return Version.getImplementationVersion();
     }
 
     @Override
     public String getAdapterVendorName() {
         LOGGER.debug("getAdapterVendorName");
-        throw new UnsupportedOperationException();
+        return "e-Contract.be BVBA";
     }
 
     @Override
     public String getAdapterName() {
         LOGGER.debug("getAdapterName");
-        throw new UnsupportedOperationException();
+        return "Ethereum JCA Connector";
     }
 
     @Override
     public String getAdapterShortDescription() {
         LOGGER.debug("getAdapterShortDescription");
-        throw new UnsupportedOperationException();
+        return "Ethereum JCA Connector";
     }
 
     @Override
     public String getSpecVersion() {
         LOGGER.debug("getSpecVersion");
-        throw new UnsupportedOperationException();
+        return "1.6";
     }
 
     @Override
     public String[] getInteractionSpecsSupported() {
         LOGGER.debug("getInteractionSpecsSupported");
-        throw new UnsupportedOperationException();
+        return new String[0];
     }
 
     @Override
     public boolean supportsExecuteWithInputAndOutputRecord() {
         LOGGER.debug("supportsExecuteWithInputAndOutputRecord");
-        throw new UnsupportedOperationException();
+        return false;
     }
 
     @Override
     public boolean supportsExecuteWithInputRecordOnly() {
         LOGGER.debug("supportsExecuteWithInputRecordOnly");
-        throw new UnsupportedOperationException();
+        return false;
     }
 
     @Override
     public boolean supportsLocalTransactionDemarcation() {
         LOGGER.debug("supportsLocalTransactionDemarcation");
-        throw new UnsupportedOperationException();
+        return true;
     }
 }

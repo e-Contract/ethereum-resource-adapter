@@ -11,6 +11,7 @@ import be.e_contract.ethereum.ra.api.EthereumConnectionFactory;
 import be.e_contract.ethereum.ra.api.EthereumConnection;
 import javax.naming.NamingException;
 import javax.naming.Reference;
+import javax.resource.NotSupportedException;
 import javax.resource.ResourceException;
 import javax.resource.cci.ConnectionSpec;
 import javax.resource.cci.RecordFactory;
@@ -72,7 +73,7 @@ public class EthereumConnectionFactoryImpl implements EthereumConnectionFactory 
 
     @Override
     public RecordFactory getRecordFactory() throws ResourceException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new NotSupportedException();
     }
 
     @Override
