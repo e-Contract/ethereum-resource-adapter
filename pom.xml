@@ -97,6 +97,11 @@
                     <artifactId>maven-ejb-plugin</artifactId>
                     <version>3.0.0</version>
                 </plugin>
+                <plugin>
+                    <groupId>org.jboss.ironjacamar</groupId>
+                    <artifactId>ironjacamar-validator-maven</artifactId>
+                    <version>1.4.8.Final</version>
+                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>

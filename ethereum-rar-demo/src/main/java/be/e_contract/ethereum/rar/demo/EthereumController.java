@@ -6,7 +6,7 @@
  */
 package be.e_contract.ethereum.rar.demo;
 
-import be.e_contract.ethereum.ra.oracle.GasPriceOracleTypeBean;
+import be.e_contract.ethereum.ra.oracle.GasPriceOracleBean;
 import be.e_contract.ethereum.rar.demo.model.EthereumBean;
 import be.e_contract.ethereum.rar.demo.model.RollbackException;
 import java.io.Serializable;
@@ -32,11 +32,13 @@ public class EthereumController implements Serializable {
     private EthereumBean ethereumBean;
 
     @EJB
-    private GasPriceOracleTypeBean gasPriceOracleTypeBean;
+    private GasPriceOracleBean gasPriceOracleBean;
 
     private String nodeLocation;
 
     private boolean rollback;
+
+    private Integer maxDuration;
 
     public String getNodeLocation() {
         return this.nodeLocation;
@@ -54,6 +56,14 @@ public class EthereumController implements Serializable {
         this.rollback = rollback;
     }
 
+    public Integer getMaxDuration() {
+        return this.maxDuration;
+    }
+
+    public void setMaxDuration(Integer maxDuration) {
+        this.maxDuration = maxDuration;
+    }
+
     public BigInteger getGasPrice() {
         LOGGER.debug("node location: {}", this.nodeLocation);
         FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -66,7 +76,7 @@ public class EthereumController implements Serializable {
     }
 
     public List<GasPrice> getGasPrices() {
-        Map<String, BigInteger> gasPrices = this.gasPriceOracleTypeBean.getGasPrices(null);
+        Map<String, BigInteger> gasPrices = this.gasPriceOracleBean.getGasPrices(this.maxDuration);
         List<GasPrice> result = new LinkedList<>();
         for (Map.Entry<String, BigInteger> gasPriceEntry : gasPrices.entrySet()) {
             GasPrice gasPrice = new GasPrice(gasPriceEntry.getKey(), gasPriceEntry.getValue());

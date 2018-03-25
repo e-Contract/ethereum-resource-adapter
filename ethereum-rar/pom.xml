@@ -13,6 +13,33 @@
     <artifactId>ethereum-rar</artifactId>
     <packaging>rar</packaging>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.jboss.ironjacamar</groupId>
+                <artifactId>ironjacamar-validator-maven</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>validate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <rarFile>${basedir}/target/ethereum-rar-${project.version}.rar</rarFile>
+                    <outputDir>${basedir}/target</outputDir>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>javax.validation</groupId>
+                        <artifactId>validation-api</artifactId>
+                        <version>1.0.0.GA</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+    </build>
+
     <dependencies>
         <dependency>
             <groupId>be.e-contract.ethereum-resource-adapter</groupId>

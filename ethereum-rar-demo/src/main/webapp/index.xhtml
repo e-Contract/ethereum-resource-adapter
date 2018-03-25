@@ -21,6 +21,9 @@
                     <h:outputText value="Node location:"/>
                     <h:inputText value="#{ethereumController.nodeLocation}" size="60"/>
 
+                    <h:outputText value="Maximum transaction duration:"/>
+                    <h:inputText value="#{ethereumController.maxDuration}" size="60"/>
+
                     <h:outputText value="Rollback transaction:"/>
                     <h:selectBooleanCheckbox value="#{ethereumController.rollback}"/>
                 </h:panelGrid>

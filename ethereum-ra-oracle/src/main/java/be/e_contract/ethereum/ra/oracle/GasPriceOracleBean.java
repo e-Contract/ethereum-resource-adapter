@@ -18,9 +18,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Stateless
-public class GasPriceOracleTypeBean {
+public class GasPriceOracleBean {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GasPriceOracleTypeBean.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GasPriceOracleBean.class);
 
     @Inject
     @Any
@@ -31,7 +31,12 @@ public class GasPriceOracleTypeBean {
         Iterator<GasPriceOracle> gasPriceOracleIterator = this.gasPriceOracleTypes.iterator();
         while (gasPriceOracleIterator.hasNext()) {
             GasPriceOracle gasTypeOracle = gasPriceOracleIterator.next();
-            GasPriceOracleType gasPriceOracleTypeAnnotation = gasTypeOracle.getClass().getAnnotation(GasPriceOracleType.class);
+            LOGGER.debug("gas type oracle: {}", gasTypeOracle.getClass().getName());
+            GasPriceOracleType gasPriceOracleTypeAnnotation = findGasPriceOracleTypeAnnotation(gasTypeOracle.getClass());
+            if (null == gasPriceOracleTypeAnnotation) {
+                // seems like this can happen
+                continue;
+            }
             String gasPriceOracleType = gasPriceOracleTypeAnnotation.value();
             result.put(gasPriceOracleType, gasTypeOracle);
         }
@@ -46,5 +51,23 @@ public class GasPriceOracleTypeBean {
             gasPrices.put(gasPriceOracleEntry.getKey(), gasPrice);
         }
         return gasPrices;
+    }
+
+    /**
+     * Work-around for Weld Proxy stuff on @ApplicationScoped CDI beans
+     *
+     * @param clazz
+     * @return
+     */
+    private GasPriceOracleType findGasPriceOracleTypeAnnotation(Class<?> clazz) {
+        GasPriceOracleType gasPriceOracleTypeAnnotation = clazz.getAnnotation(GasPriceOracleType.class);
+        while (null == gasPriceOracleTypeAnnotation) {
+            if (clazz.equals(Object.class)) {
+                return null;
+            }
+            clazz = clazz.getSuperclass();
+            gasPriceOracleTypeAnnotation = clazz.getAnnotation(GasPriceOracleType.class);
+        }
+        return gasPriceOracleTypeAnnotation;
     }
 }

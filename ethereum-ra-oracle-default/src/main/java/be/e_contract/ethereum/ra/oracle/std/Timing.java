@@ -4,7 +4,7 @@
  * Copyright 2018 e-Contract.be BVBA. All rights reserved.
  * e-Contract.be BVBA proprietary/confidential. Use is subject to license terms.
  */
-package be.e_contract.ethereum.rar.demo.model;
+package be.e_contract.ethereum.ra.oracle.std;
 
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
@@ -33,6 +33,11 @@ public class Timing {
         this.count++;
     }
 
+    /**
+     * Gives back the average time in seconds.
+     *
+     * @return
+     */
     public long getAverageTime() {
         return this.totalTime.dividedBy(this.count).getStandardSeconds();
     }
