@@ -3,6 +3,15 @@ Ethereum Java EE JCA Resource Adapter
 
 This project delivers a standard Java EE JCA Resource Adapter to connect to Ethereum networks.
 
+Tested Java EE application servers:
+
+* JBoss EAP 6.4.19
+* JBoss WildFly 12
+
+We should be able to support every Java EE 6+ application server.
+
+We target the Java EE JCA version 1.6 specification.
+
 If you like this project, please consider a donation at:
 ```
 0x0c56073db91c2ba57ff362301eb32262bbee6147
@@ -81,3 +90,94 @@ BigInteger gasPrice = this.gasPriceOracleBean.getGasPrice(oracle, maxDurationInS
 ```
 
 Depending on your max duration, this gas price oracle gives you a gas price that is on average 30-50% lower than the gas price set by the client node.
+
+
+# Usage
+
+This section provides usage information per Java EE application server.
+
+## JBoss EAP/WildFly
+
+Within your EAR, you need to include the RAR.
+
+If you use Maven, refer to the e-contract.be Maven repository via:
+```
+<repository>
+    <id>e-contract</id>
+    <url>https://www.e-contract.be/maven2/</url>
+    <releases>
+        <enabled>true</enabled>
+    </releases>
+</repository>
+```
+
+Include within your Java EE application EAR the resource adapter RAR via:
+```
+<dependency>
+    <groupId>be.e-contract.ethereum-resource-adapter</groupId>
+    <artifactId>ethereum-rar</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <type>rar</type>
+</dependency>
+```
+
+and as `maven-ear-plugin` configuration under `modules` you put:
+```
+<rarModule>
+    <groupId>be.e-contract.ethereum-resource-adapter</groupId>
+    <artifactId>ethereum-rar</artifactId>
+    <bundleFileName>ethereum-ra.rar</bundleFileName>
+</rarModule>
+```
+
+The `EthereumConnectionFactory` will be available within JNDI under:
+```
+java:/EthereumConnectionFactory
+```
+
+For usage of the `EthereumMessageListener` you need to refer to the resource adapter explicitly. Do this by adding the following to your `META-INF/jboss-ejb3.xml`:
+```
+<assembly-descriptor>
+    <mdb:resource-adapter-binding>
+        <ejb-name>YourEthereumMDB</ejb-name>
+        <mdb:resource-adapter-name>your-ear-file.ear#ethereum-ra.rar</mdb:resource-adapter-name>
+    </mdb:resource-adapter-binding>
+</assembly-descriptor>
+```
+
+For usage of the gas price oracle, you need to include the corresponding EJB within the EAR via:
+```
+<dependency>
+    <groupId>be.e-contract.ethereum-resource-adapter</groupId>
+    <artifactId>ethereum-ra-oracle</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <type>ejb</type>
+</dependency>
+```
+
+and as `maven-ear-plugin` configuration under `modules` you put:
+```
+<ejbModule>
+    <groupId>be.e-contract.ethereum-resource-adapter</groupId>
+    <artifactId>ethereum-ra-oracle</artifactId>
+</ejbModule>
+```
+
+And per gas price oracle implemention, you include the corresponding CDI JAR within the EAR. For the default oracle you include:
+```
+<dependency>
+    <groupId>be.e-contract.ethereum-resource-adapter</groupId>
+    <artifactId>ethereum-ra-oracle-default</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+</dependency>
+```
+
+# Development
+
+Build the project via Maven:
+```
+mvn clean install
+```
+
+We use Netbeans as IDE.
+If you send pull requests, please keep the code clean to ease the review process.
