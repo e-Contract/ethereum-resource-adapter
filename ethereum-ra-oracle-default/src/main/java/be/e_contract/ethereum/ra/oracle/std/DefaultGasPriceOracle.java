@@ -106,6 +106,7 @@ public class DefaultGasPriceOracle implements GasPriceOracle {
             return;
         }
         this.pendingTransactions.put(transaction.getHash(), new PendingTransaction(timestamp, transaction.getGasPrice()));
+        // TODO: also provide a moving window cleanup here
     }
 
     private void observeLatestBlock(@Observes LatestBlockEvent latestBlockEvent) {

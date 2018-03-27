@@ -15,9 +15,7 @@ import javax.ejb.TransactionAttributeType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@MessageDriven(messageListenerInterface = EthereumMessageListener.class, activationConfig = {
-    @ActivationConfigProperty(propertyName = "nodeLocation", propertyValue = "http://localhost:8545"),
-    @ActivationConfigProperty(propertyName = "fullBlock", propertyValue = "true"),
+@MessageDriven(activationConfig = {
     @ActivationConfigProperty(propertyName = "deliverPending", propertyValue = "true"),
     @ActivationConfigProperty(propertyName = "deliverBlock", propertyValue = "true")
 })

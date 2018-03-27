@@ -66,13 +66,7 @@ public class EthereumManagedConnection implements ManagedConnection {
         if (this.web3 != null) {
             return this.web3;
         }
-        String location;
-        if (null == this.ethereumConnectionRequestInfo) {
-            // TODO: get this from the resource adapter config
-            location = "http://localhost:8545";
-        } else {
-            location = this.ethereumConnectionRequestInfo.getNodeLocation();
-        }
+        String location = this.ethereumConnectionRequestInfo.getNodeLocation();
         this.web3 = Web3jFactory.createWeb3j(location);
         return this.web3;
     }
