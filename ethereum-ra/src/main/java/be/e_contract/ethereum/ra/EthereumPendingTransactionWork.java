@@ -50,10 +50,9 @@ public class EthereumPendingTransactionWork implements Work {
         while (!this.shutdown) {
             List<EthLog.LogResult> logResultList = web3j.ethGetFilterChanges(filterId).send().getResult();
             Date timestamp = new Date();
-            LOGGER.debug("filter result: {}", logResultList.size());
             if (logResultList.isEmpty()) {
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep(50);
                 } catch (InterruptedException e) {
                     if (!this.shutdown) {
                         LOGGER.error("sleep error: " + e.getMessage(), e);

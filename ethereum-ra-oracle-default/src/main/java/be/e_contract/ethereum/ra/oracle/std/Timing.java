@@ -6,6 +6,7 @@
  */
 package be.e_contract.ethereum.ra.oracle.std;
 
+import java.util.PriorityQueue;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.Interval;
@@ -15,22 +16,36 @@ public class Timing {
     private Duration totalTime;
     private int count;
 
-    public Timing(DateTime created) {
-        DateTime now = new DateTime();
-        Interval interval = new Interval(created, now);
-        Duration duration = interval.toDuration();
-        this.totalTime = duration;
-        this.count++;
+    private final PriorityQueue<TimingEntry> timingEntries;
+
+    public Timing() {
+        this.totalTime = new Duration(0);
+        this.count = 0;
+        this.timingEntries = new PriorityQueue<>();
     }
 
-    public synchronized void addTiming(DateTime created, DateTime blockTimestamp) {
-        // seems like blockTimestamp can be before created in the beginning...
-        // so we still have to use now here
-        DateTime now = new DateTime();
-        Interval interval = new Interval(created, now);
+    public synchronized void addTiming(DateTime transactionReceived, DateTime blockReceived) {
+        Interval interval = new Interval(transactionReceived, blockReceived);
         Duration duration = interval.toDuration();
         this.totalTime = this.totalTime.plus(duration);
         this.count++;
+        this.timingEntries.add(new TimingEntry(blockReceived, duration));
+    }
+
+    public synchronized boolean cleanMovingWindow(DateTime now) {
+        TimingEntry timingEntry = this.timingEntries.peek();
+        while (null != timingEntry) {
+            DateTime created = timingEntry.getCreated();
+            if (created.plusMinutes(5).isAfter(now)) {
+                break;
+            }
+            // remove old entry
+            timingEntry = this.timingEntries.poll();
+            this.count--;
+            this.totalTime = this.totalTime.minus(timingEntry.getDuration());
+            timingEntry = this.timingEntries.peek();
+        }
+        return this.count == 0;
     }
 
     /**
@@ -39,6 +54,9 @@ public class Timing {
      * @return
      */
     public long getAverageTime() {
+        if (this.count == 0) {
+            return Long.MAX_VALUE;
+        }
         return this.totalTime.dividedBy(this.count).getStandardSeconds();
     }
 

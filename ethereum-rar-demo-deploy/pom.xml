@@ -95,13 +95,11 @@
             <artifactId>ethereum-ra-oracle-node</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
-        <!--
         <dependency>
             <groupId>be.e-contract.ethereum-resource-adapter</groupId>
             <artifactId>ethereum-ra-oracle-default</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
-        -->
         <dependency>
             <groupId>be.e-contract.ethereum-resource-adapter</groupId>
             <artifactId>ethereum-ra-api</artifactId>

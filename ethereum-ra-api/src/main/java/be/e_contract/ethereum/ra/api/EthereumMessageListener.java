@@ -13,4 +13,6 @@ public interface EthereumMessageListener {
     void block(String blockHash, Date timestamp) throws Exception;
 
     void pendingTransaction(String transactionHash, Date timestamp) throws Exception;
+
+    void connectionStatus(boolean connected) throws Exception;
 }

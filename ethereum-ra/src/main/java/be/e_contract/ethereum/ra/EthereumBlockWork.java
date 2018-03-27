@@ -52,7 +52,7 @@ public class EthereumBlockWork implements Work {
             Date timestamp = new Date();
             if (logResultList.isEmpty()) {
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep(50);
                 } catch (InterruptedException e) {
                     if (!this.shutdown) {
                         LOGGER.error("sleep error: " + e.getMessage(), e);
@@ -63,7 +63,6 @@ public class EthereumBlockWork implements Work {
                 if (logResult instanceof EthLog.Hash) {
                     EthLog.Hash hash = (EthLog.Hash) logResult;
                     String blockHash = hash.get();
-                    LOGGER.debug("block hash: {}", blockHash);
                     List<EthereumActivationSpec> ethereumActivationSpecs = this.ethereumWork.getEthereumActivationSpecs();
                     for (EthereumActivationSpec ethereumActivationSpec : ethereumActivationSpecs) {
                         Boolean deliverBlock = ethereumActivationSpec.getDeliverBlock();

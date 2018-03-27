@@ -31,6 +31,9 @@ public class GasPriceOracleMDB implements EthereumMessageListener {
     @Inject
     private Event<LatestBlockEvent> latestBlockEvent;
 
+    @Inject
+    private Event<ConnectionStatusEvent> connectionStatusEvent;
+
     public GasPriceOracleMDB() {
         LOGGER.debug("constructor");
     }
@@ -45,5 +48,11 @@ public class GasPriceOracleMDB implements EthereumMessageListener {
     public void block(String blockHash, Date timestamp) throws Exception {
         LatestBlockEvent latestBlockEvent = new LatestBlockEvent(blockHash, timestamp);
         this.latestBlockEvent.fire(latestBlockEvent);
+    }
+
+    @Override
+    public void connectionStatus(boolean connected) throws Exception {
+        ConnectionStatusEvent connectionStatusEvent = new ConnectionStatusEvent(connected);
+        this.connectionStatusEvent.fire(connectionStatusEvent);
     }
 }

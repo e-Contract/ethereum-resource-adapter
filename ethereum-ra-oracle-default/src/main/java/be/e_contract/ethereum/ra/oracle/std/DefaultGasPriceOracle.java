@@ -8,6 +8,7 @@ package be.e_contract.ethereum.ra.oracle.std;
 
 import be.e_contract.ethereum.ra.api.EthereumConnection;
 import be.e_contract.ethereum.ra.api.EthereumConnectionFactory;
+import be.e_contract.ethereum.ra.oracle.ConnectionStatusEvent;
 import be.e_contract.ethereum.ra.oracle.GasPriceOracle;
 import be.e_contract.ethereum.ra.oracle.GasPriceOracleType;
 import be.e_contract.ethereum.ra.oracle.LatestBlockEvent;
@@ -15,7 +16,6 @@ import be.e_contract.ethereum.ra.oracle.PendingTransactionEvent;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -94,6 +94,7 @@ public class DefaultGasPriceOracle implements GasPriceOracle {
 
     private void observePendingTransaction(@Observes PendingTransactionEvent pendingTransactionEvent) {
         String transactionHash = pendingTransactionEvent.getTransactionHash();
+        DateTime timestamp = new DateTime(pendingTransactionEvent.getTimestamp());
         Transaction transaction;
         try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
             transaction = ethereumConnection.findTransaction(transactionHash);
@@ -104,7 +105,7 @@ public class DefaultGasPriceOracle implements GasPriceOracle {
         if (null == transaction) {
             return;
         }
-        this.pendingTransactions.put(transaction.getHash(), new PendingTransaction(transaction.getGasPrice()));
+        this.pendingTransactions.put(transaction.getHash(), new PendingTransaction(timestamp, transaction.getGasPrice()));
     }
 
     private void observeLatestBlock(@Observes LatestBlockEvent latestBlockEvent) {
@@ -134,25 +135,38 @@ public class DefaultGasPriceOracle implements GasPriceOracle {
             }
             updated = true;
             BigInteger gasPrice = pendingTransaction.getGasPrice();
-            Timing timing = this.gasPrices.get(gasPrice);
-            if (null == timing) {
-                timing = new Timing(pendingTransaction.getCreated());
-                this.gasPrices.put(gasPrice, timing);
-            } else {
-                // we should not be using "now" here, but the block timestamp
-                BigInteger timestamp = block.getTimestamp();
-                Date timestampDate = new Date(timestamp.multiply(BigInteger.valueOf(1000)).longValue());
-                DateTime timestampDateTime = new DateTime(timestampDate);
-                timing.addTiming(pendingTransaction.getCreated(), timestampDateTime);
+            Timing timing;
+            synchronized (this.gasPrices) {
+                timing = this.gasPrices.get(gasPrice);
+                if (null == timing) {
+                    timing = new Timing();
+                    this.gasPrices.put(gasPrice, timing);
+                }
             }
+            // we cannot use the block timestamp here, as it can happen before transaction received.
+            // we use the time on which we actually received the block
+            DateTime blockReceived = new DateTime(latestBlockEvent.getTimestamp());
+            timing.addTiming(pendingTransaction.getCreated(), blockReceived);
         }
 
-        // TODO: we should cleanup old timings here... moving window
+        synchronized (this.gasPrices) {
+            DateTime now = new DateTime();
+            for (Timing timing : this.gasPrices.values()) {
+                timing.cleanMovingWindow(now);
+                // we could also remove the gas price entry here completely...
+            }
+            int totalCount = 0;
+            for (Timing timing : this.gasPrices.values()) {
+                totalCount += timing.getCount();
+            }
+            LOGGER.debug("total transactions in moving window: {}", totalCount);
+        }
+
         if (!updated) {
             // only redo the table on changes
             return;
         }
-
+        // next is just for debugging
         int count = 40;
         List<Map.Entry<BigInteger, Timing>> gasPricesList = new ArrayList<>(this.gasPrices.entrySet());
         // sort on gas price
@@ -168,7 +182,16 @@ public class DefaultGasPriceOracle implements GasPriceOracle {
             }
 
             BigDecimal gasPriceGwei = Convert.fromWei(new BigDecimal(gasPriceEntry.getKey()), Convert.Unit.GWEI);
-            LOGGER.debug("gas price {} - average time {}", gasPriceGwei, gasPriceEntry.getValue().getAverageTime());
+            LOGGER.debug("gas price {} - average time {} - count {}", gasPriceGwei, gasPriceEntry.getValue().getAverageTime(),
+                    gasPriceEntry.getValue().getCount());
+        }
+    }
+
+    public void observeConnectionStatus(@Observes ConnectionStatusEvent event) {
+        LOGGER.debug("connected: {}", event.isConnected());
+        if (!event.isConnected()) {
+            // we cannot trust the timing anymore
+            this.pendingTransactions.clear();
         }
     }
 }

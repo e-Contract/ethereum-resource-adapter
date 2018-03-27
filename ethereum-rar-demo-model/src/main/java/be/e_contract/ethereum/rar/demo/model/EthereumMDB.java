@@ -39,4 +39,9 @@ public class EthereumMDB implements EthereumMessageListener {
     public void block(String blockHash, Date timestamp) throws Exception {
         LOGGER.debug("block hash: {}", blockHash);
     }
+
+    @Override
+    public void connectionStatus(boolean connected) throws Exception {
+        LOGGER.debug("connected: {}", connected);
+    }
 }

@@ -6,6 +6,8 @@
  */
 package be.e_contract.ethereum.ra;
 
+import be.e_contract.ethereum.ra.api.EthereumMessageListener;
+import java.util.logging.Level;
 import javax.resource.spi.work.Work;
 import javax.resource.spi.work.WorkEvent;
 import javax.resource.spi.work.WorkException;
@@ -21,6 +23,8 @@ public class EthereumWorkListener implements WorkListener {
     private final Work work;
 
     private final EthereumWork ethereumWork;
+
+    private boolean disconnected;
 
     public EthereumWorkListener(Work work, EthereumWork ethereumWork) {
         this.work = work;
@@ -40,6 +44,17 @@ public class EthereumWorkListener implements WorkListener {
     @Override
     public void workStarted(WorkEvent e) {
         LOGGER.debug("workStarted");
+        if (this.disconnected) {
+            this.disconnected = false;
+            for (EthereumActivationSpec ethereumActivationSpec : this.ethereumWork.getEthereumActivationSpecs()) {
+                try {
+                    EthereumMessageListener messageListener = ethereumActivationSpec.getEthereumMessageListener();
+                    messageListener.connectionStatus(!this.disconnected);
+                } catch (Exception ex) {
+                    LOGGER.error("messaging error: {}", ex.getMessage(), ex);
+                }
+            }
+        }
     }
 
     @Override
@@ -55,6 +70,15 @@ public class EthereumWorkListener implements WorkListener {
         }
         LOGGER.warn("disconnected from Ethereum node: {}", this.ethereumWork.getNodeLocation());
         // else we try to reconnect
+        this.disconnected = true;
+        for (EthereumActivationSpec ethereumActivationSpec : this.ethereumWork.getEthereumActivationSpecs()) {
+            try {
+                EthereumMessageListener messageListener = ethereumActivationSpec.getEthereumMessageListener();
+                messageListener.connectionStatus(!this.disconnected);
+            } catch (Exception ex) {
+                LOGGER.error("messaging error: {}", ex.getMessage(), ex);
+            }
+        }
         try {
             Thread.sleep(5000);
         } catch (InterruptedException e) {

@@ -6,24 +6,29 @@
  */
 package be.e_contract.ethereum.ra.oracle.std;
 
-import java.math.BigInteger;
 import org.joda.time.DateTime;
+import org.joda.time.Duration;
 
-public class PendingTransaction {
+public class TimingEntry implements Comparable<TimingEntry> {
 
-    private final BigInteger gasPrice;
     private final DateTime created;
+    private final Duration duration;
 
-    public PendingTransaction(DateTime created, BigInteger gasPrice) {
+    public TimingEntry(DateTime created, Duration duration) {
         this.created = created;
-        this.gasPrice = gasPrice;
-    }
-
-    public BigInteger getGasPrice() {
-        return this.gasPrice;
+        this.duration = duration;
     }
 
     public DateTime getCreated() {
         return this.created;
+    }
+
+    public Duration getDuration() {
+        return this.duration;
+    }
+
+    @Override
+    public int compareTo(TimingEntry t) {
+        return this.created.compareTo(t.getCreated());
     }
 }
