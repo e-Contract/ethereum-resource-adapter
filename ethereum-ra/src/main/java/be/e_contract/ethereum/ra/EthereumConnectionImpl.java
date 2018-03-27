@@ -1,8 +1,19 @@
 /*
  * Ethereum JCA Resource Adapter Project.
+ * Copyright (C) 2018 e-Contract.be BVBA.
  *
- * Copyright 2018 e-Contract.be BVBA. All rights reserved.
- * e-Contract.be BVBA proprietary/confidential. Use is subject to license terms.
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License version
+ * 3.0 as published by the Free Software Foundation.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, see 
+ * http://www.gnu.org/licenses/.
  */
 package be.e_contract.ethereum.ra;
 
@@ -22,31 +33,31 @@ import org.web3j.protocol.core.methods.response.EthBlock;
 import org.web3j.protocol.core.methods.response.Transaction;
 
 public class EthereumConnectionImpl implements EthereumConnection {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(EthereumConnectionImpl.class);
-    
+
     private EthereumManagedConnection ethereumManagedConnection;
-    
+
     private boolean valid;
-    
+
     public EthereumConnectionImpl(EthereumManagedConnection ethereumManagedConnection) {
         LOGGER.debug("constructor");
         this.ethereumManagedConnection = ethereumManagedConnection;
         this.valid = true;
     }
-    
+
     @Override
     public BigInteger getGasPrice() throws ResourceException {
         LOGGER.debug("getGasPrice");
         return this.ethereumManagedConnection.getGasPrice();
     }
-    
+
     @Override
     public Interaction createInteraction() throws ResourceException {
         LOGGER.debug("createInteraction");
         throw new NotSupportedException();
     }
-    
+
     @Override
     public LocalTransaction getLocalTransaction() throws ResourceException {
         LOGGER.debug("getLocalTransaction");
@@ -54,7 +65,7 @@ public class EthereumConnectionImpl implements EthereumConnection {
         LocalTransaction localTransaction = new EthereumCCILocalTransaction(ethereumLocalTransaction);
         return localTransaction;
     }
-    
+
     @Override
     public ConnectionMetaData getMetaData() throws ResourceException {
         LOGGER.debug("getMetaData");
@@ -64,40 +75,40 @@ public class EthereumConnectionImpl implements EthereumConnection {
             throw new ResourceException();
         }
     }
-    
+
     @Override
     public ResultSetInfo getResultSetInfo() throws ResourceException {
         LOGGER.debug("getResultSetInfo");
         throw new NotSupportedException();
     }
-    
+
     @Override
     public void close() throws ResourceException {
         LOGGER.debug("close");
         this.ethereumManagedConnection.fireConnectionEvent(this, ConnectionEvent.CONNECTION_CLOSED, null);
     }
-    
+
     void setManagedConnection(EthereumManagedConnection ethereumManagedConnection) {
         LOGGER.debug("setManagedConnection");
         this.ethereumManagedConnection = ethereumManagedConnection;
     }
-    
+
     public void invalidate() {
         LOGGER.debug("invalidate");
         this.valid = false;
         this.ethereumManagedConnection = null;
     }
-    
+
     @Override
     public BigInteger getBlockNumber() throws ResourceException {
         return this.ethereumManagedConnection.getBlockNumber();
     }
-    
+
     @Override
     public String sendRawTransaction(String rawTransaction) throws ResourceException {
         return this.ethereumManagedConnection.sendRawTransaction(rawTransaction);
     }
-    
+
     @Override
     public TransactionConfirmation getTransactionConfirmation(String transactionHash) throws ResourceException {
         try {
@@ -107,7 +118,7 @@ public class EthereumConnectionImpl implements EthereumConnection {
             throw new ResourceException(ex);
         }
     }
-    
+
     @Override
     public Transaction findTransaction(String transactionHash) throws ResourceException {
         try {
@@ -117,11 +128,21 @@ public class EthereumConnectionImpl implements EthereumConnection {
             return null;
         }
     }
-    
+
     @Override
     public EthBlock.Block getBlock(String blockHash, boolean returnFullTransactionObjects) throws ResourceException {
         try {
             return this.ethereumManagedConnection.getBlock(blockHash, returnFullTransactionObjects);
+        } catch (Exception ex) {
+            LOGGER.error("error: " + ex.getMessage(), ex);
+            return null;
+        }
+    }
+
+    @Override
+    public BigInteger getBalance(String address) throws ResourceException {
+        try {
+            return this.ethereumManagedConnection.getBalance(address);
         } catch (Exception ex) {
             LOGGER.error("error: " + ex.getMessage(), ex);
             return null;

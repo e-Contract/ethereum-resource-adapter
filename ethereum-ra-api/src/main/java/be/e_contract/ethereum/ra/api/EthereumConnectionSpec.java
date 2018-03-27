@@ -1,8 +1,19 @@
 /*
  * Ethereum JCA Resource Adapter Project.
+ * Copyright (C) 2018 e-Contract.be BVBA.
  *
- * Copyright 2018 e-Contract.be BVBA. All rights reserved.
- * e-Contract.be BVBA proprietary/confidential. Use is subject to license terms.
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License version
+ * 3.0 as published by the Free Software Foundation.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, see 
+ * http://www.gnu.org/licenses/.
  */
 package be.e_contract.ethereum.ra.api;
 
@@ -10,6 +21,12 @@ import javax.resource.cci.ConnectionSpec;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
+/**
+ * Via this Ethereum connection specification you can override the detail client
+ * node location. The resource adapter supports both HTTP and IPC locations.
+ *
+ * @author fcorneli
+ */
 public class EthereumConnectionSpec implements ConnectionSpec {
 
     private final String nodeLocation;
@@ -18,6 +35,11 @@ public class EthereumConnectionSpec implements ConnectionSpec {
         this.nodeLocation = nodeLocation;
     }
 
+    /**
+     * Gives back the location of the Ethereum client node.
+     *
+     * @return
+     */
     public String getNodeLocation() {
         return this.nodeLocation;
     }

@@ -1,8 +1,19 @@
 /*
  * Ethereum JCA Resource Adapter Project.
+ * Copyright (C) 2018 e-Contract.be BVBA.
  *
- * Copyright 2018 e-Contract.be BVBA. All rights reserved.
- * e-Contract.be BVBA proprietary/confidential. Use is subject to license terms.
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License version
+ * 3.0 as published by the Free Software Foundation.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, see 
+ * http://www.gnu.org/licenses/.
  */
 package be.e_contract.ethereum.ra.api;
 
@@ -12,6 +23,11 @@ import javax.resource.cci.Connection;
 import org.web3j.protocol.core.methods.response.EthBlock;
 import org.web3j.protocol.core.methods.response.Transaction;
 
+/**
+ * Interface for Ethereum network connections.
+ *
+ * @author Frank Cornelis
+ */
 public interface EthereumConnection extends Connection, AutoCloseable {
 
     /**
@@ -57,5 +73,22 @@ public interface EthereumConnection extends Connection, AutoCloseable {
      */
     Transaction findTransaction(String transactionHash) throws ResourceException;
 
+    /**
+     * Gives back a block for the given block hash.
+     *
+     * @param blockHash
+     * @param fullTransactions
+     * @return
+     * @throws ResourceException
+     */
     EthBlock.Block getBlock(String blockHash, boolean fullTransactions) throws ResourceException;
+
+    /**
+     * Gives back the balance for the address.
+     *
+     * @param address
+     * @return
+     * @throws ResourceException
+     */
+    BigInteger getBalance(String address) throws ResourceException;
 }
