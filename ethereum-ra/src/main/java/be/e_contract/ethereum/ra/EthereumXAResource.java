@@ -103,8 +103,11 @@ public class EthereumXAResource implements XAResource {
 
     @Override
     public boolean isSameRM(XAResource xaRes) throws XAException {
-        LOGGER.debug("isSameRM: {}", xaRes);
-        return this == xaRes;
+        boolean result = this == xaRes;
+        if (result) {
+            LOGGER.debug("isSameRM: {}", result);
+        }
+        return result;
     }
 
     @Override

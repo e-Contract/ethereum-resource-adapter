@@ -29,6 +29,8 @@ public class EthereumWork implements Work {
 
     private final String nodeLocation;
 
+    private boolean shutdown;
+
     public EthereumWork(String nodeLocation, WorkManager workManager) throws ResourceException {
         this.nodeLocation = nodeLocation;
         this.workManager = workManager;
@@ -51,8 +53,13 @@ public class EthereumWork implements Work {
 
     public void shutdown() {
         LOGGER.debug("shutdown");
+        this.shutdown = true;
         this.ethereumPendingTransactionWork.shutdown();
         this.ethereumBlockWork.shutdown();
+    }
+
+    public boolean isShutdown() {
+        return this.shutdown;
     }
 
     public WorkManager getWorkManager() {
@@ -67,6 +74,22 @@ public class EthereumWork implements Work {
         return this.nodeLocation;
     }
 
+    public EthereumPendingTransactionWork getEthereumPendingTransactionWork() {
+        return this.ethereumPendingTransactionWork;
+    }
+
+    public void setEthereumPendingTransactionWork(EthereumPendingTransactionWork ethereumPendingTransactionWork) {
+        this.ethereumPendingTransactionWork = ethereumPendingTransactionWork;
+    }
+
+    public EthereumBlockWork getEthereumBlockWork() {
+        return this.ethereumBlockWork;
+    }
+
+    public void setEthereumBlockWork(EthereumBlockWork ethereumBlockWork) {
+        this.ethereumBlockWork = ethereumBlockWork;
+    }
+
     @Override
     public void run() {
         LOGGER.debug("run");
@@ -75,8 +98,10 @@ public class EthereumWork implements Work {
         this.ethereumBlockWork = new EthereumBlockWork(this);
 
         try {
-            this.workManager.scheduleWork(this.ethereumPendingTransactionWork);
-            this.workManager.scheduleWork(this.ethereumBlockWork);
+            this.workManager.scheduleWork(this.ethereumPendingTransactionWork, WorkManager.INDEFINITE,
+                    null, new EthereumWorkListener(this.ethereumPendingTransactionWork, this));
+            this.workManager.scheduleWork(this.ethereumBlockWork, WorkManager.INDEFINITE, null,
+                    new EthereumWorkListener(this.ethereumBlockWork, this));
         } catch (WorkException ex) {
             LOGGER.error("could not start work");
         }
