@@ -323,4 +323,19 @@ public class EthereumManagedConnection implements ManagedConnection {
 
         return transactionConfirmation;
     }
+
+    public Transaction findTransaction(String transactionHash) throws Exception {
+        Web3j web3j = getWeb3j();
+        Optional<Transaction> transactionOptional = web3j.ethGetTransactionByHash(transactionHash).send().getTransaction();
+        if (!transactionOptional.isPresent()) {
+            return null;
+        }
+        return transactionOptional.get();
+    }
+
+    public EthBlock.Block getBlock(String blockHash, boolean returnFullTransactionObjects) throws Exception {
+        Web3j web3j = getWeb3j();
+        EthBlock.Block block = web3j.ethGetBlockByHash(blockHash, returnFullTransactionObjects).send().getBlock();
+        return block;
+    }
 }

@@ -9,6 +9,8 @@ package be.e_contract.ethereum.ra.api;
 import java.math.BigInteger;
 import javax.resource.ResourceException;
 import javax.resource.cci.Connection;
+import org.web3j.protocol.core.methods.response.EthBlock;
+import org.web3j.protocol.core.methods.response.Transaction;
 
 public interface EthereumConnection extends Connection, AutoCloseable {
 
@@ -45,4 +47,15 @@ public interface EthereumConnection extends Connection, AutoCloseable {
      * @throws ResourceException
      */
     TransactionConfirmation getTransactionConfirmation(String transactionHash) throws ResourceException;
+
+    /**
+     * Gives back the transaction for a given transaction hash. Can return null.
+     *
+     * @param transactionHash
+     * @return
+     * @throws ResourceException
+     */
+    Transaction findTransaction(String transactionHash) throws ResourceException;
+
+    EthBlock.Block getBlock(String blockHash, boolean fullTransactions) throws ResourceException;
 }

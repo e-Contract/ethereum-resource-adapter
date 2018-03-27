@@ -7,14 +7,13 @@
 package be.e_contract.ethereum.rar.demo.model;
 
 import be.e_contract.ethereum.ra.api.EthereumMessageListener;
+import java.util.Date;
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.MessageDriven;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.web3j.protocol.core.methods.response.EthBlock;
-import org.web3j.protocol.core.methods.response.Transaction;
 
 @MessageDriven(messageListenerInterface = EthereumMessageListener.class, activationConfig = {
     @ActivationConfigProperty(propertyName = "nodeLocation", propertyValue = "http://localhost:8545"),
@@ -32,11 +31,12 @@ public class EthereumMDB implements EthereumMessageListener {
     }
 
     @Override
-    public void pendingTransaction(Transaction transaction) throws Exception {
+    public void pendingTransaction(String transactionHash, Date timestamp) throws Exception {
+        LOGGER.debug("pending transaction: {}", transactionHash);
     }
 
     @Override
-    public void block(EthBlock.Block block) throws Exception {
-        LOGGER.debug("block: {}", block.getNumber());
+    public void block(String blockHash, Date timestamp) throws Exception {
+        LOGGER.debug("block hash: {}", blockHash);
     }
 }

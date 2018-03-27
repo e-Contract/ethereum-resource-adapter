@@ -6,17 +6,24 @@
  */
 package be.e_contract.ethereum.ra.oracle;
 
-import org.web3j.protocol.core.methods.response.EthBlock;
+import java.util.Date;
 
 public class LatestBlockEvent {
 
-    private final EthBlock.Block block;
+    private final Date timestamp;
 
-    public LatestBlockEvent(EthBlock.Block block) {
-        this.block = block;
+    private final String blockHash;
+
+    public LatestBlockEvent(String blockHash, Date timestamp) {
+        this.blockHash = blockHash;
+        this.timestamp = timestamp;
     }
 
-    public EthBlock.Block getBlock() {
-        return this.block;
+    public String getBlockHash() {
+        return this.blockHash;
+    }
+
+    public Date getTimestamp() {
+        return this.timestamp;
     }
 }

@@ -8,10 +8,8 @@ package be.e_contract.ethereum.ra;
 
 import be.e_contract.ethereum.ra.api.EthereumMessageListener;
 import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import javax.naming.NamingException;
 import javax.naming.Reference;
 import javax.resource.Referenceable;
@@ -45,11 +43,11 @@ public class EthereumResourceAdapter implements ResourceAdapter, Serializable, R
 
     private Reference reference;
 
-    private final List<EthereumWork> ethereumWorkList;
+    private final Map<String, EthereumWork> nodeLocationEthereumWork;
 
     public EthereumResourceAdapter() {
         LOGGER.debug("constructor");
-        this.ethereumWorkList = Collections.synchronizedList(new LinkedList<>());
+        this.nodeLocationEthereumWork = new HashMap<>();
     }
 
     public String getNodeLocation() {
@@ -69,9 +67,10 @@ public class EthereumResourceAdapter implements ResourceAdapter, Serializable, R
     @Override
     public void stop() {
         LOGGER.info("Stopping Ethereum JCA Resource Adapter");
-        for (EthereumWork ethereumWork : this.ethereumWorkList) {
+        for (EthereumWork ethereumWork : this.nodeLocationEthereumWork.values()) {
             ethereumWork.shutdown();
         }
+        this.nodeLocationEthereumWork.clear();
     }
 
     @Override
@@ -80,36 +79,38 @@ public class EthereumResourceAdapter implements ResourceAdapter, Serializable, R
         LOGGER.debug("message endpoint factory: {}", endpointFactory);
         LOGGER.debug("activation spec: {}", spec);
         EthereumActivationSpec ethereumActivationSpec = (EthereumActivationSpec) spec;
-        LOGGER.debug("node location: {}", ethereumActivationSpec.getNodeLocation());
-        WorkManager workManager = this.bootstrapContext.getWorkManager();
         EthereumMessageListener ethereumMessageListener = (EthereumMessageListener) endpointFactory.createEndpoint(null);
-        Method[] methods = EthereumMessageListener.class.getDeclaredMethods();
-        for (Method method : methods) {
-            boolean deliveryTransacted;
-            try {
-                deliveryTransacted = endpointFactory.isDeliveryTransacted(method);
-            } catch (NoSuchMethodException ex) {
-                continue;
+        ethereumActivationSpec.setEthereumMessageListener(ethereumMessageListener);
+        String nodeLocation = ethereumActivationSpec.getNodeLocation();
+        LOGGER.debug("node location: {}", nodeLocation);
+        synchronized (this.nodeLocationEthereumWork) {
+            // if not synchronized, we might end up with multiple workers for the same node
+            EthereumWork ethereumWork = this.nodeLocationEthereumWork.get(nodeLocation);
+            if (null == ethereumWork) {
+                WorkManager workManager = this.bootstrapContext.getWorkManager();
+                ethereumWork = new EthereumWork(nodeLocation, workManager);
+                this.nodeLocationEthereumWork.put(nodeLocation, ethereumWork);
+                workManager.scheduleWork(ethereumWork);
             }
-            if (deliveryTransacted) {
-                LOGGER.warn("not supporting transacted delivery for method: {} on MDB {}",
-                        method.getName(), ethereumMessageListener.getClass().getName());
-                // TODO: implement this
-            }
+            ethereumWork.addEthereumActivationSpec(ethereumActivationSpec);
         }
-        EthereumWork ethereumWork = new EthereumWork(ethereumMessageListener, ethereumActivationSpec, workManager);
-        this.ethereumWorkList.add(ethereumWork);
-        ethereumActivationSpec.setEthereumWork(ethereumWork);
-        workManager.scheduleWork(ethereumWork);
     }
 
     @Override
     public void endpointDeactivation(MessageEndpointFactory endpointFactory, ActivationSpec spec) {
         LOGGER.debug("endpointDeactivation");
         EthereumActivationSpec ethereumActivationSpec = (EthereumActivationSpec) spec;
-        EthereumWork ethereumWork = ethereumActivationSpec.getEthereumWork();
-        ethereumWork.shutdown();
-        this.ethereumWorkList.remove(ethereumWork);
+        String nodeLocation = ethereumActivationSpec.getNodeLocation();
+        synchronized (this.nodeLocationEthereumWork) {
+            EthereumWork ethereumWork = this.nodeLocationEthereumWork.get(nodeLocation);
+            if (null == ethereumWork) {
+                return;
+            }
+            if (ethereumWork.removeEthereumActivationSpec(ethereumActivationSpec)) {
+                ethereumWork.shutdown();
+                this.nodeLocationEthereumWork.remove(nodeLocation);
+            }
+        }
     }
 
     @Override

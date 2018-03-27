@@ -6,12 +6,11 @@
  */
 package be.e_contract.ethereum.ra.api;
 
-import org.web3j.protocol.core.methods.response.EthBlock;
-import org.web3j.protocol.core.methods.response.Transaction;
+import java.util.Date;
 
 public interface EthereumMessageListener {
 
-    void block(EthBlock.Block block) throws Exception;
+    void block(String blockHash, Date timestamp) throws Exception;
 
-    void pendingTransaction(Transaction transaction) throws Exception;
+    void pendingTransaction(String transactionHash, Date timestamp) throws Exception;
 }

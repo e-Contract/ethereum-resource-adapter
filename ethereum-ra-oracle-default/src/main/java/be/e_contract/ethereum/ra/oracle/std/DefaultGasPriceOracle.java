@@ -93,12 +93,29 @@ public class DefaultGasPriceOracle implements GasPriceOracle {
     }
 
     private void observePendingTransaction(@Observes PendingTransactionEvent pendingTransactionEvent) {
-        Transaction transaction = pendingTransactionEvent.getTransaction();
+        String transactionHash = pendingTransactionEvent.getTransactionHash();
+        Transaction transaction;
+        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+            transaction = ethereumConnection.findTransaction(transactionHash);
+        } catch (ResourceException ex) {
+            LOGGER.error("JCA error: " + ex.getMessage(), ex);
+            return;
+        }
+        if (null == transaction) {
+            return;
+        }
         this.pendingTransactions.put(transaction.getHash(), new PendingTransaction(transaction.getGasPrice()));
     }
 
     private void observeLatestBlock(@Observes LatestBlockEvent latestBlockEvent) {
-        EthBlock.Block block = latestBlockEvent.getBlock();
+        String blockHash = latestBlockEvent.getBlockHash();
+        EthBlock.Block block;
+        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+            block = ethereumConnection.getBlock(blockHash, true);
+        } catch (ResourceException ex) {
+            LOGGER.error("JCA error: " + ex.getMessage(), ex);
+            return;
+        }
         LOGGER.debug("block: {}", block.getNumber());
         boolean updated = false;
         for (EthBlock.TransactionResult<EthBlock.TransactionObject> transactionResult : block.getTransactions()) {

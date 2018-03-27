@@ -18,33 +18,35 @@ import javax.resource.cci.ResultSetInfo;
 import javax.resource.spi.ConnectionEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.web3j.protocol.core.methods.response.EthBlock;
+import org.web3j.protocol.core.methods.response.Transaction;
 
 public class EthereumConnectionImpl implements EthereumConnection {
-
+    
     private static final Logger LOGGER = LoggerFactory.getLogger(EthereumConnectionImpl.class);
-
+    
     private EthereumManagedConnection ethereumManagedConnection;
-
+    
     private boolean valid;
-
+    
     public EthereumConnectionImpl(EthereumManagedConnection ethereumManagedConnection) {
         LOGGER.debug("constructor");
         this.ethereumManagedConnection = ethereumManagedConnection;
         this.valid = true;
     }
-
+    
     @Override
     public BigInteger getGasPrice() throws ResourceException {
         LOGGER.debug("getGasPrice");
         return this.ethereumManagedConnection.getGasPrice();
     }
-
+    
     @Override
     public Interaction createInteraction() throws ResourceException {
         LOGGER.debug("createInteraction");
         throw new NotSupportedException();
     }
-
+    
     @Override
     public LocalTransaction getLocalTransaction() throws ResourceException {
         LOGGER.debug("getLocalTransaction");
@@ -52,7 +54,7 @@ public class EthereumConnectionImpl implements EthereumConnection {
         LocalTransaction localTransaction = new EthereumCCILocalTransaction(ethereumLocalTransaction);
         return localTransaction;
     }
-
+    
     @Override
     public ConnectionMetaData getMetaData() throws ResourceException {
         LOGGER.debug("getMetaData");
@@ -62,40 +64,40 @@ public class EthereumConnectionImpl implements EthereumConnection {
             throw new ResourceException();
         }
     }
-
+    
     @Override
     public ResultSetInfo getResultSetInfo() throws ResourceException {
         LOGGER.debug("getResultSetInfo");
         throw new NotSupportedException();
     }
-
+    
     @Override
     public void close() throws ResourceException {
         LOGGER.debug("close");
         this.ethereumManagedConnection.fireConnectionEvent(this, ConnectionEvent.CONNECTION_CLOSED, null);
     }
-
+    
     void setManagedConnection(EthereumManagedConnection ethereumManagedConnection) {
         LOGGER.debug("setManagedConnection");
         this.ethereumManagedConnection = ethereumManagedConnection;
     }
-
+    
     public void invalidate() {
         LOGGER.debug("invalidate");
         this.valid = false;
         this.ethereumManagedConnection = null;
     }
-
+    
     @Override
     public BigInteger getBlockNumber() throws ResourceException {
         return this.ethereumManagedConnection.getBlockNumber();
     }
-
+    
     @Override
     public String sendRawTransaction(String rawTransaction) throws ResourceException {
         return this.ethereumManagedConnection.sendRawTransaction(rawTransaction);
     }
-
+    
     @Override
     public TransactionConfirmation getTransactionConfirmation(String transactionHash) throws ResourceException {
         try {
@@ -103,6 +105,26 @@ public class EthereumConnectionImpl implements EthereumConnection {
         } catch (Exception ex) {
             LOGGER.error("error: " + ex.getMessage(), ex);
             throw new ResourceException(ex);
+        }
+    }
+    
+    @Override
+    public Transaction findTransaction(String transactionHash) throws ResourceException {
+        try {
+            return this.ethereumManagedConnection.findTransaction(transactionHash);
+        } catch (Exception ex) {
+            LOGGER.error("error: " + ex.getMessage(), ex);
+            return null;
+        }
+    }
+    
+    @Override
+    public EthBlock.Block getBlock(String blockHash, boolean returnFullTransactionObjects) throws ResourceException {
+        try {
+            return this.ethereumManagedConnection.getBlock(blockHash, returnFullTransactionObjects);
+        } catch (Exception ex) {
+            LOGGER.error("error: " + ex.getMessage(), ex);
+            return null;
         }
     }
 }

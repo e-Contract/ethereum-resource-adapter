@@ -21,7 +21,7 @@ public class EthereumActivationSpec implements ActivationSpec {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EthereumActivationSpec.class);
 
-    private ResourceAdapter resourceAdapter;
+    private EthereumResourceAdapter resourceAdapter;
 
     @ConfigProperty
     private String nodeLocation;
@@ -35,13 +35,17 @@ public class EthereumActivationSpec implements ActivationSpec {
     @ConfigProperty(type = Boolean.class)
     private Boolean deliverBlock;
 
-    private EthereumWork ethereumWork;
+    private EthereumMessageListener ethereumMessageListener;
 
     public EthereumActivationSpec() {
         LOGGER.debug("constructor");
     }
 
     public String getNodeLocation() {
+        if (null == this.nodeLocation) {
+            // we default to the configuration of the resource adapter here
+            return this.resourceAdapter.getNodeLocation();
+        }
         return this.nodeLocation;
     }
 
@@ -76,6 +80,10 @@ public class EthereumActivationSpec implements ActivationSpec {
     @Override
     public void validate() throws InvalidPropertyException {
         LOGGER.debug("validate");
+        if (null == this.deliverPending && null == this.deliverBlock) {
+            // nothing to do here...
+            throw new InvalidPropertyException();
+        }
     }
 
     @Override
@@ -87,14 +95,14 @@ public class EthereumActivationSpec implements ActivationSpec {
     @Override
     public void setResourceAdapter(ResourceAdapter ra) throws ResourceException {
         LOGGER.debug("setResourceAdapter");
-        this.resourceAdapter = ra;
+        this.resourceAdapter = (EthereumResourceAdapter) ra;
     }
 
-    public EthereumWork getEthereumWork() {
-        return this.ethereumWork;
+    public EthereumMessageListener getEthereumMessageListener() {
+        return this.ethereumMessageListener;
     }
 
-    public void setEthereumWork(EthereumWork ethereumWork) {
-        this.ethereumWork = ethereumWork;
+    public void setEthereumMessageListener(EthereumMessageListener ethereumMessageListener) {
+        this.ethereumMessageListener = ethereumMessageListener;
     }
 }

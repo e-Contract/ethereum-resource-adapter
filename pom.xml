@@ -206,6 +206,7 @@
             <dependency>
                 <groupId>org.web3j</groupId>
                 <artifactId>core</artifactId>
+                <!-- shutdown + pendingTransactionObservable empty transaction fix -->
                 <version>3.3.2-SNAPSHOT</version>
             </dependency>
             <dependency>

@@ -6,8 +6,10 @@
  */
 package be.e_contract.ethereum.ra;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import javax.transaction.xa.XAException;
 import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
@@ -28,17 +30,30 @@ public class EthereumXAResource implements XAResource {
 
     private final EthereumManagedConnection ethereumManagedConnection;
 
-    private final List<String> rawTransactions;
+    private final Map<Xid, List<String>> xidRawTransactions;
+
+    private Xid currentXid;
 
     public EthereumXAResource(EthereumManagedConnection ethereumManagedConnection) {
         this.ethereumManagedConnection = ethereumManagedConnection;
-        this.rawTransactions = new LinkedList<>();
+        this.xidRawTransactions = new HashMap<>();
+    }
+
+    private List<String> getRawTransactions(Xid xid) {
+        List<String> rawTransactions = this.xidRawTransactions.get(xid);
+        if (null == rawTransactions) {
+            rawTransactions = new LinkedList<>();
+            this.xidRawTransactions.put(xid, rawTransactions);
+        }
+        return rawTransactions;
     }
 
     @Override
     public void commit(Xid xid, boolean onePhase) throws XAException {
         LOGGER.debug("commit: {} - one phase {}", xid, onePhase);
-        for (String rawTransaction : this.rawTransactions) {
+        this.currentXid = xid;
+        List<String> rawTransactions = getRawTransactions(xid);
+        for (String rawTransaction : rawTransactions) {
             LOGGER.debug("commit raw transaction: {}", rawTransaction);
             try {
                 Web3j web3j = this.ethereumManagedConnection.getWeb3j();
@@ -48,16 +63,18 @@ public class EthereumXAResource implements XAResource {
                 throw new XAException(XAException.XA_HEURRB);
             }
         }
-        this.rawTransactions.clear();
+        rawTransactions.clear();
     }
 
     @Override
     public void end(Xid xid, int flags) throws XAException {
         LOGGER.debug("end: {} - flags {}", xid, flags);
+        this.currentXid = xid;
+        List<String> rawTransactions = getRawTransactions(xid);
         if (isFlagSet(flags, TMFAIL)) {
-            this.rawTransactions.clear();
+            rawTransactions.clear();
         }
-        if (!this.rawTransactions.isEmpty()) {
+        if (!rawTransactions.isEmpty()) {
             try {
                 Web3j web3j = this.ethereumManagedConnection.getWeb3j();
                 // make sure the node is available
@@ -75,6 +92,7 @@ public class EthereumXAResource implements XAResource {
     @Override
     public void forget(Xid xid) throws XAException {
         LOGGER.debug("forget: {}", xid);
+        this.currentXid = xid;
     }
 
     @Override
@@ -92,20 +110,23 @@ public class EthereumXAResource implements XAResource {
     @Override
     public int prepare(Xid xid) throws XAException {
         LOGGER.debug("prepare: {}", xid);
+        this.currentXid = xid;
         return XA_OK;
     }
 
     @Override
     public Xid[] recover(int flag) throws XAException {
         LOGGER.debug("recover: {}", flag);
-        return new Xid[]{};
+        return new Xid[0];
     }
 
     @Override
     public void rollback(Xid xid) throws XAException {
         LOGGER.debug("rollback: {}", xid);
-        LOGGER.debug("number of raw transactions in queue: {}", this.rawTransactions.size());
-        this.rawTransactions.clear();
+        this.currentXid = xid;
+        List<String> rawTransactions = getRawTransactions(xid);
+        LOGGER.debug("number of raw transactions in queue: {}", rawTransactions.size());
+        rawTransactions.clear();
     }
 
     @Override
@@ -121,13 +142,16 @@ public class EthereumXAResource implements XAResource {
     @Override
     public void start(Xid xid, int flags) throws XAException {
         LOGGER.debug("start: {} - flags {}", xid, flags);
+        this.currentXid = xid;
+        List<String> rawTransactions = getRawTransactions(xid);
         if (!isFlagSet(flags, TMRESUME)) {
-            this.rawTransactions.clear();
+            rawTransactions.clear();
         }
     }
 
-    void scheduleRawTransaction(String rawTransaction) {
+    public void scheduleRawTransaction(String rawTransaction) {
         LOGGER.debug("schedule raw transaction: {}", rawTransaction);
-        this.rawTransactions.add(rawTransaction);
+        List<String> rawTransactions = this.xidRawTransactions.get(this.currentXid);
+        rawTransactions.add(rawTransaction);
     }
 }

@@ -7,14 +7,13 @@
 package be.e_contract.ethereum.ra.oracle;
 
 import be.e_contract.ethereum.ra.api.EthereumMessageListener;
+import java.util.Date;
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.MessageDriven;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.web3j.protocol.core.methods.response.EthBlock;
-import org.web3j.protocol.core.methods.response.Transaction;
 
 @MessageDriven(messageListenerInterface = EthereumMessageListener.class, activationConfig = {
     @ActivationConfigProperty(propertyName = "nodeLocation", propertyValue = "http://localhost:8545"),
@@ -23,28 +22,28 @@ import org.web3j.protocol.core.methods.response.Transaction;
     @ActivationConfigProperty(propertyName = "deliverBlock", propertyValue = "true")
 })
 public class GasPriceOracleMDB implements EthereumMessageListener {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(GasPriceOracleMDB.class);
-    
+
     @Inject
     private Event<PendingTransactionEvent> pendingTransactionEvent;
-    
+
     @Inject
     private Event<LatestBlockEvent> latestBlockEvent;
-    
+
     public GasPriceOracleMDB() {
         LOGGER.debug("constructor");
     }
-    
+
     @Override
-    public void pendingTransaction(Transaction transaction) throws Exception {
-        PendingTransactionEvent pendingTransactionEvent = new PendingTransactionEvent(transaction);
+    public void pendingTransaction(String transactionHash, Date timestamp) throws Exception {
+        PendingTransactionEvent pendingTransactionEvent = new PendingTransactionEvent(transactionHash, timestamp);
         this.pendingTransactionEvent.fire(pendingTransactionEvent);
     }
-    
+
     @Override
-    public void block(EthBlock.Block block) throws Exception {
-        LatestBlockEvent latestBlockEvent = new LatestBlockEvent(block);
+    public void block(String blockHash, Date timestamp) throws Exception {
+        LatestBlockEvent latestBlockEvent = new LatestBlockEvent(blockHash, timestamp);
         this.latestBlockEvent.fire(latestBlockEvent);
     }
 }

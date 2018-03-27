@@ -6,17 +6,24 @@
  */
 package be.e_contract.ethereum.ra.oracle;
 
-import org.web3j.protocol.core.methods.response.Transaction;
+import java.util.Date;
 
 public class PendingTransactionEvent {
 
-    private final Transaction transaction;
+    private final Date timestamp;
 
-    public PendingTransactionEvent(Transaction transaction) {
-        this.transaction = transaction;
+    private final String transactionHash;
+
+    public PendingTransactionEvent(String transactionHash, Date timestamp) {
+        this.transactionHash = transactionHash;
+        this.timestamp = timestamp;
     }
 
-    public Transaction getTransaction() {
-        return this.transaction;
+    public String getTransactionHash() {
+        return this.transactionHash;
+    }
+
+    public Date getTimestamp() {
+        return this.timestamp;
     }
 }
