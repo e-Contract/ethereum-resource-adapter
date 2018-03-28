@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <weblogic-connector xmlns="http://xmlns.oracle.com/weblogic/weblogic-connector"
                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                    xsi:schemaLocation="http://xmlns.oracle.com/weblogic/weblogic-connector https://xmlns.oracle.com/weblogic/weblogic-connector/1.2/weblogic-connector.xsd">
+                    xsi:schemaLocation="http://xmlns.oracle.com/weblogic/weblogic-connector http://xmlns.oracle.com/weblogic/weblogic-connector/1.5/weblogic-connector.xsd">
     <jndi-name>EthereumResourceAdapter</jndi-name>
+    <outbound-resource-adapter>
+        <connection-definition-group>
+            <connection-factory-interface>be.e_contract.ethereum.ra.api.EthereumConnectionFactory</connection-factory-interface>
+            <connection-instance>
+                <jndi-name>EthereumConnectionFactory</jndi-name>
+            </connection-instance>
+        </connection-definition-group>
+    </outbound-resource-adapter>
 </weblogic-connector>
