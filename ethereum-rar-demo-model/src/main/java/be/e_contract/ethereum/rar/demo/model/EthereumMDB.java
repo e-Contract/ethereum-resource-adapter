@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
     @ActivationConfigProperty(propertyName = "deliverPending", propertyValue = "true"),
     @ActivationConfigProperty(propertyName = "deliverBlock", propertyValue = "true")
 })
-@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+@TransactionAttribute(TransactionAttributeType.REQUIRED)
 public class EthereumMDB implements EthereumMessageListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EthereumMDB.class);

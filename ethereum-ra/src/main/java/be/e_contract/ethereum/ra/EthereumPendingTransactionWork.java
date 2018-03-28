@@ -76,7 +76,7 @@ public class EthereumPendingTransactionWork implements Work {
                     String transactionHash = hash.get();
                     List<EthereumActivationSpec> ethereumActivationSpecs = this.ethereumWork.getEthereumActivationSpecs();
                     for (EthereumActivationSpec ethereumActivationSpec : ethereumActivationSpecs) {
-                        Boolean deliverPending = ethereumActivationSpec.getDeliverPending();
+                        Boolean deliverPending = ethereumActivationSpec.isDeliverPending();
                         if (null == deliverPending) {
                             continue;
                         }

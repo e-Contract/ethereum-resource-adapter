@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE resources PUBLIC "-//GlassFish.org//DTD GlassFish Application Server 3.1 Resource Definitions//EN"
+    "http://glassfish.org/dtds/glassfish-resources_1_5.dtd">
+<resources>
+    <custom-resource jndi-name="java:/EthereumConnectionFactory"
+                     factory-class="be.e_contract.ethereum.ra.EthereumManagedConnectionFactory"
+                     res-type="String">
+        <property name="nodeLocation" value="http://localhost:8545"/>
+    </custom-resource>
+</resources>

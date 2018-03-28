@@ -76,7 +76,7 @@ public class EthereumBlockWork implements Work {
                     String blockHash = hash.get();
                     List<EthereumActivationSpec> ethereumActivationSpecs = this.ethereumWork.getEthereumActivationSpecs();
                     for (EthereumActivationSpec ethereumActivationSpec : ethereumActivationSpecs) {
-                        Boolean deliverBlock = ethereumActivationSpec.getDeliverBlock();
+                        Boolean deliverBlock = ethereumActivationSpec.isDeliverBlock();
                         if (null == deliverBlock) {
                             continue;
                         }

@@ -118,9 +118,9 @@
             <artifactId>core</artifactId>
         </dependency>
         <dependency>
+            <!-- include this for GlassFish 5 -->
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <scope>provided</scope>
         </dependency>
     </dependencies>
     

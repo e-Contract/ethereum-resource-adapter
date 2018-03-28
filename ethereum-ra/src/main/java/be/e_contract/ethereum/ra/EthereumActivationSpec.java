@@ -54,7 +54,10 @@ public class EthereumActivationSpec implements ActivationSpec {
 
     public String getNodeLocation() {
         if (null == this.nodeLocation) {
-            // we default to the configuration of the resource adapter here
+            if (null == this.resourceAdapter) {
+                // can happen on GlassFish 5
+                return null;
+            }
             return this.resourceAdapter.getNodeLocation();
         }
         return this.nodeLocation;
@@ -64,7 +67,7 @@ public class EthereumActivationSpec implements ActivationSpec {
         this.nodeLocation = nodeLocation;
     }
 
-    public Boolean getFullBlock() {
+    public Boolean isFullBlock() {
         return this.fullBlock;
     }
 
@@ -72,7 +75,7 @@ public class EthereumActivationSpec implements ActivationSpec {
         this.fullBlock = fullBlock;
     }
 
-    public Boolean getDeliverPending() {
+    public Boolean isDeliverPending() {
         return this.deliverPending;
     }
 
@@ -80,7 +83,7 @@ public class EthereumActivationSpec implements ActivationSpec {
         this.deliverPending = deliverPending;
     }
 
-    public Boolean getDeliverBlock() {
+    public Boolean isDeliverBlock() {
         return this.deliverBlock;
     }
 
