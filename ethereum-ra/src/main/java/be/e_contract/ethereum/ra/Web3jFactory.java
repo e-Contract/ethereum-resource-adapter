@@ -44,8 +44,7 @@ public class Web3jFactory {
             LOGGER.warn("web3j IPC is not really stable");
             service = new UnixIpcService(nodeLocation);
         }
-        // poll every half second
-        Web3j web3j = Web3j.build(service, 500, Async.defaultExecutorService());
+        Web3j web3j = Web3j.build(service, 50, Async.defaultExecutorService());
         BigInteger peerCount = web3j.netPeerCount().send().getQuantity();
         if (BigInteger.ZERO.equals(peerCount)) {
             LOGGER.warn("Node has no peers.");
