@@ -7,6 +7,7 @@ Tested Java EE application servers:
 
 * JBoss EAP 6.4.19
 * JBoss WildFly 12
+* Oracle WebLogic 12.2.1.3.0
 
 We should be able to support every Java EE 6+ application server.
 
@@ -96,9 +97,7 @@ Depending on your max duration, this gas price oracle gives you a gas price that
 
 # Usage
 
-This section provides usage information per Java EE application server.
-
-## JBoss EAP/WildFly
+This section provides generic usage information and usage information per Java EE application server.
 
 Within your EAR, you need to include the RAR.
 
@@ -132,6 +131,9 @@ and as `maven-ear-plugin` configuration under `modules` you put:
 </rarModule>
 ```
 
+
+## JBoss EAP/WildFly
+
 The `EthereumConnectionFactory` will be available within JNDI under:
 ```
 java:/EthereumConnectionFactory
@@ -150,7 +152,7 @@ where you provide within your `META-INF/jboss-ejb3.xml` to following mapping:
 ```
 <jboss:enterprise-beans>
     <session>
-        <ejb-name>EthereumBean</ejb-name>
+        <ejb-name>YourBeanNameHere</ejb-name>
         <resource-ref>
             <res-ref-name>EthereumConnectionFactory</res-ref-name>
             <jndi-name>java:/EthereumConnectionFactory</jndi-name>
@@ -164,10 +166,45 @@ For usage of the `EthereumMessageListener` you need to refer to the resource ada
 <assembly-descriptor>
     <mdb:resource-adapter-binding>
         <ejb-name>YourEthereumMDB</ejb-name>
-        <mdb:resource-adapter-name>your-ear-file.ear#ethereum-ra.rar</mdb:resource-adapter-name>
+        <mdb:resource-adapter-name>your-ear-file-name-here.ear#ethereum-ra.rar</mdb:resource-adapter-name>
     </mdb:resource-adapter-binding>
 </assembly-descriptor>
 ```
+
+## Oracle WebLogic
+
+The `EthereumConnectionFactory` will be available within JNDI under:
+```
+EthereumConnectionFactory
+```
+So you can refer to it via:
+```
+@Resource(name = "EthereumConnectionFactory")
+private EthereumConnectionFactory ethereumConnectionFactory;
+```
+where you provide within your `META-INF/weblogic-ejb-jar.xml` to following mapping:
+```
+<weblogic-enterprise-bean>
+    <ejb-name>YourBeanNameHere</ejb-name>
+    <resource-description>
+        <res-ref-name>EthereumConnectionFactory</res-ref-name>
+        <jndi-name>EthereumConnectionFactory</jndi-name>
+    </resource-description>
+</weblogic-enterprise-bean>
+```
+
+For usage of the `EthereumMessageListener` you need to refer to the resource adapter explicitly. Do this by adding the following to your `META-INF/weblogic-ejb-jar.xml`:
+```
+<weblogic-enterprise-bean>
+    <ejb-name>YourEthereumMDB</ejb-name>
+    <message-driven-descriptor>
+        <resource-adapter-jndi-name>EthereumResourceAdapter</resource-adapter-jndi-name>
+    </message-driven-descriptor>
+</weblogic-enterprise-bean>
+```
+
+
+# Gas Price Oracle Usage
 
 For usage of the gas price oracle, you need to include the corresponding EJB within the EAR via:
 ```
@@ -187,13 +224,21 @@ and as `maven-ear-plugin` configuration under `modules` you put:
 </ejbModule>
 ```
 
-And per gas price oracle implemention, you include the corresponding CDI JAR within the EAR. For the default oracle you include:
+And per gas price oracle implemention, you include the corresponding EJB JAR within the EAR. For the default oracle you include:
 ```
 <dependency>
     <groupId>be.e-contract.ethereum-resource-adapter</groupId>
     <artifactId>ethereum-ra-oracle-default</artifactId>
     <version>1.0.0-SNAPSHOT</version>
+    <type>ejb</type>
 </dependency>
+```
+and as `maven-ear-plugin` configuration under `modules` you put:
+```
+<ejbModule>
+    <groupId>be.e-contract.ethereum-resource-adapter</groupId>
+    <artifactId>ethereum-ra-oracle-default</artifactId>
+</ejbModule>
 ```
 
 # Development
