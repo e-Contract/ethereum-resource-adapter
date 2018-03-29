@@ -34,6 +34,10 @@
                         </ejbModule>
                         <ejbModule>
                             <groupId>be.e-contract.ethereum-resource-adapter</groupId>
+                            <artifactId>ethereum-ra-oracle-default</artifactId>
+                        </ejbModule>
+                        <ejbModule>
+                            <groupId>be.e-contract.ethereum-resource-adapter</groupId>
                             <artifactId>ethereum-rar-demo-model</artifactId>
                         </ejbModule>
                         <webModule>
@@ -99,6 +103,7 @@
             <groupId>be.e-contract.ethereum-resource-adapter</groupId>
             <artifactId>ethereum-ra-oracle-default</artifactId>
             <version>1.0.0-SNAPSHOT</version>
+            <type>ejb</type>
         </dependency>
         <dependency>
             <groupId>be.e-contract.ethereum-resource-adapter</groupId>

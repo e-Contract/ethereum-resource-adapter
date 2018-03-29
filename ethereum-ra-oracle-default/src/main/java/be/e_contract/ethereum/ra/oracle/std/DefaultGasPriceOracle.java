@@ -23,6 +23,7 @@ import be.e_contract.ethereum.ra.oracle.ConnectionStatusEvent;
 import be.e_contract.ethereum.ra.oracle.GasPriceOracle;
 import be.e_contract.ethereum.ra.oracle.GasPriceOracleType;
 import be.e_contract.ethereum.ra.oracle.LatestBlockEvent;
+import be.e_contract.ethereum.ra.oracle.OracleEthereumConnectionFactory;
 import be.e_contract.ethereum.ra.oracle.PendingTransactionEvent;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -32,9 +33,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
+import javax.inject.Inject;
 import javax.resource.ResourceException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -54,7 +55,8 @@ public class DefaultGasPriceOracle implements GasPriceOracle {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultGasPriceOracle.class);
 
-    @Resource(mappedName = "java:/EthereumConnectionFactory")
+    @Inject
+    @OracleEthereumConnectionFactory
     private EthereumConnectionFactory ethereumConnectionFactory;
 
     private Map<String, PendingTransaction> pendingTransactions;

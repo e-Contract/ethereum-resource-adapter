@@ -2,10 +2,20 @@
 <weblogic-ejb-jar xmlns="http://xmlns.oracle.com/weblogic/weblogic-ejb-jar"
                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                   xsi:schemaLocation="http://xmlns.oracle.com/weblogic/weblogic-ejb-jar http://xmlns.oracle.com/weblogic/weblogic-ejb-jar/1.7/weblogic-ejb-jar.xsd">
+    
     <weblogic-enterprise-bean>
         <ejb-name>GasPriceOracleMDB</ejb-name>
         <message-driven-descriptor>
             <resource-adapter-jndi-name>EthereumResourceAdapter</resource-adapter-jndi-name>
         </message-driven-descriptor>
     </weblogic-enterprise-bean>
+    
+    <weblogic-enterprise-bean>
+        <ejb-name>OracleEthereumConnectionFactoryBean</ejb-name>
+        <resource-description>
+            <res-ref-name>EthereumConnectionFactory</res-ref-name>
+            <jndi-name>EthereumConnectionFactory</jndi-name>
+        </resource-description>
+    </weblogic-enterprise-bean>
+    
 </weblogic-ejb-jar>
