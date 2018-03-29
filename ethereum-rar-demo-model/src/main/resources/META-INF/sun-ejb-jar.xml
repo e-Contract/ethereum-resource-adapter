@@ -9,5 +9,12 @@
                 <resource-adapter-mid>ethereum-rar</resource-adapter-mid>
             </mdb-resource-adapter>
         </ejb>
+        <ejb>
+            <ejb-name>EthereumBean</ejb-name>
+            <resource-ref>
+                <res-ref-name>EthereumConnectionFactory</res-ref-name>
+                <jndi-name>java:/EthereumConnectionFactory</jndi-name>
+            </resource-ref>
+        </ejb>
     </enterprise-beans>
 </sun-ejb-jar>

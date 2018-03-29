@@ -23,7 +23,6 @@ import javax.resource.ResourceException;
 import javax.resource.spi.LocalTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.web3j.protocol.Web3j;
 
 public class EthereumLocalTransaction implements LocalTransaction {
 
@@ -47,16 +46,8 @@ public class EthereumLocalTransaction implements LocalTransaction {
     @Override
     public void commit() throws ResourceException {
         LOGGER.debug("commit");
-        for (String rawTransaction : this.rawTransactions) {
-            LOGGER.debug("commit raw transaction: {}", rawTransaction);
-            try {
-                Web3j web3j = this.ethereumManagedConnection.getWeb3j();
-                web3j.ethSendRawTransaction(rawTransaction);
-            } catch (Exception ex) {
-                LOGGER.error("web3j error: " + ex.getMessage(), ex);
-                throw new ResourceException();
-            }
-        }
+        EthereumTransactionCommit ethereumTransactionCommit = new EthereumTransactionCommit(this.rawTransactions, this.ethereumManagedConnection);
+        ethereumTransactionCommit.commit();
         this.rawTransactions.clear();
     }
 

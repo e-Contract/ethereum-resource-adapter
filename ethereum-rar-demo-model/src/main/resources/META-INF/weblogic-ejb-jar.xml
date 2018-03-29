@@ -8,4 +8,11 @@
             <resource-adapter-jndi-name>EthereumResourceAdapter</resource-adapter-jndi-name>
         </message-driven-descriptor>
     </weblogic-enterprise-bean>
+    <weblogic-enterprise-bean>
+        <ejb-name>EthereumBean</ejb-name>
+        <resource-description>
+            <res-ref-name>EthereumConnectionFactory</res-ref-name>
+            <jndi-name>EthereumConnectionFactory</jndi-name>
+        </resource-description>
+    </weblogic-enterprise-bean>
 </weblogic-ejb-jar>

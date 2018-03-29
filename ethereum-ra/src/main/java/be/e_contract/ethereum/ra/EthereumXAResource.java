@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import javax.resource.ResourceException;
 import javax.transaction.xa.XAException;
 import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
@@ -64,15 +65,12 @@ public class EthereumXAResource implements XAResource {
         LOGGER.debug("commit: {} - one phase {}", xid, onePhase);
         this.currentXid = xid;
         List<String> rawTransactions = getRawTransactions(xid);
-        for (String rawTransaction : rawTransactions) {
-            LOGGER.debug("commit raw transaction: {}", rawTransaction);
-            try {
-                Web3j web3j = this.ethereumManagedConnection.getWeb3j();
-                web3j.ethSendRawTransaction(rawTransaction);
-            } catch (Exception ex) {
-                LOGGER.error("web3j error: " + ex.getMessage(), ex);
-                throw new XAException(XAException.XA_HEURRB);
-            }
+        EthereumTransactionCommit ethereumTransactionCommit = new EthereumTransactionCommit(rawTransactions, this.ethereumManagedConnection);
+        try {
+            ethereumTransactionCommit.commit();
+        } catch (ResourceException ex) {
+            LOGGER.error("could not commit transaction: " + ex.getMessage(), ex);
+            throw new XAException();
         }
         rawTransactions.clear();
     }
@@ -91,6 +89,7 @@ public class EthereumXAResource implements XAResource {
                 // make sure the node is available
                 web3j.ethProtocolVersion().send();
             } catch (Exception e) {
+                LOGGER.error("error during end: " + e.getMessage(), e);
                 throw new XAException(XAException.XA_RBROLLBACK);
             }
         }

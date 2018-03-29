@@ -37,7 +37,7 @@ public class EthereumBean {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EthereumBean.class);
 
-    @Resource(mappedName = "java:/EthereumConnectionFactory")
+    @Resource(name = "EthereumConnectionFactory")
     private EthereumConnectionFactory ethereumConnectionFactory;
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)

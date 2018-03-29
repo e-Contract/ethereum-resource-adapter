@@ -9,6 +9,16 @@
                version="3.1"
                impl-version="2.0">
     
+    <jboss:enterprise-beans>
+        <session>
+            <ejb-name>EthereumBean</ejb-name>
+            <resource-ref>
+                <res-ref-name>EthereumConnectionFactory</res-ref-name>
+                <jndi-name>java:/EthereumConnectionFactory</jndi-name>
+            </resource-ref>
+        </session>
+    </jboss:enterprise-beans>
+    
     <assembly-descriptor>
         <mdb:resource-adapter-binding>
             <ejb-name>EthereumMDB</ejb-name>

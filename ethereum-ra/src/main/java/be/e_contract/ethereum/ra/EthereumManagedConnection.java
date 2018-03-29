@@ -269,14 +269,8 @@ public class EthereumManagedConnection implements ManagedConnection {
             return null;
         }
         LOGGER.debug("directly sending transaction");
-        Web3j web3j;
-        try {
-            web3j = getWeb3j();
-        } catch (Exception ex) {
-            LOGGER.error("web3j error: " + ex.getMessage(), ex);
-            throw new ResourceException(ex);
-        }
-        web3j.ethSendRawTransaction(rawTransaction);
+        EthereumTransactionCommit ethereumTransactionCommit = new EthereumTransactionCommit(rawTransaction, this);
+        ethereumTransactionCommit.commit();
         return null;
     }
 

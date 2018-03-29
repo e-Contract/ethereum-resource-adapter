@@ -32,13 +32,15 @@ Simply use the JCA Connector, and you will automatically have transaction suppor
 
 Example code:
 ```
-@Resource(mappedName = "java:/EthereumConnectionFactory")
+@Resource(name = "EthereumConnectionFactory")
 private EthereumConnectionFactory ethereumConnectionFactory;
 
 try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
     ethereumConnection.sendRawTransaction(rawTransaction);
 }
 ```
+The transaction implementation also features automatic retry on commit just in case the client node is temporarily unavailable.
+
 
 ## Message Listener
 
@@ -133,6 +135,28 @@ and as `maven-ear-plugin` configuration under `modules` you put:
 The `EthereumConnectionFactory` will be available within JNDI under:
 ```
 java:/EthereumConnectionFactory
+```
+Hence you can refer to it via:
+```
+@Resource(mappedName = "java:/EthereumConnectionFactory")
+private EthereumConnectionFactory ethereumConnectionFactory;
+```
+or in an application server independent way via:
+```
+@Resource(name = "EthereumConnectionFactory")
+private EthereumConnectionFactory ethereumConnectionFactory;
+```
+where you provide within your `META-INF/jboss-ejb3.xml` to following mapping:
+```
+<jboss:enterprise-beans>
+    <session>
+        <ejb-name>EthereumBean</ejb-name>
+        <resource-ref>
+            <res-ref-name>EthereumConnectionFactory</res-ref-name>
+            <jndi-name>java:/EthereumConnectionFactory</jndi-name>
+        </resource-ref>
+    </session>
+</jboss:enterprise-beans>
 ```
 
 For usage of the `EthereumMessageListener` you need to refer to the resource adapter explicitly. Do this by adding the following to your `META-INF/jboss-ejb3.xml`:
