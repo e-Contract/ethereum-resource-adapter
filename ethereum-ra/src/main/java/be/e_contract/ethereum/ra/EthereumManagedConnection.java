@@ -343,4 +343,10 @@ public class EthereumManagedConnection implements ManagedConnection {
         BigInteger balance = web3j.ethGetBalance(address, DefaultBlockParameterName.LATEST).send().getBalance();
         return balance;
     }
+
+    BigInteger getTransactionCount(String address) throws Exception {
+        Web3j web3j = getWeb3j();
+        BigInteger transactionCount = web3j.ethGetTransactionCount(address, DefaultBlockParameterName.LATEST).send().getTransactionCount();
+        return transactionCount;
+    }
 }

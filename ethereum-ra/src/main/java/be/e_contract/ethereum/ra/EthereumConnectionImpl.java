@@ -125,7 +125,7 @@ public class EthereumConnectionImpl implements EthereumConnection {
             return this.ethereumManagedConnection.findTransaction(transactionHash);
         } catch (Exception ex) {
             LOGGER.error("error: " + ex.getMessage(), ex);
-            return null;
+            throw new ResourceException(ex);
         }
     }
 
@@ -135,7 +135,7 @@ public class EthereumConnectionImpl implements EthereumConnection {
             return this.ethereumManagedConnection.getBlock(blockHash, returnFullTransactionObjects);
         } catch (Exception ex) {
             LOGGER.error("error: " + ex.getMessage(), ex);
-            return null;
+            throw new ResourceException(ex);
         }
     }
 
@@ -145,7 +145,17 @@ public class EthereumConnectionImpl implements EthereumConnection {
             return this.ethereumManagedConnection.getBalance(address);
         } catch (Exception ex) {
             LOGGER.error("error: " + ex.getMessage(), ex);
-            return null;
+            throw new ResourceException(ex);
+        }
+    }
+
+    @Override
+    public BigInteger getTransactionCount(String address) throws ResourceException {
+        try {
+            return this.ethereumManagedConnection.getTransactionCount(address);
+        } catch (Exception ex) {
+            LOGGER.error("error: " + ex.getMessage(), ex);
+            throw new ResourceException(ex);
         }
     }
 }

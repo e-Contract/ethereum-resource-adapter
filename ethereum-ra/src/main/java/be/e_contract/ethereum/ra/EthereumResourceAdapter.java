@@ -19,8 +19,10 @@ package be.e_contract.ethereum.ra;
 
 import be.e_contract.ethereum.ra.api.EthereumMessageListener;
 import java.io.Serializable;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import javax.naming.NamingException;
 import javax.naming.Reference;
 import javax.resource.Referenceable;
@@ -95,6 +97,20 @@ public class EthereumResourceAdapter implements ResourceAdapter, Serializable, R
         ethereumActivationSpec.setEthereumMessageListener(ethereumMessageListener);
         String nodeLocation = ethereumActivationSpec.getNodeLocation();
         LOGGER.debug("node location: {}", nodeLocation);
+
+        for (Method method : EthereumMessageListener.class.getMethods()) {
+            boolean transactedDelivery;
+            try {
+                transactedDelivery = endpointFactory.isDeliveryTransacted(method);
+            } catch (NoSuchMethodException ex) {
+                LOGGER.error("method not found: " + method.getName(), ex);
+                throw new ResourceException();
+            }
+            if (transactedDelivery) {
+                LOGGER.warn("not supporting transacted delivery for the moment: {}", ethereumMessageListener);
+            }
+        }
+
         synchronized (this.nodeLocationEthereumWork) {
             // if not synchronized, we might end up with multiple workers for the same node
             EthereumWork ethereumWork = this.nodeLocationEthereumWork.get(nodeLocation);

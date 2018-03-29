@@ -91,4 +91,13 @@ public interface EthereumConnection extends Connection, AutoCloseable {
      * @throws ResourceException
      */
     BigInteger getBalance(String address) throws ResourceException;
+
+    /**
+     * Gives back the transaction nonce for the given address.
+     *
+     * @param address
+     * @return
+     * @throws ResourceException
+     */
+    BigInteger getTransactionCount(String address) throws ResourceException;
 }

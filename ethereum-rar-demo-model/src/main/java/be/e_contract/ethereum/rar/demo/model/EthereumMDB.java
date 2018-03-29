@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
     @ActivationConfigProperty(propertyName = "deliverPending", propertyValue = "true"),
     @ActivationConfigProperty(propertyName = "deliverBlock", propertyValue = "true")
 })
-//@TransactionAttribute(TransactionAttributeType.REQUIRED)
+@TransactionAttribute(TransactionAttributeType.REQUIRED)
 public class EthereumMDB implements EthereumMessageListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EthereumMDB.class);
@@ -41,12 +41,12 @@ public class EthereumMDB implements EthereumMessageListener {
 
     @Override
     public void pendingTransaction(String transactionHash, Date timestamp) throws Exception {
-        //LOGGER.debug("pending transaction: {}", transactionHash);
+        LOGGER.debug("pending transaction: {}", transactionHash);
     }
 
     @Override
     public void block(String blockHash, Date timestamp) throws Exception {
-        //LOGGER.debug("block hash: {}", blockHash);
+        LOGGER.debug("block hash: {}", blockHash);
     }
 
     @Override
