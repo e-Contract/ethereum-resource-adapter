@@ -22,12 +22,18 @@ import org.joda.time.DateTime;
 
 public class PendingTransaction implements Comparable<PendingTransaction> {
 
+    private final String transactionHash;
     private final BigInteger gasPrice;
     private final DateTime created;
 
-    public PendingTransaction(DateTime created, BigInteger gasPrice) {
+    public PendingTransaction(String transactionHash, DateTime created, BigInteger gasPrice) {
+        this.transactionHash = transactionHash;
         this.created = created;
         this.gasPrice = gasPrice;
+    }
+
+    public String getTransactionHash() {
+        return this.transactionHash;
     }
 
     public BigInteger getGasPrice() {

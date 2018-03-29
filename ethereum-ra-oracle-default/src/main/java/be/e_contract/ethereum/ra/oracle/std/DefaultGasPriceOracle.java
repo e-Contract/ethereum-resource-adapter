@@ -25,6 +25,7 @@ import be.e_contract.ethereum.ra.oracle.GasPriceOracleType;
 import be.e_contract.ethereum.ra.oracle.LatestBlockEvent;
 import be.e_contract.ethereum.ra.oracle.OracleEthereumConnectionFactory;
 import be.e_contract.ethereum.ra.oracle.PendingTransactionEvent;
+import static be.e_contract.ethereum.ra.oracle.std.Timing.MOVING_WINDOW_SIZE_MINUTES;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -61,6 +63,7 @@ public class DefaultGasPriceOracle implements GasPriceOracle {
     private EthereumConnectionFactory ethereumConnectionFactory;
 
     private Map<String, PendingTransaction> pendingTransactions;
+    private PriorityQueue<PendingTransaction> agingPendingTransactions;
 
     private Map<BigInteger, Timing> gasPrices;
 
@@ -68,6 +71,7 @@ public class DefaultGasPriceOracle implements GasPriceOracle {
     public void postConstruct() {
         LOGGER.debug("postConstruct");
         this.pendingTransactions = new ConcurrentHashMap<>();
+        this.agingPendingTransactions = new PriorityQueue<>();
         this.gasPrices = new HashMap<>();
     }
 
@@ -119,15 +123,20 @@ public class DefaultGasPriceOracle implements GasPriceOracle {
         if (null == transaction) {
             return;
         }
-        this.pendingTransactions.put(transaction.getHash(), new PendingTransaction(timestamp, transaction.getGasPrice()));
-        // TODO: also provide a moving window cleanup here
+        synchronized (this.pendingTransactions) {
+            PendingTransaction pendingTransaction = new PendingTransaction(transactionHash, timestamp, transaction.getGasPrice());
+            this.pendingTransactions.put(transaction.getHash(), pendingTransaction);
+            this.agingPendingTransactions.add(pendingTransaction);
+        }
     }
 
     private void observeLatestBlock(@Observes LatestBlockEvent latestBlockEvent) {
         String blockHash = latestBlockEvent.getBlockHash();
         EthBlock.Block block;
+        BigInteger nodeGasPrice;
         try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
             block = ethereumConnection.getBlock(blockHash, true);
+            nodeGasPrice = ethereumConnection.getGasPrice();
         } catch (ResourceException ex) {
             LOGGER.error("JCA error: " + ex.getMessage(), ex);
             return;
@@ -139,7 +148,13 @@ public class DefaultGasPriceOracle implements GasPriceOracle {
             Transaction transaction = transactionObject.get();
             String transactionHash = transaction.getHash();
             // remove the transaction, independent of the transaction type (regular or contract)
-            PendingTransaction pendingTransaction = this.pendingTransactions.remove(transactionHash);
+            PendingTransaction pendingTransaction;
+            synchronized (this.pendingTransactions) {
+                pendingTransaction = this.pendingTransactions.remove(transactionHash);
+                if (null != pendingTransaction) {
+                    this.agingPendingTransactions.remove(pendingTransaction);
+                }
+            }
             if (!transaction.getGas().equals(BigInteger.valueOf(21000))) {
                 // we only want stats on regular transactions
                 continue;
@@ -164,8 +179,9 @@ public class DefaultGasPriceOracle implements GasPriceOracle {
             timing.addTiming(pendingTransaction.getCreated(), blockReceived);
         }
 
+        DateTime now = new DateTime();
+        // moving window on gas prices
         synchronized (this.gasPrices) {
-            DateTime now = new DateTime();
             List<Timing> cleanupTimings = new LinkedList<>();
             for (Timing timing : this.gasPrices.values()) {
                 if (timing.cleanMovingWindow(now)) {
@@ -183,13 +199,32 @@ public class DefaultGasPriceOracle implements GasPriceOracle {
             LOGGER.debug("total transactions in moving window: {}", totalCount);
         }
 
+        // moving window on pending transactions
+        int removedPendingTransactionsCount = 0;
+        PendingTransaction pendingTransaction = this.agingPendingTransactions.peek();
+        while (null != pendingTransaction) {
+            DateTime created = pendingTransaction.getCreated();
+            if (created.plusMinutes(MOVING_WINDOW_SIZE_MINUTES).isAfter(now)) {
+                break;
+            }
+            // remove old entry
+            synchronized (this.pendingTransactions) {
+                pendingTransaction = this.agingPendingTransactions.poll();
+                String transactionHash = pendingTransaction.getTransactionHash();
+                this.pendingTransactions.remove(transactionHash);
+            }
+            removedPendingTransactionsCount++;
+            pendingTransaction = this.agingPendingTransactions.peek();
+        }
+        LOGGER.debug("removed pending transaction from window: {}", removedPendingTransactionsCount);
+
         if (!updated) {
             // only redo the table on changes
             return;
         }
-        // looking at this number, we definitely also need a moving window on the pending transactions
         LOGGER.debug("number of pending transactions: {}", this.pendingTransactions.size());
         LOGGER.debug("size of gas price table: {}", this.gasPrices.size());
+        LOGGER.debug("node gas price: {}", Convert.fromWei(new BigDecimal(nodeGasPrice), Convert.Unit.GWEI));
         // next is just for debugging
         int count = 40;
         List<Map.Entry<BigInteger, Timing>> gasPricesList = new ArrayList<>(this.gasPrices.entrySet());
@@ -215,7 +250,10 @@ public class DefaultGasPriceOracle implements GasPriceOracle {
         LOGGER.debug("connected: {}", event.isConnected());
         if (!event.isConnected()) {
             // we cannot trust the timing anymore
-            this.pendingTransactions.clear();
+            synchronized (this.pendingTransactions) {
+                this.pendingTransactions.clear();
+                this.agingPendingTransactions.clear();
+            }
         }
     }
 }
