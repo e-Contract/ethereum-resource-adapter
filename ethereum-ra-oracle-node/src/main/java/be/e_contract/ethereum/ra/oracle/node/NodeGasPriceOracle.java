@@ -21,8 +21,9 @@ import be.e_contract.ethereum.ra.api.EthereumConnection;
 import be.e_contract.ethereum.ra.api.EthereumConnectionFactory;
 import be.e_contract.ethereum.ra.oracle.GasPriceOracle;
 import be.e_contract.ethereum.ra.oracle.GasPriceOracleType;
+import be.e_contract.ethereum.ra.oracle.OracleEthereumConnectionFactory;
 import java.math.BigInteger;
-import javax.annotation.Resource;
+import javax.inject.Inject;
 import javax.resource.ResourceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +38,8 @@ public class NodeGasPriceOracle implements GasPriceOracle {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NodeGasPriceOracle.class);
 
-    @Resource(mappedName = "java:/EthereumConnectionFactory")
+    @Inject
+    @OracleEthereumConnectionFactory
     private EthereumConnectionFactory ethereumConnectionFactory;
 
     @Override

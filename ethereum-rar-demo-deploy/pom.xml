@@ -34,6 +34,11 @@
                         </ejbModule>
                         <ejbModule>
                             <groupId>be.e-contract.ethereum-resource-adapter</groupId>
+                            <artifactId>ethereum-ra-oracle-node</artifactId>
+                            <excluded>${module.oracles.excluded}</excluded>
+                        </ejbModule>
+                        <ejbModule>
+                            <groupId>be.e-contract.ethereum-resource-adapter</groupId>
                             <artifactId>ethereum-ra-oracle-default</artifactId>
                             <excluded>${module.oracles.excluded}</excluded>
                         </ejbModule>
@@ -74,6 +79,18 @@
         <dependency>
             <groupId>be.e-contract.ethereum-resource-adapter</groupId>
             <artifactId>ethereum-ra-oracle</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+            <type>ejb</type>
+        </dependency>
+        <dependency>
+            <groupId>be.e-contract.ethereum-resource-adapter</groupId>
+            <artifactId>ethereum-ra-oracle-node</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+            <type>ejb</type>
+        </dependency>
+        <dependency>
+            <groupId>be.e-contract.ethereum-resource-adapter</groupId>
+            <artifactId>ethereum-ra-oracle-default</artifactId>
             <version>1.0.0-SNAPSHOT</version>
             <type>ejb</type>
         </dependency>
@@ -124,19 +141,6 @@
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>be.e-contract.ethereum-resource-adapter</groupId>
-                    <artifactId>ethereum-ra-oracle-node</artifactId>
-                    <version>1.0.0-SNAPSHOT</version>
-                </dependency>
-                <dependency>
-                    <groupId>be.e-contract.ethereum-resource-adapter</groupId>
-                    <artifactId>ethereum-ra-oracle-default</artifactId>
-                    <version>1.0.0-SNAPSHOT</version>
-                    <type>ejb</type>
-                </dependency>
-            </dependencies>
             <properties>
                 <module.oracles.excluded>false</module.oracles.excluded>
             </properties>
@@ -146,15 +150,6 @@
             <properties>
                 <module.oracles.excluded>true</module.oracles.excluded>
             </properties>
-            <dependencies>
-                <!-- even though not included in the EAR, we need this to keep maven-ear-plugin happy -->
-                <dependency>
-                    <groupId>be.e-contract.ethereum-resource-adapter</groupId>
-                    <artifactId>ethereum-ra-oracle-default</artifactId>
-                    <version>1.0.0-SNAPSHOT</version>
-                    <type>ejb</type>
-                </dependency>
-            </dependencies>
         </profile>
     </profiles>
     

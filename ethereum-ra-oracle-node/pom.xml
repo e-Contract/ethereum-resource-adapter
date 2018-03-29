@@ -11,6 +11,7 @@
     <name>Ethereum Resource Adapter Oracle Node</name>
     <groupId>be.e-contract.ethereum-resource-adapter</groupId>
     <artifactId>ethereum-ra-oracle-node</artifactId>
+    <packaging>ejb</packaging>
     
     <dependencies>
         <dependency>
