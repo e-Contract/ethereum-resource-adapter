@@ -23,7 +23,6 @@ import javax.resource.ResourceException;
 import javax.resource.spi.LocalTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.web3j.protocol.core.methods.response.EthSendTransaction;
 
 public class EthereumLocalTransaction implements LocalTransaction {
 
@@ -48,11 +47,8 @@ public class EthereumLocalTransaction implements LocalTransaction {
     public void commit() throws ResourceException {
         LOGGER.debug("commit");
         EthereumTransactionCommit ethereumTransactionCommit = new EthereumTransactionCommit(this.rawTransactions, this.ethereumManagedConnection);
-        EthSendTransaction ethSendTransaction = ethereumTransactionCommit.commit();
+        ethereumTransactionCommit.commit();
         this.rawTransactions.clear();
-        if (ethSendTransaction.hasError()) {
-            throw new ResourceException(ethSendTransaction.getError().getMessage());
-        }
     }
 
     @Override

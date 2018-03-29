@@ -20,7 +20,6 @@ package be.e_contract.ethereum.ra;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Date;
-import java.util.concurrent.ScheduledExecutorService;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,10 +36,6 @@ public class Web3jFactory {
     private static final Logger LOGGER = LoggerFactory.getLogger(Web3jFactory.class);
 
     public static Web3j createWeb3j(String nodeLocation) throws IOException {
-        return createWeb3j(nodeLocation, Async.defaultExecutorService());
-    }
-
-    public static Web3j createWeb3j(String nodeLocation, ScheduledExecutorService scheduledExecutorService) throws IOException {
         Web3jService service;
         if (nodeLocation.startsWith("http")) {
             service = new HttpService(nodeLocation);
@@ -50,7 +45,7 @@ public class Web3jFactory {
             service = new UnixIpcService(nodeLocation);
         }
         // poll every half second
-        Web3j web3j = Web3j.build(service, 500, scheduledExecutorService);
+        Web3j web3j = Web3j.build(service, 500, Async.defaultExecutorService());
         BigInteger peerCount = web3j.netPeerCount().send().getQuantity();
         if (BigInteger.ZERO.equals(peerCount)) {
             LOGGER.warn("Node has no peers.");

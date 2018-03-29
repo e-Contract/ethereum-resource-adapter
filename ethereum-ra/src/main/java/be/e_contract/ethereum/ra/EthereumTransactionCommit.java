@@ -42,15 +42,17 @@ public class EthereumTransactionCommit {
         this(Collections.singletonList(rawTransaction), ethereumManagedConnection);
     }
 
-    public EthSendTransaction commit() throws ResourceException {
-        for (String rawTransaction : this.rawTransactions) {
+    public void commit() throws ResourceException {
+        while (!this.rawTransactions.isEmpty()) {
+            String rawTransaction = this.rawTransactions.get(0);
             int count = 10;
             LOGGER.debug("commit raw transaction: {}", rawTransaction);
+            EthSendTransaction ethSendTransaction;
             while (true) {
                 try {
                     Web3j web3j = this.ethereumManagedConnection.getWeb3j();
-                    EthSendTransaction ethSendTransaction = web3j.ethSendRawTransaction(rawTransaction).sendAsync().get();
-                    return ethSendTransaction;
+                    ethSendTransaction = web3j.ethSendRawTransaction(rawTransaction).sendAsync().get();
+                    break;
                 } catch (Exception ex) {
                     LOGGER.error("web3j error: " + ex.getMessage(), ex);
                     count--;
@@ -66,7 +68,11 @@ public class EthereumTransactionCommit {
                     }
                 }
             }
+            if (ethSendTransaction.hasError()) {
+                LOGGER.warn("send transaction error: {}", ethSendTransaction.getError().getMessage());
+                throw new ResourceException(ethSendTransaction.getError().getMessage());
+            }
+            this.rawTransactions.remove(0);
         }
-        throw new ResourceException();
     }
 }

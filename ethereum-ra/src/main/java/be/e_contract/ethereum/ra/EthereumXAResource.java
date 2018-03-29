@@ -28,7 +28,6 @@ import javax.transaction.xa.Xid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.web3j.protocol.Web3j;
-import org.web3j.protocol.core.methods.response.EthSendTransaction;
 
 /**
  * Although the basics already work, this class still needs some work.
@@ -67,17 +66,13 @@ public class EthereumXAResource implements XAResource {
         this.currentXid = xid;
         List<String> rawTransactions = getRawTransactions(xid);
         EthereumTransactionCommit ethereumTransactionCommit = new EthereumTransactionCommit(rawTransactions, this.ethereumManagedConnection);
-        EthSendTransaction ethSendTransaction;
         try {
-            ethSendTransaction = ethereumTransactionCommit.commit();
+            ethereumTransactionCommit.commit();
         } catch (ResourceException ex) {
             LOGGER.error("could not commit transaction: " + ex.getMessage(), ex);
             throw new XAException();
         }
         rawTransactions.clear();
-        if (ethSendTransaction.hasError()) {
-            throw new XAException(ethSendTransaction.getError().getMessage());
-        }
     }
 
     @Override

@@ -42,7 +42,6 @@ import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.response.EthBlock;
 import org.web3j.protocol.core.methods.response.EthGetTransactionReceipt;
-import org.web3j.protocol.core.methods.response.EthSendTransaction;
 import org.web3j.protocol.core.methods.response.Transaction;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 
@@ -271,11 +270,8 @@ public class EthereumManagedConnection implements ManagedConnection {
         }
         LOGGER.debug("directly sending transaction");
         EthereumTransactionCommit ethereumTransactionCommit = new EthereumTransactionCommit(rawTransaction, this);
-        EthSendTransaction ethSendTransaction = ethereumTransactionCommit.commit();
-        if (ethSendTransaction.hasError()) {
-            throw new ResourceException(ethSendTransaction.getError().getMessage());
-        }
-        return ethSendTransaction.getTransactionHash();
+        ethereumTransactionCommit.commit();
+        return null;
     }
 
     public TransactionConfirmation getTransactionConfirmation(String transactionHash) throws Exception {
