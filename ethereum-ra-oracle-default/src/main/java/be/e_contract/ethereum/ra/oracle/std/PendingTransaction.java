@@ -20,7 +20,7 @@ package be.e_contract.ethereum.ra.oracle.std;
 import java.math.BigInteger;
 import org.joda.time.DateTime;
 
-public class PendingTransaction {
+public class PendingTransaction implements Comparable<PendingTransaction> {
 
     private final BigInteger gasPrice;
     private final DateTime created;
@@ -36,5 +36,10 @@ public class PendingTransaction {
 
     public DateTime getCreated() {
         return this.created;
+    }
+
+    @Override
+    public int compareTo(PendingTransaction pt) {
+        return this.created.compareTo(pt.getCreated());
     }
 }

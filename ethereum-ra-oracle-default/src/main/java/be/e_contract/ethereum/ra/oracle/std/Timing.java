@@ -17,6 +17,7 @@
  */
 package be.e_contract.ethereum.ra.oracle.std;
 
+import java.math.BigInteger;
 import java.util.PriorityQueue;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
@@ -24,12 +25,16 @@ import org.joda.time.Interval;
 
 public class Timing {
 
+    public static final int MOVING_WINDOW_SIZE_MINUTES = 5;
+
+    private final BigInteger gasPrice;
     private Duration totalTime;
     private int count;
 
     private final PriorityQueue<TimingEntry> timingEntries;
 
-    public Timing() {
+    public Timing(BigInteger gasPrice) {
+        this.gasPrice = gasPrice;
         this.totalTime = new Duration(0);
         this.count = 0;
         this.timingEntries = new PriorityQueue<>();
@@ -47,7 +52,7 @@ public class Timing {
         TimingEntry timingEntry = this.timingEntries.peek();
         while (null != timingEntry) {
             DateTime created = timingEntry.getCreated();
-            if (created.plusMinutes(5).isAfter(now)) {
+            if (created.plusMinutes(MOVING_WINDOW_SIZE_MINUTES).isAfter(now)) {
                 break;
             }
             // remove old entry
@@ -73,5 +78,9 @@ public class Timing {
 
     public int getCount() {
         return this.count;
+    }
+
+    public BigInteger getGasPrice() {
+        return this.gasPrice;
     }
 }

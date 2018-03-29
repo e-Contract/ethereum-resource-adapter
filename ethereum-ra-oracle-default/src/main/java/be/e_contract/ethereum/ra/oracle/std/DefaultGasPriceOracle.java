@@ -29,6 +29,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -153,7 +154,7 @@ public class DefaultGasPriceOracle implements GasPriceOracle {
             synchronized (this.gasPrices) {
                 timing = this.gasPrices.get(gasPrice);
                 if (null == timing) {
-                    timing = new Timing();
+                    timing = new Timing(gasPrice);
                     this.gasPrices.put(gasPrice, timing);
                 }
             }
@@ -165,9 +166,15 @@ public class DefaultGasPriceOracle implements GasPriceOracle {
 
         synchronized (this.gasPrices) {
             DateTime now = new DateTime();
+            List<Timing> cleanupTimings = new LinkedList<>();
             for (Timing timing : this.gasPrices.values()) {
-                timing.cleanMovingWindow(now);
-                // we could also remove the gas price entry here completely...
+                if (timing.cleanMovingWindow(now)) {
+                    cleanupTimings.add(timing);
+                }
+            }
+            for (Timing cleanupTiming : cleanupTimings) {
+                BigInteger gasPrice = cleanupTiming.getGasPrice();
+                this.gasPrices.remove(gasPrice);
             }
             int totalCount = 0;
             for (Timing timing : this.gasPrices.values()) {
@@ -180,6 +187,9 @@ public class DefaultGasPriceOracle implements GasPriceOracle {
             // only redo the table on changes
             return;
         }
+        // looking at this number, we definitely also need a moving window on the pending transactions
+        LOGGER.debug("number of pending transactions: {}", this.pendingTransactions.size());
+        LOGGER.debug("size of gas price table: {}", this.gasPrices.size());
         // next is just for debugging
         int count = 40;
         List<Map.Entry<BigInteger, Timing>> gasPricesList = new ArrayList<>(this.gasPrices.entrySet());
