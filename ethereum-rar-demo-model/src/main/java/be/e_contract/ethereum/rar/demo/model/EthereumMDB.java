@@ -20,6 +20,7 @@ package be.e_contract.ethereum.rar.demo.model;
 import be.e_contract.ethereum.ra.api.EthereumMessageListener;
 import java.util.Date;
 import javax.ejb.ActivationConfigProperty;
+import javax.ejb.EJB;
 import javax.ejb.MessageDriven;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -35,6 +36,9 @@ public class EthereumMDB implements EthereumMessageListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EthereumMDB.class);
 
+    @EJB
+    private EthereumBean ethereumBean;
+
     public EthereumMDB() {
         LOGGER.debug("constructor");
     }
@@ -47,6 +51,7 @@ public class EthereumMDB implements EthereumMessageListener {
     @Override
     public void block(String blockHash, Date timestamp) throws Exception {
         LOGGER.debug("block hash: {}", blockHash);
+        this.ethereumBean.getGasPrice(null, false);
     }
 
     @Override

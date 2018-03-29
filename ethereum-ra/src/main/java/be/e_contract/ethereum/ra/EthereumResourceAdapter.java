@@ -22,7 +22,6 @@ import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 import javax.naming.NamingException;
 import javax.naming.Reference;
 import javax.resource.Referenceable;
@@ -92,12 +91,8 @@ public class EthereumResourceAdapter implements ResourceAdapter, Serializable, R
         LOGGER.debug("endpointActivation");
         LOGGER.debug("message endpoint factory: {}", endpointFactory);
         LOGGER.debug("activation spec: {}", spec);
-        EthereumActivationSpec ethereumActivationSpec = (EthereumActivationSpec) spec;
-        EthereumMessageListener ethereumMessageListener = (EthereumMessageListener) endpointFactory.createEndpoint(null);
-        ethereumActivationSpec.setEthereumMessageListener(ethereumMessageListener);
-        String nodeLocation = ethereumActivationSpec.getNodeLocation();
-        LOGGER.debug("node location: {}", nodeLocation);
 
+        boolean supportTransactedDelivery = false;
         for (Method method : EthereumMessageListener.class.getMethods()) {
             boolean transactedDelivery;
             try {
@@ -107,9 +102,22 @@ public class EthereumResourceAdapter implements ResourceAdapter, Serializable, R
                 throw new ResourceException();
             }
             if (transactedDelivery) {
-                LOGGER.warn("not supporting transacted delivery for the moment: {}", ethereumMessageListener);
+                LOGGER.warn("not supporting transacted delivery for the moment: {}", method.getName());
             }
+            supportTransactedDelivery |= transactedDelivery;
         }
+
+        XAResource deliveryXAResource;
+        if (supportTransactedDelivery) {
+            deliveryXAResource = new EthereumDeliveryXAResource();
+        } else {
+            deliveryXAResource = null;
+        }
+        EthereumActivationSpec ethereumActivationSpec = (EthereumActivationSpec) spec;
+        EthereumMessageListener ethereumMessageListener = (EthereumMessageListener) endpointFactory.createEndpoint(deliveryXAResource);
+        ethereumActivationSpec.setEthereumMessageListener(ethereumMessageListener);
+        String nodeLocation = ethereumActivationSpec.getNodeLocation();
+        LOGGER.debug("node location: {}", nodeLocation);
 
         synchronized (this.nodeLocationEthereumWork) {
             // if not synchronized, we might end up with multiple workers for the same node
