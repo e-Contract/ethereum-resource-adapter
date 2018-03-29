@@ -23,6 +23,7 @@ import javax.resource.ResourceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.methods.response.EthSendTransaction;
 
 public class EthereumTransactionCommit {
 
@@ -41,14 +42,15 @@ public class EthereumTransactionCommit {
         this(Collections.singletonList(rawTransaction), ethereumManagedConnection);
     }
 
-    public void commit() throws ResourceException {
+    public EthSendTransaction commit() throws ResourceException {
         for (String rawTransaction : this.rawTransactions) {
             int count = 10;
             LOGGER.debug("commit raw transaction: {}", rawTransaction);
             while (true) {
                 try {
                     Web3j web3j = this.ethereumManagedConnection.getWeb3j();
-                    web3j.ethSendRawTransaction(rawTransaction).send();
+                    EthSendTransaction ethSendTransaction = web3j.ethSendRawTransaction(rawTransaction).sendAsync().get();
+                    return ethSendTransaction;
                 } catch (Exception ex) {
                     LOGGER.error("web3j error: " + ex.getMessage(), ex);
                     count--;
@@ -65,5 +67,6 @@ public class EthereumTransactionCommit {
                 }
             }
         }
+        throw new ResourceException();
     }
 }

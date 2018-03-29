@@ -44,6 +44,7 @@ public class EthereumConnectionFactoryImpl implements EthereumConnectionFactory 
 
     public EthereumConnectionFactoryImpl() {
         this(null, null);
+        LOGGER.debug("default constructor");
     }
 
     public EthereumConnectionFactoryImpl(ManagedConnectionFactory managedConnectionFactory, ConnectionManager cxManager) {
