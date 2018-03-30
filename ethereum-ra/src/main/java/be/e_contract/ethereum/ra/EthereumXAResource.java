@@ -68,7 +68,7 @@ public class EthereumXAResource implements XAResource {
         }
         EthereumTransactionCommit ethereumTransactionCommit = this.xidRawTransactions.get(xid);
         if (null == ethereumTransactionCommit) {
-            throw new XAException("unknown transaction: " + xid);
+            throw new XAException("commit unknown transaction: " + xid);
         }
         try {
             ethereumTransactionCommit.commit();
@@ -76,7 +76,7 @@ public class EthereumXAResource implements XAResource {
             LOGGER.error("could not commit transaction: " + ex.getMessage(), ex);
             throw new XAException(XAException.XA_HEURMIX);
         }
-        ethereumTransactionCommit.clear();
+        this.xidRawTransactions.remove(xid);
     }
 
     @Override
@@ -164,7 +164,8 @@ public class EthereumXAResource implements XAResource {
         }
         EthereumTransactionCommit ethereumTransactionCommit = this.xidRawTransactions.get(xid);
         if (null == ethereumTransactionCommit) {
-            throw new XAException("unknown transaction: " + xid);
+            // this happens on WebLogic
+            throw new XAException("rollback unknown transaction: " + xid);
         }
         List<String> rawTransactions = ethereumTransactionCommit.getRawTransactions();
         LOGGER.debug("number of raw transactions in queue: {}", rawTransactions.size());
