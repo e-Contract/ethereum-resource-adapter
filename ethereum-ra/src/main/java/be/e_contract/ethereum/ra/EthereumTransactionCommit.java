@@ -70,7 +70,8 @@ public class EthereumTransactionCommit {
             }
             if (ethSendTransaction.hasError()) {
                 LOGGER.warn("send transaction error: {}", ethSendTransaction.getError().getMessage());
-                throw new ResourceException(ethSendTransaction.getError().getMessage());
+                // do we fail the transaction here? Actually the JTA transaction itself was OK.
+                //throw new ResourceException(ethSendTransaction.getError().getMessage());
             }
             this.rawTransactions.remove(0);
         }

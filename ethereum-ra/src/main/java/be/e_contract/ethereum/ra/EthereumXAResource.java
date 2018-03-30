@@ -70,7 +70,7 @@ public class EthereumXAResource implements XAResource {
             ethereumTransactionCommit.commit();
         } catch (ResourceException ex) {
             LOGGER.error("could not commit transaction: " + ex.getMessage(), ex);
-            throw new XAException();
+            throw new XAException(XAException.XA_HEURMIX);
         }
         rawTransactions.clear();
     }

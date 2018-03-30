@@ -59,7 +59,7 @@ public class EthereumDeliveryXAResource implements XAResource {
     @Override
     public int prepare(Xid xid) throws XAException {
         LOGGER.debug("prepare");
-        return 0;
+        return XA_OK;
     }
 
     @Override
