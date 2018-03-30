@@ -42,7 +42,7 @@ public class EthereumXAResource implements XAResource {
 
     private final EthereumManagedConnection ethereumManagedConnection;
 
-    private final Map<Xid, List<String>> xidRawTransactions;
+    private final Map<Xid, EthereumTransactionCommit> xidRawTransactions;
 
     private Xid currentXid;
 
@@ -52,36 +52,44 @@ public class EthereumXAResource implements XAResource {
     }
 
     private List<String> getRawTransactions(Xid xid) {
-        List<String> rawTransactions = this.xidRawTransactions.get(xid);
-        if (null == rawTransactions) {
-            rawTransactions = new LinkedList<>();
-            this.xidRawTransactions.put(xid, rawTransactions);
+        EthereumTransactionCommit ethereumTransactionCommit = this.xidRawTransactions.get(xid);
+        if (null == ethereumTransactionCommit) {
+            ethereumTransactionCommit = new EthereumTransactionCommit(this.ethereumManagedConnection, xid);
+            this.xidRawTransactions.put(xid, ethereumTransactionCommit);
         }
-        return rawTransactions;
+        return ethereumTransactionCommit.getRawTransactions();
     }
 
     @Override
     public void commit(Xid xid, boolean onePhase) throws XAException {
         LOGGER.debug("commit: {} - one phase {}", xid, onePhase);
-        this.currentXid = xid;
-        List<String> rawTransactions = getRawTransactions(xid);
-        EthereumTransactionCommit ethereumTransactionCommit = new EthereumTransactionCommit(rawTransactions, this.ethereumManagedConnection);
+        if (!this.currentXid.equals(xid)) {
+            throw new XAException("invalid xid");
+        }
+        EthereumTransactionCommit ethereumTransactionCommit = this.xidRawTransactions.get(xid);
+        if (null == ethereumTransactionCommit) {
+            throw new XAException("unknown transaction: " + xid);
+        }
         try {
             ethereumTransactionCommit.commit();
         } catch (ResourceException ex) {
             LOGGER.error("could not commit transaction: " + ex.getMessage(), ex);
             throw new XAException(XAException.XA_HEURMIX);
         }
-        rawTransactions.clear();
+        ethereumTransactionCommit.clear();
     }
 
     @Override
     public void end(Xid xid, int flags) throws XAException {
         LOGGER.debug("end: {} - flags {}", xid, flags);
-        this.currentXid = xid;
+        if (!this.currentXid.equals(xid)) {
+            throw new XAException("invalid xid");
+        }
         List<String> rawTransactions = getRawTransactions(xid);
         if (isFlagSet(flags, TMFAIL)) {
             rawTransactions.clear();
+            this.xidRawTransactions.remove(xid);
+            return;
         }
         if (!rawTransactions.isEmpty()) {
             try {
@@ -102,7 +110,12 @@ public class EthereumXAResource implements XAResource {
     @Override
     public void forget(Xid xid) throws XAException {
         LOGGER.debug("forget: {}", xid);
-        this.currentXid = xid;
+        if (xid == null) {
+            return;
+        }
+        if (xid.equals(this.currentXid)) {
+            this.currentXid = null;
+        }
     }
 
     @Override
@@ -113,33 +126,49 @@ public class EthereumXAResource implements XAResource {
 
     @Override
     public boolean isSameRM(XAResource xaRes) throws XAException {
-        boolean result = this == xaRes;
-        if (result) {
-            LOGGER.debug("isSameRM: {}", result);
+        if (this == xaRes) {
+            return true;
         }
-        return result;
+        if (xaRes instanceof EthereumXAResource) {
+            LOGGER.warn("Another EthereumXAResource was checked");
+            return true;
+        }
+        return false;
     }
 
     @Override
     public int prepare(Xid xid) throws XAException {
         LOGGER.debug("prepare: {}", xid);
-        this.currentXid = xid;
         return XA_OK;
     }
 
     @Override
     public Xid[] recover(int flag) throws XAException {
+        LOGGER.debug("recover instance: {}", this);
         LOGGER.debug("recover: {}", flag);
-        return new Xid[0];
+        List<Xid> xids = new LinkedList<>();
+        for (EthereumTransactionCommit ethereumTransactionCommit : this.xidRawTransactions.values()) {
+            if (ethereumTransactionCommit.isPrepared()) {
+                xids.add(ethereumTransactionCommit.getXid());
+            }
+        }
+        LOGGER.debug("recover: {}", xids);
+        return xids.toArray(new Xid[0]);
     }
 
     @Override
     public void rollback(Xid xid) throws XAException {
         LOGGER.debug("rollback: {}", xid);
-        this.currentXid = xid;
-        List<String> rawTransactions = getRawTransactions(xid);
+        if (!this.currentXid.equals(xid)) {
+            throw new XAException("invalid xid");
+        }
+        EthereumTransactionCommit ethereumTransactionCommit = this.xidRawTransactions.get(xid);
+        if (null == ethereumTransactionCommit) {
+            throw new XAException("unknown transaction: " + xid);
+        }
+        List<String> rawTransactions = ethereumTransactionCommit.getRawTransactions();
         LOGGER.debug("number of raw transactions in queue: {}", rawTransactions.size());
-        rawTransactions.clear();
+        this.xidRawTransactions.remove(xid);
     }
 
     @Override
@@ -155,16 +184,27 @@ public class EthereumXAResource implements XAResource {
     @Override
     public void start(Xid xid, int flags) throws XAException {
         LOGGER.debug("start: {} - flags {}", xid, flags);
-        this.currentXid = xid;
+        if (isFlagSet(flags, TMNOFLAGS)) {
+            if (this.xidRawTransactions.containsKey(xid)) {
+                throw new XAException("duplicate xid: " + xid);
+            }
+            this.currentXid = xid;
+        }
+
         List<String> rawTransactions = getRawTransactions(xid);
         if (!isFlagSet(flags, TMRESUME)) {
             rawTransactions.clear();
+        }
+        if (isFlagSet(flags, TMRESUME)) {
+            if (this.currentXid.equals(xid)) {
+                throw new XAException("attempting to resume in different transaction: expected " + this.currentXid + " but received " + xid);
+            }
         }
     }
 
     public void scheduleRawTransaction(String rawTransaction) {
         LOGGER.debug("schedule raw transaction: {}", rawTransaction);
-        List<String> rawTransactions = this.xidRawTransactions.get(this.currentXid);
-        rawTransactions.add(rawTransaction);
+        EthereumTransactionCommit ethereumTransactionCommit = this.xidRawTransactions.get(this.currentXid);
+        ethereumTransactionCommit.getRawTransactions().add(rawTransaction);
     }
 }

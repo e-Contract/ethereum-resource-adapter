@@ -18,8 +18,10 @@
 package be.e_contract.ethereum.ra;
 
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import javax.resource.ResourceException;
+import javax.transaction.xa.Xid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.web3j.protocol.Web3j;
@@ -33,13 +35,42 @@ public class EthereumTransactionCommit {
 
     private final EthereumManagedConnection ethereumManagedConnection;
 
+    private boolean prepared;
+
+    private Xid xid;
+
     public EthereumTransactionCommit(List<String> rawTransactions, EthereumManagedConnection ethereumManagedConnection) {
         this.rawTransactions = rawTransactions;
         this.ethereumManagedConnection = ethereumManagedConnection;
     }
 
     public EthereumTransactionCommit(String rawTransaction, EthereumManagedConnection ethereumManagedConnection) {
-        this(Collections.singletonList(rawTransaction), ethereumManagedConnection);
+        this(new LinkedList(Collections.singletonList(rawTransaction)), ethereumManagedConnection);
+    }
+
+    public EthereumTransactionCommit(EthereumManagedConnection ethereumManagedConnection, Xid xid) {
+        this(new LinkedList<>(), ethereumManagedConnection);
+        this.xid = xid;
+    }
+
+    public boolean isPrepared() {
+        return this.prepared;
+    }
+
+    public void setPrepared(boolean prepared) {
+        this.prepared = prepared;
+    }
+
+    public List<String> getRawTransactions() {
+        return this.rawTransactions;
+    }
+
+    public void clear() {
+        this.rawTransactions.clear();
+    }
+
+    public Xid getXid() {
+        return this.xid;
     }
 
     public void commit() throws ResourceException {
@@ -75,5 +106,6 @@ public class EthereumTransactionCommit {
             }
             this.rawTransactions.remove(0);
         }
+        this.prepared = false;
     }
 }

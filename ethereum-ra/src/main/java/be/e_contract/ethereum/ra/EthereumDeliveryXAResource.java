@@ -31,17 +31,17 @@ public class EthereumDeliveryXAResource implements XAResource {
 
     @Override
     public void commit(Xid xid, boolean onePhase) throws XAException {
-        LOGGER.debug("commit");
+        LOGGER.debug("commit: {}", xid);
     }
 
     @Override
     public void end(Xid xid, int flags) throws XAException {
-        LOGGER.debug("end");
+        LOGGER.debug("end: {}", xid);
     }
 
     @Override
     public void forget(Xid xid) throws XAException {
-        LOGGER.debug("forget");
+        LOGGER.debug("forget: {}", xid);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class EthereumDeliveryXAResource implements XAResource {
 
     @Override
     public int prepare(Xid xid) throws XAException {
-        LOGGER.debug("prepare");
+        LOGGER.debug("prepare: {}", xid);
         return XA_OK;
     }
 
@@ -70,7 +70,7 @@ public class EthereumDeliveryXAResource implements XAResource {
 
     @Override
     public void rollback(Xid xid) throws XAException {
-        LOGGER.debug("rollback");
+        LOGGER.debug("rollback: {}", xid);
     }
 
     @Override
@@ -82,6 +82,6 @@ public class EthereumDeliveryXAResource implements XAResource {
 
     @Override
     public void start(Xid xid, int flags) throws XAException {
-        LOGGER.debug("start");
+        LOGGER.debug("start: {}", xid);
     }
 }
