@@ -131,7 +131,7 @@ public class EthereumXAResource implements XAResource {
         }
         if (xaRes instanceof EthereumXAResource) {
             LOGGER.warn("Another EthereumXAResource was checked");
-            return true;
+            return false;
         }
         return false;
     }
