@@ -36,9 +36,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @WebServlet(urlPatterns = "/test")
-public class EthereumServlet extends HttpServlet {
+public class EthereumDemoServlet extends HttpServlet {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(EthereumServlet.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EthereumDemoServlet.class);
 
     @Resource(mappedName = "java:/EthereumConnectionFactory")
     private EthereumConnectionFactory ethereumConnectionFactory;

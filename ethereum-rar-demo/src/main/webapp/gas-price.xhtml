@@ -19,12 +19,12 @@
             <h:messages/>
             <h:panelGrid columns="2">
                 <h:outputText value="node gas price:"/>
-                <h:outputText value="#{ethereumController.gasPrice}"/>
+                <h:outputText value="#{ethereumDemoController.gasPrice}"/>
 
                 <h:outputText value="maximum transaction duration:"/>
-                <h:outputText value="#{ethereumController.maxDuration}"/>
+                <h:outputText value="#{ethereumDemoController.maxDuration}"/>
             </h:panelGrid>
-            <h:dataTable value="#{ethereumController.gasPrices}" var="gasPriceEntry">
+            <h:dataTable value="#{ethereumDemoController.gasPrices}" var="gasPriceEntry">
                 <h:column>
                     <f:facet name="header">
                         Oracle

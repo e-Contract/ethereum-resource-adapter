@@ -20,13 +20,13 @@
             <h:form>
                 <h:panelGrid columns="2">
                     <h:outputText value="Account"/>
-                    <h:inputText value="#{ethereumAccountController.selectedAccount}" size="60"/>
+                    <h:inputText value="#{ethereumDemoAccountController.selectedAccount}" size="60"/>
 
                     <h:outputText value="Password"/>
-                    <h:inputText value="#{ethereumAccountController.password}"/>
+                    <h:inputText value="#{ethereumDemoAccountController.password}"/>
                 </h:panelGrid>
                 <h:panelGrid columns="2">
-                    <h:commandButton value="Unlock" action="#{ethereumAccountController.doUnlock}"/>
+                    <h:commandButton value="Unlock" action="#{ethereumDemoAccountController.doUnlock}"/>
                     <h:commandButton value="Back" action="/accounts"/>
                 </h:panelGrid>
             </h:form>

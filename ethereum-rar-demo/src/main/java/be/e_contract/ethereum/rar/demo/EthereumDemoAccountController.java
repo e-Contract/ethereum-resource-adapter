@@ -27,11 +27,11 @@ import javax.inject.Named;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Named("ethereumAccountController")
+@Named("ethereumDemoAccountController")
 @RequestScoped
-public class EthereumAccountController implements Serializable {
+public class EthereumDemoAccountController implements Serializable {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(EthereumAccountController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EthereumDemoAccountController.class);
 
     @EJB
     private EthereumBean ethereumBean;

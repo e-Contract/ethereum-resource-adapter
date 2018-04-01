@@ -36,11 +36,11 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Named("ethereumController")
+@Named("ethereumDemoController")
 @RequestScoped
-public class EthereumController implements Serializable {
+public class EthereumDemoController implements Serializable {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(EthereumController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EthereumDemoController.class);
 
     @EJB
     private EthereumBean ethereumBean;
