@@ -126,4 +126,12 @@ public class EthereumBean {
             return null;
         }
     }
+
+    public void unlockAccount(String account, String password) {
+        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+            ethereumConnection.unlockAccount(account, password);
+        } catch (ResourceException ex) {
+            LOGGER.error("JCA error: " + ex.getMessage(), ex);
+        }
+    }
 }

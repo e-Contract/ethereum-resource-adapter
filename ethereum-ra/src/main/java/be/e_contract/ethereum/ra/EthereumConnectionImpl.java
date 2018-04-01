@@ -179,4 +179,14 @@ public class EthereumConnectionImpl implements EthereumConnection {
             throw new ResourceException(ex);
         }
     }
+
+    @Override
+    public boolean unlockAccount(String account, String password) throws ResourceException {
+        try {
+            return this.ethereumManagedConnection.unlockAccount(account, password);
+        } catch (Exception ex) {
+            LOGGER.error("error: " + ex.getMessage(), ex);
+            throw new ResourceException(ex);
+        }
+    }
 }

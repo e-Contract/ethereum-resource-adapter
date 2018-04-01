@@ -23,7 +23,6 @@ import be.e_contract.ethereum.rar.demo.model.EthereumBean;
 import be.e_contract.ethereum.rar.demo.model.RollbackException;
 import java.io.Serializable;
 import java.math.BigInteger;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -54,8 +53,6 @@ public class EthereumController implements Serializable {
     private boolean rollback;
 
     private Integer maxDuration;
-
-    private String oracle;
 
     private String rawTransaction;
 
@@ -90,14 +87,6 @@ public class EthereumController implements Serializable {
 
     public void setMaxDuration(Integer maxDuration) {
         this.maxDuration = maxDuration;
-    }
-
-    public String getOracle() {
-        return this.oracle;
-    }
-
-    public void setOracle(String oracle) {
-        this.oracle = oracle;
     }
 
     public String getRawTransaction() {
@@ -136,16 +125,7 @@ public class EthereumController implements Serializable {
     }
 
     public List<GasPrice> getGasPrices() {
-        Map<String, BigInteger> gasPrices;
-        if (StringUtils.isEmpty(this.oracle)) {
-            gasPrices = this.gasPriceOracleBean.getGasPrices(this.maxDuration);
-        } else {
-            gasPrices = new HashMap<>();
-            BigInteger gasPrice = this.gasPriceOracleBean.getGasPrice(this.oracle, this.maxDuration);
-            if (null != gasPrice) {
-                gasPrices.put(this.oracle, gasPrice);
-            }
-        }
+        Map<String, BigInteger> gasPrices = this.gasPriceOracleBean.getGasPrices(this.maxDuration);
         List<GasPrice> result = new LinkedList<>();
         for (Map.Entry<String, BigInteger> gasPriceEntry : gasPrices.entrySet()) {
             GasPrice gasPrice = new GasPrice(gasPriceEntry.getKey(), gasPriceEntry.getValue());

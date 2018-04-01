@@ -40,6 +40,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.admin.Admin;
+import org.web3j.protocol.admin.methods.response.PersonalUnlockAccount;
 import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.response.EthBlock;
@@ -357,8 +358,18 @@ public class EthereumManagedConnection implements ManagedConnection {
         return admin.ethAccounts().send().getAccounts();
     }
 
-    String newAccount(String password) throws Exception {
+    public String newAccount(String password) throws Exception {
         Admin admin = getWeb3j();
         return admin.personalNewAccount(password).send().getAccountId();
+    }
+
+    public boolean unlockAccount(String account, String password) throws Exception {
+        Admin admin = getWeb3j();
+        PersonalUnlockAccount personalUnlockAccount = admin.personalUnlockAccount(account, password).send();
+        if (personalUnlockAccount.hasError()) {
+            LOGGER.error("personal unlock account error: {}", personalUnlockAccount.getError().getMessage());
+            return false;
+        }
+        return personalUnlockAccount.accountUnlocked();
     }
 }

@@ -63,6 +63,10 @@ public class EthereumAccountController implements Serializable {
         return this.selectedAccount;
     }
 
+    public void setSelectedAccount(String selectedAccount) {
+        this.selectedAccount = selectedAccount;
+    }
+
     public BigInteger getSelectedAccountBalance() {
         return this.selectedAccountBalance;
     }
@@ -72,5 +76,16 @@ public class EthereumAccountController implements Serializable {
         this.selectedAccount = account;
         this.selectedAccountBalance = this.ethereumBean.getBalance(this.selectedAccount);
         return "/balance";
+    }
+
+    public String unlock(String account) {
+        this.selectedAccount = account;
+        return "/unlock";
+    }
+
+    public String doUnlock() {
+        LOGGER.debug("unlock {} - password {}", this.selectedAccount, this.password);
+        this.ethereumBean.unlockAccount(this.selectedAccount, this.password);
+        return "/unlocked";
     }
 }

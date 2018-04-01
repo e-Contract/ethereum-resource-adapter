@@ -16,23 +16,18 @@
         </h:head>
 
         <h:body>
-            <h1>Client Node Accounts</h1>
+            <h1>Unlock Account</h1>
             <h:form>
-                <h:dataTable value="#{ethereumAccountController.accounts}" var="account">
-                    <h:column>
-                        <f:facet name="header">
-                            Account
-                        </f:facet>
-                        <h:outputText value="#{account}"/>
-                    </h:column>
-                    <h:column>
-                        <h:commandButton value="Balance" action="#{ethereumAccountController.getBalance(account)}"/>
-                        <h:commandButton value="Unlock" action="#{ethereumAccountController.unlock(account)}"/>
-                    </h:column>
-                </h:dataTable>
                 <h:panelGrid columns="2">
-                    <h:commandButton value="New" action="#{ethereumAccountController.newAccount}"/>
-                    <h:commandButton value="Back" action="/index"/>
+                    <h:outputText value="Account"/>
+                    <h:inputText value="#{ethereumAccountController.selectedAccount}" size="60"/>
+
+                    <h:outputText value="Password"/>
+                    <h:inputText value="#{ethereumAccountController.password}"/>
+                </h:panelGrid>
+                <h:panelGrid columns="2">
+                    <h:commandButton value="Unlock" action="#{ethereumAccountController.doUnlock}"/>
+                    <h:commandButton value="Back" action="/accounts"/>
                 </h:panelGrid>
             </h:form>
         </h:body>
