@@ -29,18 +29,18 @@ import javax.inject.Named;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Named("ethereumDemoController")
+@Named("ethereumDemoRawController")
 @RequestScoped
-public class EthereumDemoController implements Serializable {
+public class EthereumDemoRawController implements Serializable {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(EthereumDemoController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EthereumDemoRawController.class);
 
     @EJB
     private EthereumBean ethereumBean;
 
-    private boolean rollback;
-
     private String rawTransaction;
+
+    private boolean rollback;
 
     private boolean localTransaction;
 
@@ -57,20 +57,20 @@ public class EthereumDemoController implements Serializable {
         this.rollback = rollback;
     }
 
-    public String getRawTransaction() {
-        return this.rawTransaction;
-    }
-
-    public void setRawTransaction(String rawTransaction) {
-        this.rawTransaction = rawTransaction;
-    }
-
     public boolean isLocalTransaction() {
         return this.localTransaction;
     }
 
     public void setLocalTransaction(boolean localTransaction) {
         this.localTransaction = localTransaction;
+    }
+
+    public String getRawTransaction() {
+        return this.rawTransaction;
+    }
+
+    public void setRawTransaction(String rawTransaction) {
+        this.rawTransaction = rawTransaction;
     }
 
     public String sendRawTransaction() {
@@ -85,6 +85,6 @@ public class EthereumDemoController implements Serializable {
         } catch (RollbackException ex) {
             facesContext.addMessage(null, new FacesMessage("rollback error"));
         }
-        return "/index";
+        return "/raw/result";
     }
 }
