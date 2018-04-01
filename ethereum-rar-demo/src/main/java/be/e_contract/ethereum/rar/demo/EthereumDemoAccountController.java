@@ -56,7 +56,7 @@ public class EthereumDemoAccountController implements Serializable {
 
     public String newAccount() {
         this.ethereumBean.newAccount(this.password);
-        return "/accounts";
+        return "/accounts/index";
     }
 
     public String getSelectedAccount() {
@@ -75,17 +75,17 @@ public class EthereumDemoAccountController implements Serializable {
         LOGGER.debug("getBalance: {}", account);
         this.selectedAccount = account;
         this.selectedAccountBalance = this.ethereumBean.getBalance(this.selectedAccount);
-        return "/balance";
+        return "/accounts/balance";
     }
 
     public String unlock(String account) {
         this.selectedAccount = account;
-        return "/unlock";
+        return "/accounts/unlock";
     }
 
     public String doUnlock() {
         LOGGER.debug("unlock {} - password {}", this.selectedAccount, this.password);
         this.ethereumBean.unlockAccount(this.selectedAccount, this.password);
-        return "/unlocked";
+        return "/accounts/unlocked";
     }
 }

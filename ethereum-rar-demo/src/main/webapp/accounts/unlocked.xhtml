@@ -16,18 +16,14 @@
         </h:head>
 
         <h:body>
-            <h1>Unlock Account</h1>
+            <h1>Unlocked Account</h1>
+            <h:panelGrid columns="2">
+                <h:outputText value="Account"/>
+                <h:outputText value="#{ethereumDemoAccountController.selectedAccount}"/>
+            </h:panelGrid>
             <h:form>
-                <h:panelGrid columns="2">
-                    <h:outputText value="Account"/>
-                    <h:inputText value="#{ethereumDemoAccountController.selectedAccount}" size="60"/>
-
-                    <h:outputText value="Password"/>
-                    <h:inputText value="#{ethereumDemoAccountController.password}"/>
-                </h:panelGrid>
-                <h:panelGrid columns="2">
-                    <h:commandButton value="Unlock" action="#{ethereumDemoAccountController.doUnlock}"/>
-                    <h:commandButton value="Back" action="/accounts"/>
+                <h:panelGrid columns="1">
+                    <h:commandButton value="Back" action="/accounts/index"/>
                 </h:panelGrid>
             </h:form>
         </h:body>

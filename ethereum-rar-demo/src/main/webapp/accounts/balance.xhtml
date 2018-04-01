@@ -16,14 +16,17 @@
         </h:head>
 
         <h:body>
-            <h1>Unlocked Account</h1>
+            <h1>Balance</h1>
             <h:panelGrid columns="2">
                 <h:outputText value="Account"/>
                 <h:outputText value="#{ethereumDemoAccountController.selectedAccount}"/>
+
+                <h:outputText value="Balance"/>
+                <h:outputText value="#{ethereumDemoAccountController.selectedAccountBalance}"/>
             </h:panelGrid>
             <h:form>
                 <h:panelGrid columns="1">
-                    <h:commandButton value="Back" action="/accounts"/>
+                    <h:commandButton value="Back" action="/accounts/index"/>
                 </h:panelGrid>
             </h:form>
         </h:body>
