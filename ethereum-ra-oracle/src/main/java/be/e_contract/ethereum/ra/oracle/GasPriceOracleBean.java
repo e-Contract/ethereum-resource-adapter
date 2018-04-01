@@ -73,6 +73,7 @@ public class GasPriceOracleBean {
     }
 
     public Map<String, BigInteger> getGasPrices(Integer maxDuration) {
+        LOGGER.debug("get gas prices for max duration: {}", maxDuration);
         Map<String, GasPriceOracle> gasPriceOracles = getGasPriceOracles();
         Map<String, BigInteger> gasPrices = new HashMap<>();
         for (Map.Entry<String, GasPriceOracle> gasPriceOracleEntry : gasPriceOracles.entrySet()) {

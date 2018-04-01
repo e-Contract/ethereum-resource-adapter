@@ -17,29 +17,32 @@
 
         <h:body>
             <h:messages/>
-            <h:panelGrid columns="2">
-                <h:outputText value="node gas price:"/>
-                <h:outputText value="#{ethereumDemoController.gasPrice}"/>
-
-                <h:outputText value="maximum transaction duration:"/>
-                <h:outputText value="#{ethereumDemoController.maxDuration}"/>
-            </h:panelGrid>
-            <h:dataTable value="#{ethereumDemoController.gasPrices}" var="gasPriceEntry">
-                <h:column>
-                    <f:facet name="header">
-                        Oracle
-                    </f:facet>
-                    <h:outputText value="#{gasPriceEntry.oracle}"/>
-                </h:column>
-                <h:column>
-                    <f:facet name="header">
-                        Price
-                    </f:facet>
-                    <h:outputText value="#{gasPriceEntry.gasPrice}"/>
-                </h:column>
-            </h:dataTable>
             <h:form>
-                <h:commandButton value="Back" action="/index"/>
+                <h:panelGrid columns="2">
+                    <h:outputText value="node gas price:"/>
+                    <h:outputText value="#{ethereumDemoGasPriceController.gasPrice}"/>
+
+                    <h:outputText value="maximum transaction duration:"/>
+                    <h:inputText value="#{ethereumDemoGasPriceController.maxDuration}"/>
+                </h:panelGrid>
+                <h:dataTable value="#{ethereumDemoGasPriceController.gasPrices}" var="gasPriceEntry">
+                    <h:column>
+                        <f:facet name="header">
+                            Oracle
+                        </f:facet>
+                        <h:outputText value="#{gasPriceEntry.oracle}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            Price
+                        </f:facet>
+                        <h:outputText value="#{gasPriceEntry.gasPrice}"/>
+                    </h:column>
+                </h:dataTable>
+                <h:panelGrid columns="2">
+                    <h:commandButton value="Refresh" action="#{ethereumDemoGasPriceController.refresh}"/>
+                    <h:commandButton value="Back" action="/index"/>
+                </h:panelGrid>
             </h:form>
         </h:body>
     </f:view>

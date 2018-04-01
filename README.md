@@ -23,7 +23,7 @@ If you like this project, please consider a donation at:
 
 Why would you want to use such a thing as a JCA Resource Adapter to connect to an Ethereum network?
 
-What does it offer more compared to a library such as web3j for instance?
+What does it offer more compared to direct usage of the web3j library?
 
 ## Transaction support
 
