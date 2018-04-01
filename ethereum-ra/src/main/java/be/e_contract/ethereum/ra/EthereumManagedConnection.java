@@ -24,6 +24,7 @@ import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import javax.resource.ResourceException;
@@ -38,6 +39,7 @@ import javax.transaction.xa.XAResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.web3j.protocol.Web3j;
+import org.web3j.protocol.admin.Admin;
 import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.response.EthBlock;
@@ -59,7 +61,7 @@ public class EthereumManagedConnection implements ManagedConnection {
 
     private EthereumConnectionImpl ethereumConnection;
 
-    private Web3j web3;
+    private Admin web3;
 
     private EthereumLocalTransaction ethereumLocalTransaction;
 
@@ -73,7 +75,7 @@ public class EthereumManagedConnection implements ManagedConnection {
         this.ethereumConnectionRequestInfo = ethereumConnectionRequestInfo;
     }
 
-    public Web3j getWeb3j() throws Exception {
+    public Admin getWeb3j() throws Exception {
         if (this.web3 != null) {
             return this.web3;
         }
@@ -344,9 +346,14 @@ public class EthereumManagedConnection implements ManagedConnection {
         return balance;
     }
 
-    BigInteger getTransactionCount(String address) throws Exception {
+    public BigInteger getTransactionCount(String address) throws Exception {
         Web3j web3j = getWeb3j();
         BigInteger transactionCount = web3j.ethGetTransactionCount(address, DefaultBlockParameterName.LATEST).send().getTransactionCount();
         return transactionCount;
+    }
+
+    public List<String> getAccounts() throws Exception {
+        Admin admin = getWeb3j();
+        return admin.ethAccounts().send().getAccounts();
     }
 }

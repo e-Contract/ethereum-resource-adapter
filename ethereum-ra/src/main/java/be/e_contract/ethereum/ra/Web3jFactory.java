@@ -23,10 +23,11 @@ import java.util.Date;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.web3j.protocol.Web3j;
 import org.web3j.protocol.Web3jService;
+import org.web3j.protocol.admin.Admin;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.response.EthBlock;
+import org.web3j.protocol.core.methods.response.NetPeerCount;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.protocol.ipc.UnixIpcService;
 import org.web3j.utils.Async;
@@ -35,7 +36,7 @@ public class Web3jFactory {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Web3jFactory.class);
 
-    public static Web3j createWeb3j(String nodeLocation) throws IOException {
+    public static Admin createWeb3j(String nodeLocation) throws IOException {
         Web3jService service;
         if (nodeLocation.startsWith("http")) {
             service = new HttpService(nodeLocation);
@@ -44,8 +45,13 @@ public class Web3jFactory {
             LOGGER.warn("web3j IPC is not really stable");
             service = new UnixIpcService(nodeLocation);
         }
-        Web3j web3j = Web3j.build(service, 50, Async.defaultExecutorService());
-        BigInteger peerCount = web3j.netPeerCount().send().getQuantity();
+        Admin web3j = Admin.build(service, 50, Async.defaultExecutorService());
+        NetPeerCount netPeerCount = web3j.netPeerCount().send();
+        if (netPeerCount.hasError()) {
+            LOGGER.error("net peer count error: {}", netPeerCount.getError().getMessage());
+            throw new IOException("net peer count error: " + netPeerCount.getError());
+        }
+        BigInteger peerCount = netPeerCount.getQuantity();
         if (BigInteger.ZERO.equals(peerCount)) {
             LOGGER.warn("Node has no peers.");
             LOGGER.warn("Node probably just started.");

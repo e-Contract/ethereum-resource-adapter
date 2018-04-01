@@ -20,6 +20,7 @@ package be.e_contract.ethereum.ra;
 import be.e_contract.ethereum.ra.api.EthereumConnection;
 import be.e_contract.ethereum.ra.api.TransactionConfirmation;
 import java.math.BigInteger;
+import java.util.List;
 import javax.resource.NotSupportedException;
 import javax.resource.ResourceException;
 import javax.resource.cci.ConnectionMetaData;
@@ -153,6 +154,16 @@ public class EthereumConnectionImpl implements EthereumConnection {
     public BigInteger getTransactionCount(String address) throws ResourceException {
         try {
             return this.ethereumManagedConnection.getTransactionCount(address);
+        } catch (Exception ex) {
+            LOGGER.error("error: " + ex.getMessage(), ex);
+            throw new ResourceException(ex);
+        }
+    }
+
+    @Override
+    public List<String> getAccounts() throws ResourceException {
+        try {
+            return this.ethereumManagedConnection.getAccounts();
         } catch (Exception ex) {
             LOGGER.error("error: " + ex.getMessage(), ex);
             throw new ResourceException(ex);

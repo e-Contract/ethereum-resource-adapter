@@ -22,6 +22,7 @@ import be.e_contract.ethereum.ra.api.EthereumConnectionFactory;
 import be.e_contract.ethereum.ra.api.EthereumConnectionSpec;
 import be.e_contract.ethereum.ra.api.TransactionConfirmation;
 import java.math.BigInteger;
+import java.util.List;
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -94,6 +95,15 @@ public class EthereumBean {
     public TransactionConfirmation getTransactionConfirmation(String transactionHash) {
         try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
             return ethereumConnection.getTransactionConfirmation(transactionHash);
+        } catch (ResourceException ex) {
+            LOGGER.error("JCA error: " + ex.getMessage(), ex);
+            return null;
+        }
+    }
+    
+    public List<String> getAccounts() {
+        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+            return ethereumConnection.getAccounts();
         } catch (ResourceException ex) {
             LOGGER.error("JCA error: " + ex.getMessage(), ex);
             return null;

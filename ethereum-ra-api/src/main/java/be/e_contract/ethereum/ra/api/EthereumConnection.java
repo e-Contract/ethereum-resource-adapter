@@ -18,6 +18,7 @@
 package be.e_contract.ethereum.ra.api;
 
 import java.math.BigInteger;
+import java.util.List;
 import javax.resource.ResourceException;
 import javax.resource.cci.Connection;
 import org.web3j.protocol.core.methods.response.EthBlock;
@@ -100,4 +101,12 @@ public interface EthereumConnection extends Connection, AutoCloseable {
      * @throws ResourceException
      */
     BigInteger getTransactionCount(String address) throws ResourceException;
+
+    /**
+     * Gives back a list of all accounts managed by the client node.
+     *
+     * @return
+     * @throws ResourceException
+     */
+    List<String> getAccounts() throws ResourceException;
 }
