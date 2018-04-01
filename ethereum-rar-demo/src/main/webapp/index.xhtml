@@ -24,15 +24,12 @@
 
                     <h:outputText value="Local transaction:"/>
                     <h:selectBooleanCheckbox value="#{ethereumDemoController.localTransaction}"/>
-
-                    <h:outputText value="Transaction hash:"/>
-                    <h:inputText value="#{ethereumDemoController.transactionHash}" size="70"/>
                 </h:panelGrid>
                 <h:inputTextarea value="#{ethereumDemoController.rawTransaction}" cols="60" rows="5"/>
                 <h:panelGrid columns="3">
                     <h:commandButton value="Get Gas Price" action="/gas-price"/>
                     <h:commandButton value="Send Raw Transaction" action="#{ethereumDemoController.sendRawTransaction}"/>
-                    <h:commandButton value="Get Transaction Confirmation" action="/transaction"/>
+                    <h:commandButton value="Get Transaction Confirmation" action="/confirm/index"/>
                     <h:commandButton value="Accounts" action="/accounts/index"/>
                 </h:panelGrid>
             </h:form>

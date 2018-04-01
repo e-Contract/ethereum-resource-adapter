@@ -17,7 +17,6 @@
  */
 package be.e_contract.ethereum.rar.demo;
 
-import be.e_contract.ethereum.ra.api.TransactionConfirmation;
 import be.e_contract.ethereum.rar.demo.model.EthereumBean;
 import be.e_contract.ethereum.rar.demo.model.RollbackException;
 import java.io.Serializable;
@@ -27,7 +26,6 @@ import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,8 +41,6 @@ public class EthereumDemoController implements Serializable {
     private boolean rollback;
 
     private String rawTransaction;
-
-    private String transactionHash;
 
     private boolean localTransaction;
 
@@ -69,14 +65,6 @@ public class EthereumDemoController implements Serializable {
         this.rawTransaction = rawTransaction;
     }
 
-    public String getTransactionHash() {
-        return this.transactionHash;
-    }
-
-    public void setTransactionHash(String transactionHash) {
-        this.transactionHash = transactionHash;
-    }
-
     public boolean isLocalTransaction() {
         return this.localTransaction;
     }
@@ -98,12 +86,5 @@ public class EthereumDemoController implements Serializable {
             facesContext.addMessage(null, new FacesMessage("rollback error"));
         }
         return "/index";
-    }
-
-    public TransactionConfirmation getTransactionConfirmation() {
-        if (StringUtils.isEmpty(this.transactionHash)) {
-            return null;
-        }
-        return this.ethereumBean.getTransactionConfirmation(this.transactionHash);
     }
 }

@@ -19,31 +19,31 @@
             <h:messages/>
             <h:panelGrid columns="2">
                 <h:outputText value="transaction hash:"/>
-                <h:outputText value="#{ethereumDemoController.transactionHash}"/>
+                <h:outputText value="#{ethereumDemoConfirmController.transactionHash}"/>
 
                 <h:outputText value="failed:"/>
-                <h:outputText value="#{ethereumDemoController.transactionConfirmation.failed}"/>
+                <h:outputText value="#{ethereumDemoConfirmController.transactionConfirmation.failed}"/>
 
                 <h:outputText value="pending:"/>
-                <h:outputText value="#{ethereumDemoController.transactionConfirmation.pendingTransaction}"/>
+                <h:outputText value="#{ethereumDemoConfirmController.transactionConfirmation.pendingTransaction}"/>
 
                 <h:outputText value="to:"/>
-                <h:outputText value="#{ethereumDemoController.transactionConfirmation.to}"/>
+                <h:outputText value="#{ethereumDemoConfirmController.transactionConfirmation.to}"/>
 
                 <h:outputText value="from:"/>
-                <h:outputText value="#{ethereumDemoController.transactionConfirmation.from}"/>
+                <h:outputText value="#{ethereumDemoConfirmController.transactionConfirmation.from}"/>
 
                 <h:outputText value="gas used:"/>
-                <h:outputText value="#{ethereumDemoController.transactionConfirmation.gasUsed}"/>
+                <h:outputText value="#{ethereumDemoConfirmController.transactionConfirmation.gasUsed}"/>
 
                 <h:outputText value="block number:"/>
-                <h:outputText value="#{ethereumDemoController.transactionConfirmation.blockNumber}"/>
+                <h:outputText value="#{ethereumDemoConfirmController.transactionConfirmation.blockNumber}"/>
 
                 <h:outputText value="number of confirming blocks:"/>
-                <h:outputText value="#{ethereumDemoController.transactionConfirmation.confirmingBlocks}"/>
+                <h:outputText value="#{ethereumDemoConfirmController.transactionConfirmation.confirmingBlocks}"/>
 
                 <h:outputText value="timestamp:"/>
-                <h:outputText value="#{ethereumDemoController.transactionConfirmation.timestamp}"/>
+                <h:outputText value="#{ethereumDemoConfirmController.transactionConfirmation.timestamp}"/>
             </h:panelGrid>
             <h:form>
                 <h:commandButton value="Back" action="/index"/>
