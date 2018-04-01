@@ -117,4 +117,13 @@ public class EthereumBean {
             LOGGER.error("JCA error: " + ex.getMessage(), ex);
         }
     }
+
+    public BigInteger getBalance(String account) {
+        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+            return ethereumConnection.getBalance(account);
+        } catch (ResourceException ex) {
+            LOGGER.error("JCA error: " + ex.getMessage(), ex);
+            return null;
+        }
+    }
 }

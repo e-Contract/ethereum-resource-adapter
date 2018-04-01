@@ -16,22 +16,17 @@
         </h:head>
 
         <h:body>
-            <h1>Client Node Accounts</h1>
+            <h1>Balance</h1>
+            <h:panelGrid columns="2">
+                <h:outputText value="Account"/>
+                <h:outputText value="#{ethereumAccountController.selectedAccount}"/>
+
+                <h:outputText value="Balance"/>
+                <h:outputText value="#{ethereumAccountController.selectedAccountBalance}"/>
+            </h:panelGrid>
             <h:form>
-                <h:dataTable value="#{ethereumAccountController.accounts}" var="account">
-                    <h:column>
-                        <f:facet name="header">
-                            Account
-                        </f:facet>
-                        <h:outputText value="#{account}"/>
-                    </h:column>
-                    <h:column>
-                        <h:commandButton value="Balance" action="#{ethereumAccountController.getBalance(account)}"/>
-                    </h:column>
-                </h:dataTable>
-                <h:panelGrid columns="2">
-                    <h:commandButton value="New" action="#{ethereumAccountController.newAccount}"/>
-                    <h:commandButton value="Back" action="/index"/>
+                <h:panelGrid columns="1">
+                    <h:commandButton value="Back" action="/accounts"/>
                 </h:panelGrid>
             </h:form>
         </h:body>

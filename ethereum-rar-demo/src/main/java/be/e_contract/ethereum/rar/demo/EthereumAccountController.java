@@ -19,17 +19,26 @@ package be.e_contract.ethereum.rar.demo;
 
 import be.e_contract.ethereum.rar.demo.model.EthereumBean;
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Named("ethereumAccountController")
 @RequestScoped
 public class EthereumAccountController implements Serializable {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(EthereumAccountController.class);
+
     @EJB
     private EthereumBean ethereumBean;
+
+    private String selectedAccount;
+
+    private BigInteger selectedAccountBalance;
 
     private String password;
 
@@ -48,5 +57,20 @@ public class EthereumAccountController implements Serializable {
     public String newAccount() {
         this.ethereumBean.newAccount(this.password);
         return "/accounts";
+    }
+
+    public String getSelectedAccount() {
+        return this.selectedAccount;
+    }
+
+    public BigInteger getSelectedAccountBalance() {
+        return this.selectedAccountBalance;
+    }
+
+    public String getBalance(String account) {
+        LOGGER.debug("getBalance: {}", account);
+        this.selectedAccount = account;
+        this.selectedAccountBalance = this.ethereumBean.getBalance(this.selectedAccount);
+        return "/balance";
     }
 }
