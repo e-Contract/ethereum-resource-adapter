@@ -109,4 +109,13 @@ public interface EthereumConnection extends Connection, AutoCloseable {
      * @throws ResourceException
      */
     List<String> getAccounts() throws ResourceException;
+
+    /**
+     * Create a new account managed by the client node.
+     *
+     * @param password
+     * @return
+     * @throws ResourceException
+     */
+    String newAccount(String password) throws ResourceException;
 }

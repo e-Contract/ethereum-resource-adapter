@@ -356,4 +356,9 @@ public class EthereumManagedConnection implements ManagedConnection {
         Admin admin = getWeb3j();
         return admin.ethAccounts().send().getAccounts();
     }
+
+    String newAccount(String password) throws Exception {
+        Admin admin = getWeb3j();
+        return admin.personalNewAccount(password).send().getAccountId();
+    }
 }

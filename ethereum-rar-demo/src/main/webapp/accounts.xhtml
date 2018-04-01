@@ -16,8 +16,8 @@
         </h:head>
 
         <h:body>
-            <h1>Accounts</h1>
-            <h:dataTable value="#{ethereumController.accounts}" var="account">
+            <h1>Client Node Accounts</h1>
+            <h:dataTable value="#{ethereumAccountController.accounts}" var="account">
                 <h:column>
                     <f:facet name="header">
                         Account
@@ -26,7 +26,10 @@
                 </h:column>
             </h:dataTable>
             <h:form>
-                <h:commandButton value="Back" action="/index"/>
+                <h:panelGrid columns="2">
+                    <h:commandButton value="New" action="#{ethereumAccountController.newAccount}"/>
+                    <h:commandButton value="Back" action="/index"/>
+                </h:panelGrid>
             </h:form>
         </h:body>
     </f:view>

@@ -169,4 +169,14 @@ public class EthereumConnectionImpl implements EthereumConnection {
             throw new ResourceException(ex);
         }
     }
+
+    @Override
+    public String newAccount(String password) throws ResourceException {
+        try {
+            return this.ethereumManagedConnection.newAccount(password);
+        } catch (Exception ex) {
+            LOGGER.error("error: " + ex.getMessage(), ex);
+            throw new ResourceException(ex);
+        }
+    }
 }

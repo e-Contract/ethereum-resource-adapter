@@ -175,8 +175,4 @@ public class EthereumController implements Serializable {
         }
         return this.ethereumBean.getTransactionConfirmation(this.transactionHash);
     }
-
-    public List<String> getAccounts() {
-        return this.ethereumBean.getAccounts();
-    }
 }

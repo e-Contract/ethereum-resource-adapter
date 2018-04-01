@@ -100,13 +100,21 @@ public class EthereumBean {
             return null;
         }
     }
-    
+
     public List<String> getAccounts() {
         try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
             return ethereumConnection.getAccounts();
         } catch (ResourceException ex) {
             LOGGER.error("JCA error: " + ex.getMessage(), ex);
             return null;
+        }
+    }
+
+    public void newAccount(String password) {
+        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+            ethereumConnection.newAccount(password);
+        } catch (ResourceException ex) {
+            LOGGER.error("JCA error: " + ex.getMessage(), ex);
         }
     }
 }
