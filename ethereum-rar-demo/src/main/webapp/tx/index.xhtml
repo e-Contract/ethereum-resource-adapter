@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html">
+
+    <f:view>
+        <h:head>
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <meta http-equiv="Content-Script-Type" content="text/javascript" />
+            <meta http-equiv="Content-Style-Type" content="text/css" />
+            <meta http-equiv="Expires" content="-1" />
+            <meta http-equiv="Cache-Control"
+                  content="no-cache, no-store, max-age=0, must-revalidate" />
+            <meta http-equiv="Pragma" content="no-cache" />
+            <title>Ethereum Resource Adapter Demo Web Application</title>
+        </h:head>
+
+        <h:body>
+            <h1>Send Transaction</h1>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputText value="From:"/>
+                    <h:inputText value="#{ethereumDemoTransactionController.from}" size="60"/>
+
+                    <h:outputText value="To:"/>
+                    <h:inputText value="#{ethereumDemoTransactionController.to}" size="60"/>
+
+                    <h:outputText value="Value:"/>
+                    <h:inputText value="#{ethereumDemoTransactionController.value}"/>
+
+                    <h:outputText value="Gas Price:"/>
+                    <h:inputText value="#{ethereumDemoTransactionController.gasPrice}"/>
+
+                    <h:outputText value="Nonce:"/>
+                    <h:inputText value="#{ethereumDemoTransactionController.nonce}"/>
+                </h:panelGrid>
+                <h:panelGrid columns="2">
+                    <h:commandButton value="Send" action="#{ethereumDemoTransactionController.sendTransaction}"/>
+                    <h:commandButton value="Back" action="/index"/>
+                </h:panelGrid>
+            </h:form>
+        </h:body>
+    </f:view>
+
+</html>

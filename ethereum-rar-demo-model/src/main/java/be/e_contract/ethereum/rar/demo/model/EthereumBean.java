@@ -134,4 +134,13 @@ public class EthereumBean {
             LOGGER.error("JCA error: " + ex.getMessage(), ex);
         }
     }
+
+    public String sendTransaction(String from, String to, BigInteger value, BigInteger gasPrice, BigInteger nonce) {
+        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+            return ethereumConnection.sendTransaction(from, to, value, gasPrice, nonce);
+        } catch (ResourceException ex) {
+            LOGGER.error("JCA error: " + ex.getMessage(), ex);
+            return null;
+        }
+    }
 }

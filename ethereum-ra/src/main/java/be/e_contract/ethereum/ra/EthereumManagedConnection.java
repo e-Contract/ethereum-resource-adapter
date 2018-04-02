@@ -372,4 +372,13 @@ public class EthereumManagedConnection implements ManagedConnection {
         }
         return personalUnlockAccount.accountUnlocked();
     }
+
+    public String sendTransaction(String from, String to, BigInteger value, BigInteger gasPrice, BigInteger nonce) throws Exception {
+        Web3j web3j = getWeb3j();
+        BigInteger gasLimit = BigInteger.valueOf(21000);
+        org.web3j.protocol.core.methods.request.Transaction transaction
+                = org.web3j.protocol.core.methods.request.Transaction.createEtherTransaction(from, nonce, gasPrice, gasLimit, to, value);
+        web3j.ethSendTransaction(transaction).send();
+        return null; // TODO transaction hash
+    }
 }

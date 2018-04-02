@@ -241,12 +241,39 @@ and as `maven-ear-plugin` configuration under `modules` you put:
 </ejbModule>
 ```
 
+
 # Development
 
 Build the project via Maven:
 ```
 mvn clean install
 ```
+
+## Demo Web Application
+
+Start a `geth` Ethereum client node in development mode via:
+```
+geth --dev --datadir dev --rpc --rpcapi personal,eth,net --dev.period 0
+```
+
+Start WildFly via:
+```
+cd wildfly-12.0.0.Final/bin
+./standalone.sh --server-config=standalone-full.xml
+```
+
+Compile and deploy the demo web application via:
+```
+mvn clean install
+cd ethereum-rar-demo-deploy/
+mvn wildfly:deploy
+```
+
+The demo web application is now available at:
+http://localhost:8080/ethereum-demo/
+
+
+## Contributions
 
 We use Netbeans as IDE.
 If you send pull requests, please keep the code clean to ease the review process.

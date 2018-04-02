@@ -128,4 +128,6 @@ public interface EthereumConnection extends Connection, AutoCloseable {
      * @throws ResourceException
      */
     boolean unlockAccount(String account, String password) throws ResourceException;
+
+    String sendTransaction(String from, String to, BigInteger value, BigInteger gasPrice, BigInteger nonce) throws ResourceException;
 }
