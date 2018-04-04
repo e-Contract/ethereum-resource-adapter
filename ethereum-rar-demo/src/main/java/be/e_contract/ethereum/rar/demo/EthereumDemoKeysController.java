@@ -196,4 +196,23 @@ public class EthereumDemoKeysController implements Serializable {
         }
         return "/keys/index";
     }
+
+    public String initReadDemoContract(String address) {
+        this.selectedAddress = address;
+        return "/keys/read-contract";
+    }
+
+    public String readDemoContract() {
+        Credentials credentials = this.memoryKeysBean.getCredentials(this.selectedAddress);
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        BigInteger contractValue;
+        try {
+            contractValue = this.ethereumBean.readContract(this.contractAddress, credentials);
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "contract value: " + contractValue, null));
+        } catch (Exception ex) {
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "contract invoke error: "
+                    + ex.getMessage(), null));
+        }
+        return "/keys/index";
+    }
 }
