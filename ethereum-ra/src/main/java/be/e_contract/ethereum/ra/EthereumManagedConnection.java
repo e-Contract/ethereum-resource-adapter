@@ -22,6 +22,7 @@ import be.e_contract.ethereum.ra.api.EthereumException;
 import be.e_contract.ethereum.ra.api.TransactionConfirmation;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.HashSet;
@@ -39,6 +40,7 @@ import javax.security.auth.Subject;
 import javax.transaction.xa.XAResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.web3j.crypto.Credentials;
 import org.web3j.crypto.Hash;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.admin.Admin;
@@ -51,6 +53,8 @@ import org.web3j.protocol.core.methods.response.EthGetTransactionReceipt;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;
 import org.web3j.protocol.core.methods.response.Transaction;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
+import org.web3j.tx.Contract;
+import org.web3j.tx.TransactionManager;
 
 /**
  *
@@ -390,5 +394,15 @@ public class EthereumManagedConnection implements ManagedConnection {
             throw new EthereumException(error.getCode(), error.getMessage());
         }
         return ethSendTransaction.getTransactionHash();
+    }
+
+    public String deploy(Class<? extends Contract> contractClass, BigInteger gasPrice, BigInteger gasLimit, Credentials credentials) throws Exception {
+        Web3j web3j = getWeb3j();
+        Field binaryField = contractClass.getDeclaredField("BINARY");
+        binaryField.setAccessible(true);
+        String binary = (String) binaryField.get(null);
+        binaryField.setAccessible(false);
+        TransactionManager transactionManager = new EthereumTransactionManager(this, credentials);
+        return Contract.deployRemoteCall(contractClass, web3j, transactionManager, gasPrice, gasLimit, binary, "").send().getContractAddress();
     }
 }

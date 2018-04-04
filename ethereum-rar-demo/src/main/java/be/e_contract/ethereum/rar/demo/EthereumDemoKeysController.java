@@ -25,9 +25,12 @@ import java.math.BigInteger;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.web3j.crypto.Credentials;
 
 @Named("ethereumDemoKeysController")
 @RequestScoped
@@ -150,5 +153,14 @@ public class EthereumDemoKeysController implements Serializable {
         this.transaction = this.memoryKeysBean.signTransaction(this.nonce, this.gasPrice,
                 this.selectedAddress, this.to, this.value, chainIdByte);
         return "/keys/transaction-result";
+    }
+
+    public String deployDemoContract(String address) {
+        this.selectedAddress = address;
+        Credentials credentials = this.memoryKeysBean.getCredentials(this.selectedAddress);
+        String contractAddress = this.ethereumBean.deployDemoContract(credentials);
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "contract address: " + contractAddress, null));
+        return "/keys/index";
     }
 }

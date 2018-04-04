@@ -18,7 +18,7 @@
         <h:body>
             <h1>In-memory keys</h1>
             <h:form>
-                <h:messages errorStyle="color:red;"/>
+                <h:messages errorStyle="color:red;" infoStyle="color:blue;"/>
                 <h:dataTable value="#{ethereumDemoKeysController.keys}" var="address">
                     <h:column>
                         <f:facet name="header">
@@ -29,6 +29,7 @@
                     <h:column>
                         <h:commandButton value="Balance" action="#{ethereumDemoKeysController.getBalance(address)}"/>
                         <h:commandButton value="Transaction" action="#{ethereumDemoKeysController.initTransaction(address)}"/>
+                        <h:commandButton value="Deploy Demo Contract" action="#{ethereumDemoKeysController.deployDemoContract(address)}"/>
                     </h:column>
                 </h:dataTable>
                 <h:panelGrid columns="2">

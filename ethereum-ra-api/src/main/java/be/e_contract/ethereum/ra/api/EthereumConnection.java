@@ -21,8 +21,10 @@ import java.math.BigInteger;
 import java.util.List;
 import javax.resource.ResourceException;
 import javax.resource.cci.Connection;
+import org.web3j.crypto.Credentials;
 import org.web3j.protocol.core.methods.response.EthBlock;
 import org.web3j.protocol.core.methods.response.Transaction;
+import org.web3j.tx.Contract;
 
 /**
  * Interface for Ethereum network connections.
@@ -145,4 +147,17 @@ public interface EthereumConnection extends Connection, AutoCloseable {
      */
     String sendAccountTransaction(String account, String to, BigInteger value,
             BigInteger gasPrice, BigInteger nonce) throws ResourceException, EthereumException;
+
+    /**
+     * Deploys a given contract. Contract should have been compiled via web3j.
+     *
+     * @param contractClass
+     * @param gasPrice
+     * @param gasLimit
+     * @param credentials
+     * @return the contract address.
+     * @throws javax.resource.ResourceException
+     */
+    String deploy(Class<? extends Contract> contractClass, BigInteger gasPrice,
+            BigInteger gasLimit, Credentials credentials) throws ResourceException;
 }

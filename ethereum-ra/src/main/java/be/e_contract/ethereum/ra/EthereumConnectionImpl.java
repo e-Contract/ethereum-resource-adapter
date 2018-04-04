@@ -31,8 +31,10 @@ import javax.resource.cci.ResultSetInfo;
 import javax.resource.spi.ConnectionEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.web3j.crypto.Credentials;
 import org.web3j.protocol.core.methods.response.EthBlock;
 import org.web3j.protocol.core.methods.response.Transaction;
+import org.web3j.tx.Contract;
 
 public class EthereumConnectionImpl implements EthereumConnection {
 
@@ -202,6 +204,16 @@ public class EthereumConnectionImpl implements EthereumConnection {
         } catch (EthereumException ex) {
             LOGGER.error("ethereum error: " + ex.getMessage());
             throw ex;
+        } catch (Exception ex) {
+            LOGGER.error("error: " + ex.getMessage(), ex);
+            throw new ResourceException(ex);
+        }
+    }
+
+    @Override
+    public String deploy(Class<? extends Contract> contractClass, BigInteger gasPrice, BigInteger gasLimit, Credentials credentials) throws ResourceException {
+        try {
+            return this.ethereumManagedConnection.deploy(contractClass, gasPrice, gasLimit, credentials);
         } catch (Exception ex) {
             LOGGER.error("error: " + ex.getMessage(), ex);
             throw new ResourceException(ex);

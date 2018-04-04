@@ -76,4 +76,10 @@ public class MemoryKeysBean {
         String hexValue = Numeric.toHexString(signedTransaction);
         return hexValue;
     }
+
+    public Credentials getCredentials(String from) {
+        ECKeyPair fromKeyPair = this.keys.get(from);
+        Credentials credentials = Credentials.create(fromKeyPair);
+        return credentials;
+    }
 }

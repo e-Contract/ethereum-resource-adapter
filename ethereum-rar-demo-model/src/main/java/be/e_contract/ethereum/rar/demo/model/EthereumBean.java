@@ -22,6 +22,7 @@ import be.e_contract.ethereum.ra.api.EthereumConnectionFactory;
 import be.e_contract.ethereum.ra.api.EthereumConnectionSpec;
 import be.e_contract.ethereum.ra.api.EthereumException;
 import be.e_contract.ethereum.ra.api.TransactionConfirmation;
+import be.e_contract.ethereum.rar.demo.model.contract.DemoContract;
 import java.math.BigInteger;
 import java.util.List;
 import javax.annotation.Resource;
@@ -33,6 +34,8 @@ import javax.resource.cci.LocalTransaction;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.web3j.crypto.Credentials;
+import org.web3j.tx.Contract;
 
 @Stateless
 public class EthereumBean {
@@ -148,6 +151,16 @@ public class EthereumBean {
     public BigInteger getNonce(String address) {
         try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
             return ethereumConnection.getTransactionCount(address);
+        } catch (ResourceException ex) {
+            LOGGER.error("JCA error: " + ex.getMessage(), ex);
+            return null;
+        }
+    }
+
+    public String deployDemoContract(Credentials credentials) {
+        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+            BigInteger gasPrice = ethereumConnection.getGasPrice();
+            return ethereumConnection.deploy(DemoContract.class, gasPrice, Contract.GAS_LIMIT, credentials);
         } catch (ResourceException ex) {
             LOGGER.error("JCA error: " + ex.getMessage(), ex);
             return null;
