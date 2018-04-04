@@ -157,7 +157,8 @@ public interface EthereumConnection extends Connection, AutoCloseable {
      * @param credentials
      * @return the contract address.
      * @throws javax.resource.ResourceException
+     * @throws be.e_contract.ethereum.ra.api.EthereumException
      */
     String deploy(Class<? extends Contract> contractClass, BigInteger gasPrice,
-            BigInteger gasLimit, Credentials credentials) throws ResourceException;
+            BigInteger gasLimit, Credentials credentials) throws ResourceException, EthereumException;
 }

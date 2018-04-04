@@ -211,9 +211,13 @@ public class EthereumConnectionImpl implements EthereumConnection {
     }
 
     @Override
-    public String deploy(Class<? extends Contract> contractClass, BigInteger gasPrice, BigInteger gasLimit, Credentials credentials) throws ResourceException {
+    public String deploy(Class<? extends Contract> contractClass, BigInteger gasPrice,
+            BigInteger gasLimit, Credentials credentials) throws ResourceException, EthereumException {
         try {
             return this.ethereumManagedConnection.deploy(contractClass, gasPrice, gasLimit, credentials);
+        } catch (EthereumException ex) {
+            LOGGER.error("ethereum error: " + ex.getMessage());
+            throw ex;
         } catch (Exception ex) {
             LOGGER.error("error: " + ex.getMessage(), ex);
             throw new ResourceException(ex);

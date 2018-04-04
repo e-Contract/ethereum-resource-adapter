@@ -17,6 +17,7 @@
  */
 package be.e_contract.ethereum.rar.demo;
 
+import be.e_contract.ethereum.ra.api.EthereumException;
 import be.e_contract.ethereum.rar.demo.model.EthereumBean;
 import be.e_contract.ethereum.rar.demo.model.MemoryKeysBean;
 import be.e_contract.ethereum.rar.demo.model.RollbackException;
@@ -158,9 +159,13 @@ public class EthereumDemoKeysController implements Serializable {
     public String deployDemoContract(String address) {
         this.selectedAddress = address;
         Credentials credentials = this.memoryKeysBean.getCredentials(this.selectedAddress);
-        String contractAddress = this.ethereumBean.deployDemoContract(credentials);
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "contract address: " + contractAddress, null));
+        try {
+            String contractAddress = this.ethereumBean.deployDemoContract(credentials);
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "contract address: " + contractAddress, null));
+        } catch (EthereumException ex) {
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "contract error: " + ex.getMessage(), null));
+        }
         return "/keys/index";
     }
 }

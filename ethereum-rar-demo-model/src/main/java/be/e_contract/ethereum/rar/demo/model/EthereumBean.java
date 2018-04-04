@@ -157,7 +157,7 @@ public class EthereumBean {
         }
     }
 
-    public String deployDemoContract(Credentials credentials) {
+    public String deployDemoContract(Credentials credentials) throws EthereumException {
         try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
             BigInteger gasPrice = ethereumConnection.getGasPrice();
             return ethereumConnection.deploy(DemoContract.class, gasPrice, Contract.GAS_LIMIT, credentials);

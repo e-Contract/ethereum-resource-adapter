@@ -403,6 +403,12 @@ public class EthereumManagedConnection implements ManagedConnection {
         String binary = (String) binaryField.get(null);
         binaryField.setAccessible(false);
         TransactionManager transactionManager = new EthereumTransactionManager(this, credentials);
-        return Contract.deployRemoteCall(contractClass, web3j, transactionManager, gasPrice, gasLimit, binary, "").send().getContractAddress();
+        Contract contract;
+        try {
+            contract = Contract.deployRemoteCall(contractClass, web3j, transactionManager, gasPrice, gasLimit, binary, "").send();
+        } catch (Exception ex) {
+            throw new EthereumException("could not deploy contract: " + ex.getMessage());
+        }
+        return contract.getContractAddress();
     }
 }

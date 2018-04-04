@@ -26,6 +26,10 @@ public class EthereumException extends Exception {
         this.code = code;
     }
 
+    public EthereumException(String message) {
+        this(0, message);
+    }
+
     public int getCode() {
         return this.code;
     }
