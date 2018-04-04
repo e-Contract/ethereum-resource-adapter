@@ -166,6 +166,7 @@ public class EthereumBean {
                 _chainId = null;
             } else if (chainId > 255) {
                 // TODO: chainId can be larger than byte... web3j TODO
+                // dev network has ip155 option to 0
                 _chainId = null;
             } else {
                 _chainId = chainId.byteValue();
@@ -175,6 +176,29 @@ public class EthereumBean {
         } catch (ResourceException ex) {
             LOGGER.error("JCA error: " + ex.getMessage(), ex);
             return null;
+        }
+    }
+
+    public void invokeContract(String contractAddress, Credentials credentials, BigInteger value) throws Exception {
+        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+            Integer chainId = ethereumConnection.getChainId();
+            LOGGER.debug("chain id: {}", chainId);
+            Byte _chainId;
+            if (null == chainId) {
+                _chainId = null;
+            } else if (chainId > 255) {
+                // TODO: chainId can be larger than byte... web3j TODO
+                // dev network has ip155 option to 0
+                _chainId = null;
+            } else {
+                _chainId = chainId.byteValue();
+            }
+            BigInteger gasPrice = ethereumConnection.getGasPrice();
+            DemoContract demoContract = ethereumConnection.load(DemoContract.class, contractAddress,
+                    credentials, _chainId, gasPrice, Contract.GAS_LIMIT);
+            demoContract.setValue(value).send();
+        } catch (ResourceException ex) {
+            LOGGER.error("JCA error: " + ex.getMessage(), ex);
         }
     }
 }

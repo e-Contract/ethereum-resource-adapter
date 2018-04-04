@@ -23,6 +23,7 @@ import be.e_contract.ethereum.ra.api.TransactionConfirmation;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.HashSet;
@@ -421,6 +422,22 @@ public class EthereumManagedConnection implements ManagedConnection {
             throw new EthereumException("could not deploy contract: " + ex.getMessage());
         }
         return contract.getContractAddress();
+    }
+
+    public <T extends Contract> T load(Class<T> contractClass, String contractAddress,
+            Credentials credentials, Byte chainId, BigInteger gasPrice, BigInteger gasLimit) throws Exception {
+        Method method = contractClass.getMethod("load", String.class, Web3j.class,
+                TransactionManager.class, BigInteger.class, BigInteger.class);
+        Web3j web3j = getWeb3j();
+        byte _chainId;
+        if (null == chainId) {
+            _chainId = ChainId.NONE;
+        } else {
+            _chainId = chainId;
+        }
+        TransactionManager transactionManager = new EthereumTransactionManager(this, credentials, _chainId);
+        T contract = (T) method.invoke(null, contractAddress, web3j, transactionManager, gasPrice, gasLimit);
+        return contract;
     }
 
     public Integer getChainId() throws Exception {

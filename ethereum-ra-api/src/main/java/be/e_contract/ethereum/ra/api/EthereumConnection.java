@@ -171,11 +171,13 @@ public interface EthereumConnection extends Connection, AutoCloseable {
      * @param contractAddress
      * @param credentials
      * @param chainId
+     * @param gasPrice
+     * @param gasLimit
      * @return
      * @throws ResourceException
      */
     <T extends Contract> T load(Class<T> contractClass, String contractAddress,
-            Credentials credentials, Byte chainId) throws ResourceException;
+            Credentials credentials, Byte chainId, BigInteger gasPrice, BigInteger gasLimit) throws ResourceException;
 
     /**
      * Retrieve the chain identifier of the Ethereum network.

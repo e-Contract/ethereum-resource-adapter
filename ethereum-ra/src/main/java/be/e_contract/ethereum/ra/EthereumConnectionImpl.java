@@ -226,9 +226,14 @@ public class EthereumConnectionImpl implements EthereumConnection {
 
     @Override
     public <T extends Contract> T load(Class<T> contractClass, String contractAddress,
-            Credentials credentials, Byte chainId) throws ResourceException {
-        // TODO
-        return null;
+            Credentials credentials, Byte chainId, BigInteger gasPrice, BigInteger gasLimit) throws ResourceException {
+        try {
+            return this.ethereumManagedConnection.load(contractClass, contractAddress, credentials,
+                    chainId, gasPrice, gasLimit);
+        } catch (Exception ex) {
+            LOGGER.error("error: " + ex.getMessage(), ex);
+            throw new ResourceException(ex);
+        }
     }
 
     @Override

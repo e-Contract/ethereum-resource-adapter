@@ -55,6 +55,8 @@ public class EthereumDemoKeysController implements Serializable {
     private BigInteger nonce;
     private Integer chainId;
 
+    private String contractAddress;
+
     public String getTo() {
         return this.to;
     }
@@ -93,6 +95,14 @@ public class EthereumDemoKeysController implements Serializable {
 
     public void setChainId(Integer chainId) {
         this.chainId = chainId;
+    }
+
+    public String getContractAddress() {
+        return this.contractAddress;
+    }
+
+    public void setContractAddress(String contractAddress) {
+        this.contractAddress = contractAddress;
     }
 
     public List<String> getKeys() {
@@ -165,6 +175,24 @@ public class EthereumDemoKeysController implements Serializable {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "contract address: " + contractAddress, null));
         } catch (EthereumException ex) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "contract error: " + ex.getMessage(), null));
+        }
+        return "/keys/index";
+    }
+
+    public String initInvokeDemoContract(String address) {
+        this.selectedAddress = address;
+        return "/keys/contract";
+    }
+
+    public String invokeDemoContract() {
+        Credentials credentials = this.memoryKeysBean.getCredentials(this.selectedAddress);
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        try {
+            this.ethereumBean.invokeContract(this.contractAddress, credentials, this.value);
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "contract invoked: " + this.value, null));
+        } catch (Exception ex) {
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "contract invoke error: "
+                    + ex.getMessage(), null));
         }
         return "/keys/index";
     }
