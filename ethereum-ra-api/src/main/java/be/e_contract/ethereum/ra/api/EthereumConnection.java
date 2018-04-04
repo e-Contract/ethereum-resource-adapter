@@ -155,10 +155,33 @@ public interface EthereumConnection extends Connection, AutoCloseable {
      * @param gasPrice
      * @param gasLimit
      * @param credentials
+     * @param chainId
      * @return the contract address.
      * @throws javax.resource.ResourceException
      * @throws be.e_contract.ethereum.ra.api.EthereumException
      */
     String deploy(Class<? extends Contract> contractClass, BigInteger gasPrice,
-            BigInteger gasLimit, Credentials credentials) throws ResourceException, EthereumException;
+            BigInteger gasLimit, Credentials credentials, Byte chainId) throws ResourceException, EthereumException;
+
+    /**
+     * Loads a contract.
+     *
+     * @param <T>
+     * @param contractClass
+     * @param contractAddress
+     * @param credentials
+     * @param chainId
+     * @return
+     * @throws ResourceException
+     */
+    <T extends Contract> T load(Class<T> contractClass, String contractAddress,
+            Credentials credentials, Byte chainId) throws ResourceException;
+
+    /**
+     * Retrieve the chain identifier of the Ethereum network.
+     *
+     * @return
+     * @throws ResourceException
+     */
+    Integer getChainId() throws ResourceException;
 }

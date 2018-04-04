@@ -159,8 +159,19 @@ public class EthereumBean {
 
     public String deployDemoContract(Credentials credentials) throws EthereumException {
         try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+            Integer chainId = ethereumConnection.getChainId();
+            LOGGER.debug("chain id: {}", chainId);
+            Byte _chainId;
+            if (null == chainId) {
+                _chainId = null;
+            } else if (chainId > 255) {
+                // TODO: chainId can be larger than byte... web3j TODO
+                _chainId = null;
+            } else {
+                _chainId = chainId.byteValue();
+            }
             BigInteger gasPrice = ethereumConnection.getGasPrice();
-            return ethereumConnection.deploy(DemoContract.class, gasPrice, Contract.GAS_LIMIT, credentials);
+            return ethereumConnection.deploy(DemoContract.class, gasPrice, Contract.GAS_LIMIT, credentials, _chainId);
         } catch (ResourceException ex) {
             LOGGER.error("JCA error: " + ex.getMessage(), ex);
             return null;

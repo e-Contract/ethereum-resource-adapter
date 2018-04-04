@@ -22,7 +22,8 @@ import org.web3j.tx.RawTransactionManager;
 
 public class EthereumTransactionManager extends RawTransactionManager {
 
-    public EthereumTransactionManager(EthereumManagedConnection ethereumManagedConnection, Credentials credentials) throws Exception {
-        super(ethereumManagedConnection.getWeb3j(), credentials);
+    public EthereumTransactionManager(EthereumManagedConnection ethereumManagedConnection,
+            Credentials credentials, byte chainId) throws Exception {
+        super(ethereumManagedConnection.getWeb3j(), credentials, chainId);
     }
 }

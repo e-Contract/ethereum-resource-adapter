@@ -212,12 +212,29 @@ public class EthereumConnectionImpl implements EthereumConnection {
 
     @Override
     public String deploy(Class<? extends Contract> contractClass, BigInteger gasPrice,
-            BigInteger gasLimit, Credentials credentials) throws ResourceException, EthereumException {
+            BigInteger gasLimit, Credentials credentials, Byte chainId) throws ResourceException, EthereumException {
         try {
-            return this.ethereumManagedConnection.deploy(contractClass, gasPrice, gasLimit, credentials);
+            return this.ethereumManagedConnection.deploy(contractClass, gasPrice, gasLimit, credentials, chainId);
         } catch (EthereumException ex) {
             LOGGER.error("ethereum error: " + ex.getMessage());
             throw ex;
+        } catch (Exception ex) {
+            LOGGER.error("error: " + ex.getMessage(), ex);
+            throw new ResourceException(ex);
+        }
+    }
+
+    @Override
+    public <T extends Contract> T load(Class<T> contractClass, String contractAddress,
+            Credentials credentials, Byte chainId) throws ResourceException {
+        // TODO
+        return null;
+    }
+
+    @Override
+    public Integer getChainId() throws ResourceException {
+        try {
+            return this.ethereumManagedConnection.getChainId();
         } catch (Exception ex) {
             LOGGER.error("error: " + ex.getMessage(), ex);
             throw new ResourceException(ex);

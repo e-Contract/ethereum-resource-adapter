@@ -53,6 +53,7 @@ import org.web3j.protocol.core.methods.response.EthGetTransactionReceipt;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;
 import org.web3j.protocol.core.methods.response.Transaction;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
+import org.web3j.tx.ChainId;
 import org.web3j.tx.Contract;
 import org.web3j.tx.TransactionManager;
 
@@ -63,6 +64,9 @@ import org.web3j.tx.TransactionManager;
 public class EthereumManagedConnection implements ManagedConnection {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EthereumManagedConnection.class);
+
+    private static final int CHAIN_ID_INC = 35;
+    private static final int LOWER_REAL_V = 27;
 
     private final Set<ConnectionEventListener> listeners;
 
@@ -396,13 +400,20 @@ public class EthereumManagedConnection implements ManagedConnection {
         return ethSendTransaction.getTransactionHash();
     }
 
-    public String deploy(Class<? extends Contract> contractClass, BigInteger gasPrice, BigInteger gasLimit, Credentials credentials) throws Exception {
+    public String deploy(Class<? extends Contract> contractClass, BigInteger gasPrice, BigInteger gasLimit,
+            Credentials credentials, Byte chainId) throws Exception {
         Web3j web3j = getWeb3j();
         Field binaryField = contractClass.getDeclaredField("BINARY");
         binaryField.setAccessible(true);
         String binary = (String) binaryField.get(null);
         binaryField.setAccessible(false);
-        TransactionManager transactionManager = new EthereumTransactionManager(this, credentials);
+        byte _chainId;
+        if (null == chainId) {
+            _chainId = ChainId.NONE;
+        } else {
+            _chainId = chainId;
+        }
+        TransactionManager transactionManager = new EthereumTransactionManager(this, credentials, _chainId);
         Contract contract;
         try {
             contract = Contract.deployRemoteCall(contractClass, web3j, transactionManager, gasPrice, gasLimit, binary, "").send();
@@ -410,5 +421,27 @@ public class EthereumManagedConnection implements ManagedConnection {
             throw new EthereumException("could not deploy contract: " + ex.getMessage());
         }
         return contract.getContractAddress();
+    }
+
+    public Integer getChainId() throws Exception {
+        Web3j web3j = getWeb3j();
+        BigInteger blockNumber = web3j.ethBlockNumber().send().getBlockNumber();
+        while (!blockNumber.equals(BigInteger.ZERO)) {
+            EthBlock.Block block = web3j.ethGetBlockByNumber(DefaultBlockParameter.valueOf(blockNumber), true).send().getBlock();
+            List<EthBlock.TransactionResult> transactions = block.getTransactions();
+            if (!transactions.isEmpty()) {
+                EthBlock.TransactionResult transactionResult = transactions.get(0);
+                EthBlock.TransactionObject transactionObject = (EthBlock.TransactionObject) transactionResult;
+                Transaction transaction = transactionObject.get();
+                int v = transaction.getV();
+                if (v == LOWER_REAL_V || v == (LOWER_REAL_V + 1)) {
+                    return null;
+                }
+                Integer chainId = (v - CHAIN_ID_INC) / 2;
+                return chainId;
+            }
+            blockNumber = blockNumber.subtract(BigInteger.ONE);
+        }
+        throw new EthereumException("could not determine chain id");
     }
 }
