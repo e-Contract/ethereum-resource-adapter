@@ -253,7 +253,7 @@ mvn clean install
 
 Start a `geth` Ethereum client node in development mode via:
 ```
-geth --dev --datadir dev --rpc --rpcapi personal,eth,net --dev.period 0
+geth --dev --rpc --rpcapi personal,eth,net --dev.period 0
 ```
 
 Start WildFly via:

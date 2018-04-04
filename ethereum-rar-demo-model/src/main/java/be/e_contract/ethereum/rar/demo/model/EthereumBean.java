@@ -143,4 +143,13 @@ public class EthereumBean {
             return null;
         }
     }
+
+    public BigInteger getNonce(String address) {
+        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+            return ethereumConnection.getTransactionCount(address);
+        } catch (ResourceException ex) {
+            LOGGER.error("JCA error: " + ex.getMessage(), ex);
+            return null;
+        }
+    }
 }

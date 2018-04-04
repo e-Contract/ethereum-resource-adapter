@@ -129,5 +129,17 @@ public interface EthereumConnection extends Connection, AutoCloseable {
      */
     boolean unlockAccount(String account, String password) throws ResourceException;
 
+    /**
+     * Send transaction via client node. This type of Ethereum transaction is
+     * not part of the JTA transaction.
+     *
+     * @param from
+     * @param to
+     * @param value
+     * @param gasPrice
+     * @param nonce
+     * @return
+     * @throws ResourceException
+     */
     String sendTransaction(String from, String to, BigInteger value, BigInteger gasPrice, BigInteger nonce) throws ResourceException;
 }

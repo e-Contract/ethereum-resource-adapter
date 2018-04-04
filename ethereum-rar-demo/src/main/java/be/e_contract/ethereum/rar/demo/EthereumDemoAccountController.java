@@ -18,6 +18,7 @@
 package be.e_contract.ethereum.rar.demo;
 
 import be.e_contract.ethereum.rar.demo.model.EthereumBean;
+import be.e_contract.ethereum.rar.demo.model.RollbackException;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.List;
@@ -41,6 +42,48 @@ public class EthereumDemoAccountController implements Serializable {
     private BigInteger selectedAccountBalance;
 
     private String password;
+
+    private String to;
+    private BigInteger value;
+    private BigInteger gasPrice;
+    private BigInteger nonce;
+
+    public String getTo() {
+        return this.to;
+    }
+
+    public void setTo(String to) {
+        this.to = to;
+    }
+
+    public BigInteger getValue() {
+        return this.value;
+    }
+
+    public void setValue(BigInteger value) {
+        this.value = value;
+    }
+
+    public BigInteger getGasPrice() {
+        return this.gasPrice;
+    }
+
+    public void setGasPrice(BigInteger gasPrice) {
+        this.gasPrice = gasPrice;
+    }
+
+    public BigInteger getNonce() {
+        return this.nonce;
+    }
+
+    public void setNonce(BigInteger nonce) {
+        this.nonce = nonce;
+    }
+
+    public String sendTransaction() {
+        this.ethereumBean.sendTransaction(this.selectedAccount, this.to, this.value, this.gasPrice, this.nonce);
+        return "/accounts/index";
+    }
 
     public String getPassword() {
         return this.password;
@@ -87,5 +130,16 @@ public class EthereumDemoAccountController implements Serializable {
         LOGGER.debug("unlock {} - password {}", this.selectedAccount, this.password);
         this.ethereumBean.unlockAccount(this.selectedAccount, this.password);
         return "/accounts/unlocked";
+    }
+
+    public String initTransaction(String account) {
+        this.selectedAccount = account;
+        try {
+            this.gasPrice = this.ethereumBean.getGasPrice(null, false);
+        } catch (RollbackException ex) {
+            LOGGER.error("gas price error: " + ex.getMessage(), ex);
+        }
+        this.nonce = this.ethereumBean.getNonce(this.selectedAccount);
+        return "/accounts/transaction";
     }
 }

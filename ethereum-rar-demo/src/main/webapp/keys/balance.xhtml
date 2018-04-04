@@ -16,10 +16,17 @@
         </h:head>
 
         <h:body>
-            <h1>Send Transaction Result</h1>
+            <h1>Balance</h1>
+            <h:panelGrid columns="2">
+                <h:outputText value="Address"/>
+                <h:outputText value="#{ethereumDemoKeysController.selectedAddress}"/>
+
+                <h:outputText value="Balance"/>
+                <h:outputText value="#{ethereumDemoKeysController.selectedAddressBalance}"/>
+            </h:panelGrid>
             <h:form>
                 <h:panelGrid columns="1">
-                    <h:commandButton value="Back" action="/index"/>
+                    <h:commandButton value="Back" action="/keys/index"/>
                 </h:panelGrid>
             </h:form>
         </h:body>
