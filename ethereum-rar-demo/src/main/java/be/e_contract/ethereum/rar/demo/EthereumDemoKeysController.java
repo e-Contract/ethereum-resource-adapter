@@ -19,6 +19,7 @@ package be.e_contract.ethereum.rar.demo;
 
 import be.e_contract.ethereum.rar.demo.model.EthereumBean;
 import be.e_contract.ethereum.rar.demo.model.MemoryKeysBean;
+import be.e_contract.ethereum.rar.demo.model.RollbackException;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.List;
@@ -44,6 +45,52 @@ public class EthereumDemoKeysController implements Serializable {
 
     private BigInteger selectedAddressBalance;
 
+    private String to;
+    private BigInteger value;
+    private BigInteger gasPrice;
+    private BigInteger nonce;
+    private Integer chainId;
+
+    public String getTo() {
+        return this.to;
+    }
+
+    public void setTo(String to) {
+        this.to = to;
+    }
+
+    public BigInteger getValue() {
+        return this.value;
+    }
+
+    public void setValue(BigInteger value) {
+        this.value = value;
+    }
+
+    public BigInteger getGasPrice() {
+        return this.gasPrice;
+    }
+
+    public void setGasPrice(BigInteger gasPrice) {
+        this.gasPrice = gasPrice;
+    }
+
+    public BigInteger getNonce() {
+        return this.nonce;
+    }
+
+    public void setNonce(BigInteger nonce) {
+        this.nonce = nonce;
+    }
+
+    public Integer getChainId() {
+        return this.chainId;
+    }
+
+    public void setChainId(Integer chainId) {
+        this.chainId = chainId;
+    }
+
     public List<String> getKeys() {
         return this.memoryKeysBean.getKeys();
     }
@@ -68,7 +115,40 @@ public class EthereumDemoKeysController implements Serializable {
         return this.selectedAddress;
     }
 
+    public void setSelectedAddress(String selectedAddress) {
+        this.selectedAddress = selectedAddress;
+    }
+
     public BigInteger getSelectedAddressBalance() {
         return this.selectedAddressBalance;
+    }
+
+    public String initTransaction(String address) {
+        this.selectedAddress = address;
+        try {
+            this.gasPrice = this.ethereumBean.getGasPrice(null, false);
+        } catch (RollbackException ex) {
+            LOGGER.error("gas price error: " + ex.getMessage(), ex);
+        }
+        this.nonce = this.ethereumBean.getNonce(this.selectedAddress);
+        return "/keys/transaction";
+    }
+
+    private String transaction;
+
+    public String getTransaction() {
+        return this.transaction;
+    }
+
+    public String signTransaction() {
+        Byte chainIdByte;
+        if (null != this.chainId) {
+            chainIdByte = this.chainId.byteValue();
+        } else {
+            chainIdByte = null;
+        }
+        this.transaction = this.memoryKeysBean.signTransaction(this.nonce, this.gasPrice,
+                this.selectedAddress, this.to, this.value, chainIdByte);
+        return "/keys/transaction-result";
     }
 }

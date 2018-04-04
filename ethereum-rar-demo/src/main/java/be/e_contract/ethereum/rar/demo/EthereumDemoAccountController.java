@@ -84,10 +84,12 @@ public class EthereumDemoAccountController implements Serializable {
     }
 
     public String sendTransaction() {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
         try {
-            this.ethereumBean.sendAccountTransaction(this.selectedAccount, this.to, this.value, this.gasPrice, this.nonce);
+            String transactionHash = this.ethereumBean.sendAccountTransaction(this.selectedAccount,
+                    this.to, this.value, this.gasPrice, this.nonce);
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "transaction hash: " + transactionHash, null));
         } catch (EthereumException ex) {
-            FacesContext facesContext = FacesContext.getCurrentInstance();
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ex.getMessage(), null));
         }
         return "/accounts/index";
