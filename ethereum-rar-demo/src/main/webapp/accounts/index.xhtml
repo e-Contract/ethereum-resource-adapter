@@ -18,6 +18,7 @@
         <h:body>
             <h1>Client Node Accounts</h1>
             <h:form>
+                <h:messages errorStyle="color:red;"/>
                 <h:dataTable value="#{ethereumDemoAccountController.accounts}" var="account">
                     <h:column>
                         <f:facet name="header">

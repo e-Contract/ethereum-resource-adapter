@@ -17,6 +17,7 @@
  */
 package be.e_contract.ethereum.rar.demo;
 
+import be.e_contract.ethereum.ra.api.EthereumException;
 import be.e_contract.ethereum.rar.demo.model.EthereumBean;
 import be.e_contract.ethereum.rar.demo.model.RollbackException;
 import java.io.Serializable;
@@ -24,6 +25,8 @@ import java.math.BigInteger;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,7 +84,12 @@ public class EthereumDemoAccountController implements Serializable {
     }
 
     public String sendTransaction() {
-        this.ethereumBean.sendTransaction(this.selectedAccount, this.to, this.value, this.gasPrice, this.nonce);
+        try {
+            this.ethereumBean.sendAccountTransaction(this.selectedAccount, this.to, this.value, this.gasPrice, this.nonce);
+        } catch (EthereumException ex) {
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ex.getMessage(), null));
+        }
         return "/accounts/index";
     }
 
@@ -128,7 +136,12 @@ public class EthereumDemoAccountController implements Serializable {
 
     public String doUnlock() {
         LOGGER.debug("unlock {} - password {}", this.selectedAccount, this.password);
-        this.ethereumBean.unlockAccount(this.selectedAccount, this.password);
+        try {
+            this.ethereumBean.unlockAccount(this.selectedAccount, this.password);
+        } catch (EthereumException ex) {
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ex.getMessage(), null));
+        }
         return "/accounts/unlocked";
     }
 

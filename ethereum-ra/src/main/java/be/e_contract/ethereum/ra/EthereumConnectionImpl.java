@@ -18,6 +18,7 @@
 package be.e_contract.ethereum.ra;
 
 import be.e_contract.ethereum.ra.api.EthereumConnection;
+import be.e_contract.ethereum.ra.api.EthereumException;
 import be.e_contract.ethereum.ra.api.TransactionConfirmation;
 import java.math.BigInteger;
 import java.util.List;
@@ -181,9 +182,12 @@ public class EthereumConnectionImpl implements EthereumConnection {
     }
 
     @Override
-    public boolean unlockAccount(String account, String password) throws ResourceException {
+    public boolean unlockAccount(String account, String password) throws ResourceException, EthereumException {
         try {
             return this.ethereumManagedConnection.unlockAccount(account, password);
+        } catch (EthereumException ex) {
+            LOGGER.error("ethereum error: " + ex.getMessage());
+            throw ex;
         } catch (Exception ex) {
             LOGGER.error("error: " + ex.getMessage(), ex);
             throw new ResourceException(ex);
@@ -191,9 +195,13 @@ public class EthereumConnectionImpl implements EthereumConnection {
     }
 
     @Override
-    public String sendTransaction(String from, String to, BigInteger value, BigInteger gasPrice, BigInteger nonce) throws ResourceException {
+    public String sendAccountTransaction(String account, String to, BigInteger value,
+            BigInteger gasPrice, BigInteger nonce) throws ResourceException, EthereumException {
         try {
-            return this.ethereumManagedConnection.sendTransaction(from, to, value, gasPrice, nonce);
+            return this.ethereumManagedConnection.sendAccountTransaction(account, to, value, gasPrice, nonce);
+        } catch (EthereumException ex) {
+            LOGGER.error("ethereum error: " + ex.getMessage());
+            throw ex;
         } catch (Exception ex) {
             LOGGER.error("error: " + ex.getMessage(), ex);
             throw new ResourceException(ex);

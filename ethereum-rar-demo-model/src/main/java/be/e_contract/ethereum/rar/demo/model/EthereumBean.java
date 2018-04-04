@@ -20,6 +20,7 @@ package be.e_contract.ethereum.rar.demo.model;
 import be.e_contract.ethereum.ra.api.EthereumConnection;
 import be.e_contract.ethereum.ra.api.EthereumConnectionFactory;
 import be.e_contract.ethereum.ra.api.EthereumConnectionSpec;
+import be.e_contract.ethereum.ra.api.EthereumException;
 import be.e_contract.ethereum.ra.api.TransactionConfirmation;
 import java.math.BigInteger;
 import java.util.List;
@@ -127,7 +128,7 @@ public class EthereumBean {
         }
     }
 
-    public void unlockAccount(String account, String password) {
+    public void unlockAccount(String account, String password) throws EthereumException {
         try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
             ethereumConnection.unlockAccount(account, password);
         } catch (ResourceException ex) {
@@ -135,9 +136,9 @@ public class EthereumBean {
         }
     }
 
-    public String sendTransaction(String from, String to, BigInteger value, BigInteger gasPrice, BigInteger nonce) {
+    public String sendAccountTransaction(String account, String to, BigInteger value, BigInteger gasPrice, BigInteger nonce) throws EthereumException {
         try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
-            return ethereumConnection.sendTransaction(from, to, value, gasPrice, nonce);
+            return ethereumConnection.sendAccountTransaction(account, to, value, gasPrice, nonce);
         } catch (ResourceException ex) {
             LOGGER.error("JCA error: " + ex.getMessage(), ex);
             return null;

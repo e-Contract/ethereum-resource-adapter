@@ -18,6 +18,7 @@
 package be.e_contract.ethereum.ra;
 
 import be.e_contract.ethereum.ra.api.EthereumConnection;
+import be.e_contract.ethereum.ra.api.EthereumException;
 import be.e_contract.ethereum.ra.api.TransactionConfirmation;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -43,8 +44,10 @@ import org.web3j.protocol.admin.Admin;
 import org.web3j.protocol.admin.methods.response.PersonalUnlockAccount;
 import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.DefaultBlockParameterName;
+import org.web3j.protocol.core.Response;
 import org.web3j.protocol.core.methods.response.EthBlock;
 import org.web3j.protocol.core.methods.response.EthGetTransactionReceipt;
+import org.web3j.protocol.core.methods.response.EthSendTransaction;
 import org.web3j.protocol.core.methods.response.Transaction;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 
@@ -367,18 +370,24 @@ public class EthereumManagedConnection implements ManagedConnection {
         Admin admin = getWeb3j();
         PersonalUnlockAccount personalUnlockAccount = admin.personalUnlockAccount(account, password).send();
         if (personalUnlockAccount.hasError()) {
-            LOGGER.error("personal unlock account error: {}", personalUnlockAccount.getError().getMessage());
-            return false;
+            Response.Error error = personalUnlockAccount.getError();
+            LOGGER.error("personal unlock account error: {}", error.getMessage());
+            throw new EthereumException(error.getCode(), error.getMessage());
         }
         return personalUnlockAccount.accountUnlocked();
     }
 
-    public String sendTransaction(String from, String to, BigInteger value, BigInteger gasPrice, BigInteger nonce) throws Exception {
+    public String sendAccountTransaction(String account, String to, BigInteger value, BigInteger gasPrice, BigInteger nonce) throws Exception {
         Web3j web3j = getWeb3j();
         BigInteger gasLimit = BigInteger.valueOf(21000);
         org.web3j.protocol.core.methods.request.Transaction transaction
-                = org.web3j.protocol.core.methods.request.Transaction.createEtherTransaction(from, nonce, gasPrice, gasLimit, to, value);
-        web3j.ethSendTransaction(transaction).send();
-        return null; // TODO transaction hash
+                = org.web3j.protocol.core.methods.request.Transaction.createEtherTransaction(account, nonce, gasPrice, gasLimit, to, value);
+        EthSendTransaction ethSendTransaction = web3j.ethSendTransaction(transaction).send();
+        if (ethSendTransaction.hasError()) {
+            Response.Error error = ethSendTransaction.getError();
+            LOGGER.error("send transaction error: {}", error.getMessage());
+            throw new EthereumException(error.getCode(), error.getMessage());
+        }
+        return ethSendTransaction.getTransactionHash();
     }
 }
