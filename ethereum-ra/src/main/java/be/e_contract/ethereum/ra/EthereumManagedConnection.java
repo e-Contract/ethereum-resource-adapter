@@ -39,6 +39,7 @@ import javax.security.auth.Subject;
 import javax.transaction.xa.XAResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.web3j.crypto.Hash;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.admin.Admin;
 import org.web3j.protocol.admin.methods.response.PersonalUnlockAccount;
@@ -267,17 +268,17 @@ public class EthereumManagedConnection implements ManagedConnection {
         if (null != this.ethereumLocalTransaction) {
             LOGGER.debug("scheduling for local transaction");
             this.ethereumLocalTransaction.scheduleRawTransaction(rawTransaction);
-            return null;
         }
         if (null != this.ethereumXAResource) {
             LOGGER.debug("scheduling for XA transaction");
             this.ethereumXAResource.scheduleRawTransaction(rawTransaction);
-            return null;
         }
         LOGGER.debug("directly sending transaction");
         EthereumTransactionCommit ethereumTransactionCommit = new EthereumTransactionCommit(rawTransaction, this);
         ethereumTransactionCommit.commit();
-        return null;
+        // we don't care here whether the raw transaction is OK or not
+        String transactionHash = Hash.sha3(rawTransaction);
+        return transactionHash;
     }
 
     public TransactionConfirmation getTransactionConfirmation(String transactionHash) throws Exception {

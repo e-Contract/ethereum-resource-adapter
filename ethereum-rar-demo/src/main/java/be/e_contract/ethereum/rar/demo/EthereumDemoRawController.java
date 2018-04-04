@@ -77,13 +77,15 @@ public class EthereumDemoRawController implements Serializable {
         LOGGER.debug("send raw transaction: {}", this.rawTransaction);
         FacesContext facesContext = FacesContext.getCurrentInstance();
         try {
+            String transactionHash;
             if (this.localTransaction) {
-                this.ethereumBean.sendRawTransactionLocalTransaction(this.rawTransaction, this.rollback);
+                transactionHash = this.ethereumBean.sendRawTransactionLocalTransaction(this.rawTransaction, this.rollback);
             } else {
-                this.ethereumBean.sendRawTransaction(this.rawTransaction, this.rollback);
+                transactionHash = this.ethereumBean.sendRawTransaction(this.rawTransaction, this.rollback);
             }
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "transaction hash: " + transactionHash, null));
         } catch (RollbackException ex) {
-            facesContext.addMessage(null, new FacesMessage("rollback error"));
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "rollback error", null));
         }
         return "/raw/result";
     }

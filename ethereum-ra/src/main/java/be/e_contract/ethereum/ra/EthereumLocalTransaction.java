@@ -58,7 +58,7 @@ public class EthereumLocalTransaction implements LocalTransaction {
         this.rawTransactions.clear();
     }
 
-    void scheduleRawTransaction(String rawTransaction) {
+    public void scheduleRawTransaction(String rawTransaction) {
         LOGGER.debug("schedule raw transaction: {}", rawTransaction);
         this.rawTransactions.add(rawTransaction);
     }
