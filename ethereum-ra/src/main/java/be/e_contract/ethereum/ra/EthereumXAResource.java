@@ -83,12 +83,15 @@ public class EthereumXAResource implements XAResource {
     public void end(Xid xid, int flags) throws XAException {
         LOGGER.debug("end: {} - flags {}", xid, flags);
         if (!this.currentXid.equals(xid)) {
+            LOGGER.error("invalid xid: {}", xid);
             throw new XAException("invalid xid");
         }
         List<String> rawTransactions = getRawTransactions(xid);
         if (isFlagSet(flags, TMFAIL)) {
+            LOGGER.debug("end: TMFAIL");
             rawTransactions.clear();
-            this.xidRawTransactions.remove(xid);
+            // don't remove here... since we need to know the xid on rollback
+            //this.xidRawTransactions.remove(xid);
             return;
         }
         if (!rawTransactions.isEmpty()) {
@@ -160,11 +163,13 @@ public class EthereumXAResource implements XAResource {
     public void rollback(Xid xid) throws XAException {
         LOGGER.debug("rollback: {}", xid);
         if (!this.currentXid.equals(xid)) {
+            LOGGER.error("invalid xid: {}", xid);
             throw new XAException("invalid xid");
         }
         EthereumTransactionCommit ethereumTransactionCommit = this.xidRawTransactions.get(xid);
         if (null == ethereumTransactionCommit) {
             // this happens on WebLogic
+            LOGGER.error("rollback unknown transaction: {}", xid);
             throw new XAException("rollback unknown transaction: " + xid);
         }
         List<String> rawTransactions = ethereumTransactionCommit.getRawTransactions();

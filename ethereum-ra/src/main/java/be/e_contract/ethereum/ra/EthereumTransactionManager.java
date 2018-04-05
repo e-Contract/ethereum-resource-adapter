@@ -17,13 +17,91 @@
  */
 package be.e_contract.ethereum.ra;
 
+import java.io.IOException;
+import java.math.BigInteger;
+import javax.resource.ResourceException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.web3j.crypto.ContractUtils;
 import org.web3j.crypto.Credentials;
-import org.web3j.tx.RawTransactionManager;
+import org.web3j.crypto.Hash;
+import org.web3j.crypto.RawTransaction;
+import org.web3j.crypto.TransactionEncoder;
+import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.DefaultBlockParameterName;
+import org.web3j.protocol.core.methods.response.EthGetTransactionCount;
+import org.web3j.protocol.core.methods.response.EthSendTransaction;
+import org.web3j.protocol.core.methods.response.TransactionReceipt;
+import org.web3j.protocol.exceptions.TransactionException;
+import org.web3j.tx.ChainId;
+import org.web3j.tx.TransactionManager;
+import org.web3j.tx.response.TransactionReceiptProcessor;
+import org.web3j.utils.Numeric;
 
-public class EthereumTransactionManager extends RawTransactionManager {
+public class EthereumTransactionManager extends TransactionManager {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(EthereumTransactionManager.class);
+
+    private final EthereumManagedConnection ethereumManagedConnection;
+
+    private final Credentials credentials;
+    private final byte chainId;
 
     public EthereumTransactionManager(EthereumManagedConnection ethereumManagedConnection,
             Credentials credentials, byte chainId) throws Exception {
-        super(ethereumManagedConnection.getWeb3j(), credentials, chainId);
+        super((TransactionReceiptProcessor) null, null);
+        this.ethereumManagedConnection = ethereumManagedConnection;
+        this.credentials = credentials;
+        this.chainId = chainId;
+    }
+
+    @Override
+    public EthSendTransaction sendTransaction(BigInteger gasPrice, BigInteger gasLimit, String to, String data, BigInteger value) throws IOException {
+        // we don't use this, overriding executeTransaction instead
+        return null;
+    }
+
+    @Override
+    protected TransactionReceipt executeTransaction(BigInteger gasPrice, BigInteger gasLimit, String to, String data, BigInteger value) throws IOException, TransactionException {
+        // TODO: fast transactions will fail on this I guess
+        BigInteger nonce = getNonce();
+        LOGGER.debug("nonce: {}", nonce);
+        RawTransaction rawTransaction = RawTransaction.createTransaction(
+                nonce,
+                gasPrice,
+                gasLimit,
+                to,
+                value,
+                data);
+        byte[] signedMessage;
+        if (this.chainId > ChainId.NONE) {
+            signedMessage = TransactionEncoder.signMessage(rawTransaction, this.chainId, this.credentials);
+        } else {
+            signedMessage = TransactionEncoder.signMessage(rawTransaction, this.credentials);
+        }
+        String hexValue = Numeric.toHexString(signedMessage);
+        try {
+            this.ethereumManagedConnection.sendRawTransaction(hexValue);
+        } catch (ResourceException ex) {
+            LOGGER.error("error sending raw transaction: " + ex.getMessage(), ex);
+            throw new IOException(ex);
+        }
+        String transactionHash = Hash.sha3(hexValue);
+        String contractAddress = ContractUtils.generateContractAddress(this.credentials.getAddress(), nonce);
+        EthereumTransactionReceipt ethereumTransactionReceipt = new EthereumTransactionReceipt(transactionHash, contractAddress);
+        return ethereumTransactionReceipt;
+    }
+
+    private BigInteger getNonce() throws IOException {
+        Web3j web3j;
+        try {
+            web3j = this.ethereumManagedConnection.getWeb3j();
+        } catch (Exception ex) {
+            throw new IOException(ex);
+        }
+        // https://github.com/ethereum/go-ethereum/issues/2880
+        EthGetTransactionCount ethGetTransactionCount = web3j.ethGetTransactionCount(
+                this.credentials.getAddress(), DefaultBlockParameterName.PENDING).send();
+        return ethGetTransactionCount.getTransactionCount();
     }
 }

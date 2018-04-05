@@ -274,19 +274,20 @@ public class EthereumManagedConnection implements ManagedConnection {
         LOGGER.debug("send raw transaction: {}", rawTransaction);
         // we want to support JCA transactions here
         // important to check local transaction first because of CCI local transactions
+        String transactionHash = Hash.sha3(rawTransaction);
         if (null != this.ethereumLocalTransaction) {
             LOGGER.debug("scheduling for local transaction");
             this.ethereumLocalTransaction.scheduleRawTransaction(rawTransaction);
+            return transactionHash;
         }
         if (null != this.ethereumXAResource) {
             LOGGER.debug("scheduling for XA transaction");
             this.ethereumXAResource.scheduleRawTransaction(rawTransaction);
+            return transactionHash;
         }
         LOGGER.debug("directly sending transaction");
         EthereumTransactionCommit ethereumTransactionCommit = new EthereumTransactionCommit(rawTransaction, this);
         ethereumTransactionCommit.commit();
-        // we don't care here whether the raw transaction is OK or not
-        String transactionHash = Hash.sha3(rawTransaction);
         return transactionHash;
     }
 
@@ -419,6 +420,7 @@ public class EthereumManagedConnection implements ManagedConnection {
         try {
             contract = Contract.deployRemoteCall(contractClass, web3j, transactionManager, gasPrice, gasLimit, binary, "").send();
         } catch (Exception ex) {
+            LOGGER.debug("could not deploy contract: " + ex.getMessage(), ex);
             throw new EthereumException("could not deploy contract: " + ex.getMessage());
         }
         return contract.getContractAddress();
