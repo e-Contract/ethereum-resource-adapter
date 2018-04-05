@@ -168,7 +168,6 @@ public class EthereumXAResource implements XAResource {
         }
         EthereumTransactionCommit ethereumTransactionCommit = this.xidRawTransactions.get(xid);
         if (null == ethereumTransactionCommit) {
-            // this happens on WebLogic
             LOGGER.error("rollback unknown transaction: {}", xid);
             throw new XAException("rollback unknown transaction: " + xid);
         }
