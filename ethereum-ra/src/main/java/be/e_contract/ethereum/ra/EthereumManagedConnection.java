@@ -57,6 +57,7 @@ import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.tx.ChainId;
 import org.web3j.tx.Contract;
 import org.web3j.tx.TransactionManager;
+import org.web3j.utils.Numeric;
 
 /**
  *
@@ -291,6 +292,15 @@ public class EthereumManagedConnection implements ManagedConnection {
         return transactionHash;
     }
 
+    private boolean isStatusOK(TransactionReceipt transactionReceipt) {
+        String status = transactionReceipt.getStatus();
+        if (null == status) {
+            return true;
+        }
+        BigInteger statusQuantity = Numeric.decodeQuantity(status);
+        return BigInteger.ONE.equals(statusQuantity);
+    }
+
     public TransactionConfirmation getTransactionConfirmation(String transactionHash) throws Exception {
         Web3j web3j = getWeb3j();
 
@@ -315,7 +325,7 @@ public class EthereumManagedConnection implements ManagedConnection {
             return transactionConfirmation;
         }
         TransactionReceipt transactionReceipt = transactionReceiptOptional.get();
-        if (!"0x1".equals(transactionReceipt.getStatus())) {
+        if (!isStatusOK(transactionReceipt)) {
             LOGGER.debug("Transaction has failed with status: " + transactionReceipt.getStatus());
             transactionConfirmation.setFailed(true);
             return transactionConfirmation;
