@@ -45,6 +45,7 @@ The transaction implementation also features automatic retry on commit just in c
 The JCA Resource Adapter even supports JCA transactions on smart contracts written in Solidity.
 
 Furthermore, fast Ethereum transactions are also supported via internal nonce caching.
+On a JCA rollback, the corresponding nonce cache gets nicely reset as well.
 
 
 ## Message Listener
@@ -78,6 +79,7 @@ public class EthereumMDB implements EthereumMessageListener {
 ```
 
 The resource adapter will automatically attempt to reconnect when a client node goes down for a while.
+Hence your client node can go down for maintenance without the need to restart your Java EE application server.
 
 
 ## Gas Price Oracle
