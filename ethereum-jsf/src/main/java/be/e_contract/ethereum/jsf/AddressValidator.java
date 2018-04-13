@@ -26,6 +26,7 @@ import javax.faces.validator.Validator;
 import javax.faces.validator.ValidatorException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.web3j.crypto.Keys;
 import org.web3j.crypto.WalletUtils;
 
 @FacesValidator("be.e_contract.ethereum.jsf.AddressValidator")
@@ -42,6 +43,14 @@ public class AddressValidator implements Validator {
         LOGGER.debug("validating: {}", valueStr);
         if (!WalletUtils.isValidAddress(valueStr)) {
             FacesMessage facesMessage = new FacesMessage("Invalid Ethereum address.");
+            facesMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
+            throw new ValidatorException(facesMessage);
+        }
+        if (valueStr.toLowerCase().equals(valueStr)) {
+            return;
+        }
+        if (!Keys.toChecksumAddress(valueStr).equals(valueStr)) {
+            FacesMessage facesMessage = new FacesMessage("Ethereum address checksum error.");
             facesMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
             throw new ValidatorException(facesMessage);
         }

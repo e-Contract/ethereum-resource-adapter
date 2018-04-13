@@ -15,5 +15,13 @@
         </validator>
         <description>Verifies whether the value is an Ethereum address.</description>
     </tag>
+    
+    <tag>
+        <tag-name>checksumAddress</tag-name>
+        <converter>
+            <converter-id>be.e_contract.ethereum.jsf.ChecksumAddressConverter</converter-id>
+        </converter>
+        <description>Converts an Ethereum address to a checksum address.</description>
+    </tag>
 
 </facelet-taglib>

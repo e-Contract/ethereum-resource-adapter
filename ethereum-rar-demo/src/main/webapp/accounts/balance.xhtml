@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:h="http://java.sun.com/jsf/html">
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:eth="urn:be:e-contract:ethereum:jsf">
 
     <f:view>
         <h:head>
@@ -20,6 +21,11 @@
             <h:panelGrid columns="2">
                 <h:outputText value="Account"/>
                 <h:outputText value="#{ethereumDemoAccountController.selectedAccount}"/>
+
+                <h:outputText value="Account (checksum)"/>
+                <h:outputText value="#{ethereumDemoAccountController.selectedAccount}">
+                    <eth:checksumAddress/>
+                </h:outputText>
 
                 <h:outputText value="Balance"/>
                 <h:outputText value="#{ethereumDemoAccountController.selectedAccountBalance}"/>
