@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:h="http://java.sun.com/jsf/html">
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:eth="urn:be:e-contract:ethereum:jsf">
 
     <f:view>
         <h:head>
@@ -20,11 +21,15 @@
             <h:form>
                 <h:panelGrid columns="3">
                     <h:outputText value="From:"/>
-                    <h:inputText value="#{ethereumDemoKeysController.selectedAddress}" size="60" required="true"/>
+                    <h:inputText value="#{ethereumDemoKeysController.selectedAddress}" size="60" required="true">
+                        <eth:addressValidator/>
+                    </h:inputText>
                     <h:message for="from" errorStyle="color:red;"/>
 
                     <h:outputText value="Contract address:"/>
-                    <h:inputText id="contractAddress" value="#{ethereumDemoKeysController.contractAddress}" size="60" required="true"/>
+                    <h:inputText id="contractAddress" value="#{ethereumDemoKeysController.contractAddress}" size="60" required="true">
+                        <eth:addressValidator/>
+                    </h:inputText>
                     <h:message for="contractAddress" errorStyle="color:red;"/>
 
                     <h:outputText value="Value:"/>
