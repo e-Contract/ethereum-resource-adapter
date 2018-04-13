@@ -28,6 +28,7 @@ import java.math.BigInteger;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import javax.resource.ResourceException;
@@ -84,10 +85,13 @@ public class EthereumManagedConnection implements ManagedConnection {
 
     private EthereumXAResource ethereumXAResource;
 
-    public EthereumManagedConnection(EthereumConnectionRequestInfo ethereumConnectionRequestInfo) {
+    private final EthereumResourceAdapter resourceAdapter;
+
+    public EthereumManagedConnection(EthereumConnectionRequestInfo ethereumConnectionRequestInfo, EthereumResourceAdapter resourceAdapter) {
         LOGGER.debug("constructor");
         this.listeners = new HashSet<>();
         this.ethereumConnectionRequestInfo = ethereumConnectionRequestInfo;
+        this.resourceAdapter = resourceAdapter;
     }
 
     public Admin getWeb3j() throws Exception {
@@ -377,6 +381,21 @@ public class EthereumManagedConnection implements ManagedConnection {
         return transactionCount;
     }
 
+    public BigInteger getNextNonce(String address) throws Exception {
+        Map<String, BigInteger> nonces = this.resourceAdapter.getNonces();
+        synchronized (nonces) {
+            BigInteger nonce = nonces.get(address);
+            if (nonce != null) {
+                nonces.put(address, nonce.add(BigInteger.ONE));
+                return nonce;
+            }
+            Web3j web3j = getWeb3j();
+            nonce = web3j.ethGetTransactionCount(address, DefaultBlockParameterName.PENDING).send().getTransactionCount();
+            nonces.put(address, nonce.add(BigInteger.ONE));
+            return nonce;
+        }
+    }
+
     public List<String> getAccounts() throws Exception {
         Admin admin = getWeb3j();
         return admin.ethAccounts().send().getAccounts();
@@ -472,5 +491,9 @@ public class EthereumManagedConnection implements ManagedConnection {
             blockNumber = blockNumber.subtract(BigInteger.ONE);
         }
         throw new EthereumException("could not determine chain id");
+    }
+
+    public EthereumResourceAdapter getResourceAdapter() {
+        return this.resourceAdapter;
     }
 }

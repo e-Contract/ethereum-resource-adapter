@@ -27,9 +27,6 @@ import org.web3j.crypto.Credentials;
 import org.web3j.crypto.Hash;
 import org.web3j.crypto.RawTransaction;
 import org.web3j.crypto.TransactionEncoder;
-import org.web3j.protocol.Web3j;
-import org.web3j.protocol.core.DefaultBlockParameterName;
-import org.web3j.protocol.core.methods.response.EthGetTransactionCount;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.exceptions.TransactionException;
@@ -63,8 +60,12 @@ public class EthereumTransactionManager extends TransactionManager {
 
     @Override
     protected TransactionReceipt executeTransaction(BigInteger gasPrice, BigInteger gasLimit, String to, String data, BigInteger value) throws IOException, TransactionException {
-        // TODO: fast transactions will fail on this I guess
-        BigInteger nonce = getNonce();
+        BigInteger nonce;
+        try {
+            nonce = this.ethereumManagedConnection.getNextNonce(this.credentials.getAddress());
+        } catch (Exception ex) {
+            throw new IOException("could not determince next nonce: " + ex.getMessage(), ex);
+        }
         LOGGER.debug("nonce: {}", nonce);
         RawTransaction rawTransaction = RawTransaction.createTransaction(
                 nonce,
@@ -90,18 +91,5 @@ public class EthereumTransactionManager extends TransactionManager {
         String contractAddress = ContractUtils.generateContractAddress(this.credentials.getAddress(), nonce);
         EthereumTransactionReceipt ethereumTransactionReceipt = new EthereumTransactionReceipt(transactionHash, contractAddress);
         return ethereumTransactionReceipt;
-    }
-
-    private BigInteger getNonce() throws IOException {
-        Web3j web3j;
-        try {
-            web3j = this.ethereumManagedConnection.getWeb3j();
-        } catch (Exception ex) {
-            throw new IOException(ex);
-        }
-        // https://github.com/ethereum/go-ethereum/issues/2880
-        EthGetTransactionCount ethGetTransactionCount = web3j.ethGetTransactionCount(
-                this.credentials.getAddress(), DefaultBlockParameterName.PENDING).send();
-        return ethGetTransactionCount.getTransactionCount();
     }
 }

@@ -17,9 +17,11 @@
  */
 package be.e_contract.ethereum.ra;
 
+import java.math.BigInteger;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import javax.resource.ResourceException;
 import javax.transaction.xa.Xid;
 import org.slf4j.Logger;
@@ -102,6 +104,12 @@ public class EthereumTransactionCommit {
             if (ethSendTransaction.hasError()) {
                 LOGGER.warn("send transaction error: {}", ethSendTransaction.getError().getMessage());
                 // do we fail the transaction here? Actually the JTA transaction itself was OK.
+                // TODO: later on we could be more selective to clean the nonces cache
+                EthereumResourceAdapter ethereumResourceAdapter = this.ethereumManagedConnection.getResourceAdapter();
+                Map<String, BigInteger> nonces = ethereumResourceAdapter.getNonces();
+                synchronized (nonces) {
+                    nonces.clear();
+                }
             }
             this.rawTransactions.remove(0);
         }

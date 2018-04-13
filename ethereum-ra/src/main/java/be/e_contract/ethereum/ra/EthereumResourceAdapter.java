@@ -20,6 +20,7 @@ package be.e_contract.ethereum.ra;
 import be.e_contract.ethereum.ra.api.EthereumMessageListener;
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
 import javax.naming.NamingException;
@@ -57,9 +58,16 @@ public class EthereumResourceAdapter implements ResourceAdapter, Serializable, R
 
     private final Map<String, EthereumWork> nodeLocationEthereumWork;
 
+    private final Map<String, BigInteger> nonces;
+
     public EthereumResourceAdapter() {
         LOGGER.debug("constructor");
         this.nodeLocationEthereumWork = new HashMap<>();
+        this.nonces = new HashMap<>();
+    }
+
+    public Map<String, BigInteger> getNonces() {
+        return this.nonces;
     }
 
     public String getNodeLocation() {

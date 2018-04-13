@@ -92,7 +92,7 @@ public class EthereumManagedConnectionFactory implements ManagedConnectionFactor
         } else {
             ethereumConnectionRequestInfo = new EthereumConnectionRequestInfo(this.nodeLocation);
         }
-        return new EthereumManagedConnection(ethereumConnectionRequestInfo);
+        return new EthereumManagedConnection(ethereumConnectionRequestInfo, this.resourceAdapter);
     }
 
     @Override
