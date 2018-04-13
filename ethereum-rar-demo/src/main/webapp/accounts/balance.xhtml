@@ -29,6 +29,11 @@
 
                 <h:outputText value="Balance"/>
                 <h:outputText value="#{ethereumDemoAccountController.selectedAccountBalance}"/>
+                
+                <h:outputText value="Balance (ether)"/>
+                <h:outputText value="#{ethereumDemoAccountController.selectedAccountBalance}">
+                    <eth:fromWei unit="ETHER"/>
+                </h:outputText>
             </h:panelGrid>
             <h:form>
                 <h:panelGrid columns="1">

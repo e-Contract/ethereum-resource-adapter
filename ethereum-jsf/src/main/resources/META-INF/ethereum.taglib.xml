@@ -23,5 +23,19 @@
         </converter>
         <description>Converts an Ethereum address to a checksum address.</description>
     </tag>
+    
+    <tag>
+        <tag-name>fromWei</tag-name>
+        <converter>
+            <converter-id>be.e_contract.ethereum.jsf.FromWeiConverter</converter-id>
+        </converter>
+        <description>Converts from wei to another unit.</description>
+        <attribute>
+            <name>unit</name>
+            <required>true</required>
+            <description>The unit to which to convert.</description>
+            <type>org.web3j.utils.Convert.Unit</type>
+        </attribute>
+    </tag>
 
 </facelet-taglib>

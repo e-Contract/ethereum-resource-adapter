@@ -97,6 +97,28 @@ BigInteger gasPrice = this.gasPriceOracleBean.getGasPrice(oracle, maxDurationInS
 Depending on your max duration, this gas price oracle gives you a gas price that is on average 30-50% lower than the gas price set by the client node.
 
 
+## JSF Tag Library
+
+The project delivers a JSF Tag Library for validation and conversation of Ethereum types.
+
+Example input validation of an Ethereum address:
+```
+xmlns:eth="urn:be:e-contract:ethereum:jsf"
+
+<h:inputText value="...">
+    <eth:addressValidator/>
+</h:inputText>
+```
+
+Example conversation from wei to ether:
+```
+xmlns:eth="urn:be:e-contract:ethereum:jsf"
+
+<h:outputText value="1234">
+    <eth:fromWei unit="ETHER"/>
+</h:outputText>
+```
+
 # Usage
 
 This section provides generic usage information and usage information per Java EE application server.
