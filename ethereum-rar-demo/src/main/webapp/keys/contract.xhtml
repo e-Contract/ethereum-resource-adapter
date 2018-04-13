@@ -18,19 +18,22 @@
         <h:body>
             <h1>Invoke contract</h1>
             <h:form>
-                <h:panelGrid columns="2">
+                <h:panelGrid columns="3">
                     <h:outputText value="From:"/>
-                    <h:inputText value="#{ethereumDemoKeysController.selectedAddress}" size="60"/>
+                    <h:inputText value="#{ethereumDemoKeysController.selectedAddress}" size="60" required="true"/>
+                    <h:message for="from" errorStyle="color:red;"/>
 
                     <h:outputText value="Contract address:"/>
-                    <h:inputText value="#{ethereumDemoKeysController.contractAddress}" size="60"/>
+                    <h:inputText id="contractAddress" value="#{ethereumDemoKeysController.contractAddress}" size="60" required="true"/>
+                    <h:message for="contractAddress" errorStyle="color:red;"/>
 
                     <h:outputText value="Value:"/>
-                    <h:inputText value="#{ethereumDemoKeysController.value}"/>
+                    <h:inputText id="value" value="#{ethereumDemoKeysController.value}" required="true"/>
+                    <h:message for="value" errorStyle="color:red;"/>
                 </h:panelGrid>
                 <h:panelGrid columns="2">
                     <h:commandButton value="Invoke" action="#{ethereumDemoKeysController.invokeDemoContract}"/>
-                    <h:commandButton value="Back" action="/keys/index"/>
+                    <h:commandButton value="Back" action="/keys/index" immediate="true"/>
                 </h:panelGrid>
             </h:form>
         </h:body>

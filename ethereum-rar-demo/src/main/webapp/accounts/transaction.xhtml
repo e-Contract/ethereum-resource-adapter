@@ -18,25 +18,30 @@
         <h:body>
             <h1>Send Account Transaction</h1>
             <h:form>
-                <h:panelGrid columns="2">
+                <h:panelGrid columns="3">
                     <h:outputText value="From:"/>
-                    <h:inputText value="#{ethereumDemoAccountController.selectedAccount}" size="60"/>
+                    <h:inputText id="from" value="#{ethereumDemoAccountController.selectedAccount}" size="60" required="true"/>
+                    <h:message for="from" errorStyle="color:red;"/>
 
                     <h:outputText value="To:"/>
-                    <h:inputText value="#{ethereumDemoAccountController.to}" size="60"/>
+                    <h:inputText id="to" value="#{ethereumDemoAccountController.to}" size="60" required="true"/>
+                    <h:message for="to" errorStyle="color:red;"/>
 
                     <h:outputText value="Value:"/>
-                    <h:inputText value="#{ethereumDemoAccountController.value}"/>
+                    <h:inputText id="value" value="#{ethereumDemoAccountController.value}" required="true"/>
+                    <h:message for="value" errorStyle="color:red;"/>
 
                     <h:outputText value="Gas Price:"/>
-                    <h:inputText value="#{ethereumDemoAccountController.gasPrice}"/>
+                    <h:inputText id="gasPrice" value="#{ethereumDemoAccountController.gasPrice}" required="true"/>
+                    <h:message for="gasPrice" errorStyle="color:red;"/>
 
                     <h:outputText value="Nonce:"/>
-                    <h:inputText value="#{ethereumDemoAccountController.nonce}"/>
+                    <h:inputText id="nonce" value="#{ethereumDemoAccountController.nonce}" required="true"/>
+                    <h:message for="nonce" errorStyle="color:red;"/>
                 </h:panelGrid>
                 <h:panelGrid columns="2">
                     <h:commandButton value="Send" action="#{ethereumDemoAccountController.sendTransaction}"/>
-                    <h:commandButton value="Back" action="/accounts/index"/>
+                    <h:commandButton value="Back" action="/accounts/index" immediate="true"/>
                 </h:panelGrid>
             </h:form>
         </h:body>

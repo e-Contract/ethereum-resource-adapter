@@ -18,13 +18,14 @@
         <h:body>
             <h1>Confirm Transaction</h1>
             <h:form>
-                <h:panelGrid columns="2">
+                <h:panelGrid columns="3">
                     <h:outputText value="Transaction hash:"/>
-                    <h:inputText value="#{ethereumDemoConfirmController.transactionHash}" size="70"/>
+                    <h:inputText id="transactionHash" value="#{ethereumDemoConfirmController.transactionHash}" size="70" required="true"/>
+                    <h:message for="transactionHash" errorStyle="color:red;"/>
                 </h:panelGrid>
                 <h:panelGrid columns="2">
                     <h:commandButton value="Confirm" action="#{ethereumDemoConfirmController.confirm}"/>
-                    <h:commandButton value="Back" action="/index"/>
+                    <h:commandButton value="Back" action="/index" immediate="true"/>
                 </h:panelGrid>
             </h:form>
         </h:body>

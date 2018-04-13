@@ -19,6 +19,7 @@
 pragma solidity ^0.4.19;
 
 contract DemoContract {
+    event DemoEvent(address _from, int _value);
     int value;
 
     function getValue() public constant returns (int) {
@@ -27,6 +28,7 @@ contract DemoContract {
 
     function setValue(int _value) public {
         value = _value;
+        emit DemoEvent(msg.sender, _value);
     }
 }
 

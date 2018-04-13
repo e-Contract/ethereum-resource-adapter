@@ -216,7 +216,7 @@ public class EthereumConnectionImpl implements EthereumConnection {
         try {
             return this.ethereumManagedConnection.deploy(contractClass, gasPrice, gasLimit, credentials, chainId);
         } catch (EthereumException ex) {
-            LOGGER.error("ethereum error: " + ex.getMessage());
+            LOGGER.error("ethereum error: " + ex.getMessage(), ex);
             throw ex;
         } catch (Exception ex) {
             LOGGER.error("error: " + ex.getMessage(), ex);
@@ -237,9 +237,12 @@ public class EthereumConnectionImpl implements EthereumConnection {
     }
 
     @Override
-    public Integer getChainId() throws ResourceException {
+    public Integer getChainId() throws ResourceException, EthereumException {
         try {
             return this.ethereumManagedConnection.getChainId();
+        } catch (EthereumException ex) {
+            LOGGER.error("ethereum error: " + ex.getMessage(), ex);
+            throw ex;
         } catch (Exception ex) {
             LOGGER.error("error: " + ex.getMessage(), ex);
             throw new ResourceException(ex);

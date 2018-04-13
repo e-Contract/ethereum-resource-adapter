@@ -184,6 +184,7 @@ public interface EthereumConnection extends Connection, AutoCloseable {
      *
      * @return
      * @throws ResourceException
+     * @throws be.e_contract.ethereum.ra.api.EthereumException
      */
-    Integer getChainId() throws ResourceException;
+    Integer getChainId() throws ResourceException, EthereumException;
 }

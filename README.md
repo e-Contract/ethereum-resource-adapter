@@ -42,6 +42,8 @@ try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumC
 ```
 The transaction implementation also features automatic retry on commit just in case the client node is temporarily unavailable.
 
+The JCA Resource Adapter even supports JCA transactions on smart contracts written in Solidity.
+
 
 ## Message Listener
 
@@ -272,6 +274,29 @@ mvn wildfly:deploy
 The demo web application is now available at:
 http://localhost:8080/ethereum-demo/
 
+If you want debug logging, add to `standalone/configuration/standalone-full.xml` under `subsystem xmlns="urn:jboss:domain:logging:4.0"` the following configuration:
+```
+<periodic-rotating-file-handler name="ETHEREUM" autoflush="true">
+    <level name="DEBUG"/>
+    <formatter>
+        <named-formatter name="PATTERN"/>
+    </formatter>
+    <file relative-to="jboss.server.log.dir" path="ethereum.log"/>
+    <suffix value=".yyyy-MM-dd"/>
+    <append value="true"/>
+</periodic-rotating-file-handler>
+<logger category="be.e_contract.ethereum" use-parent-handlers="false">
+    <level name="DEBUG"/>
+    <handlers>
+        <handler name="ETHEREUM"/>
+    </handlers>
+</logger>
+```
+
+Following the logging via:
+```
+tail -F standalone/log/ethereum.log
+```
 
 ## Contributions
 

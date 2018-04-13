@@ -138,10 +138,11 @@ public class EthereumDemoAccountController implements Serializable {
 
     public String doUnlock() {
         LOGGER.debug("unlock {} - password {}", this.selectedAccount, this.password);
+        FacesContext facesContext = FacesContext.getCurrentInstance();
         try {
             this.ethereumBean.unlockAccount(this.selectedAccount, this.password);
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Unlocked: " + this.selectedAccount, null));
         } catch (EthereumException ex) {
-            FacesContext facesContext = FacesContext.getCurrentInstance();
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ex.getMessage(), null));
         }
         return "/accounts/unlocked";

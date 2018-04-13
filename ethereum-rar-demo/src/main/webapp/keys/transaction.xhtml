@@ -18,28 +18,34 @@
         <h:body>
             <h1>Sign Transaction</h1>
             <h:form>
-                <h:panelGrid columns="2">
+                <h:panelGrid columns="3">
                     <h:outputText value="From:"/>
-                    <h:inputText value="#{ethereumDemoKeysController.selectedAddress}" size="60"/>
+                    <h:inputText value="#{ethereumDemoKeysController.selectedAddress}" size="60" required="true"/>
+                    <h:message for="from" errorStyle="color:red;"/>
 
                     <h:outputText value="To:"/>
-                    <h:inputText value="#{ethereumDemoKeysController.to}" size="60"/>
+                    <h:inputText id="to" value="#{ethereumDemoKeysController.to}" size="60" required="true"/>
+                    <h:message for="to" errorStyle="color:red;"/>
 
                     <h:outputText value="Value:"/>
-                    <h:inputText value="#{ethereumDemoKeysController.value}"/>
+                    <h:inputText id="value" value="#{ethereumDemoKeysController.value}" required="true"/>
+                    <h:message for="value" errorStyle="color:red;"/>
 
                     <h:outputText value="Gas Price:"/>
-                    <h:inputText value="#{ethereumDemoKeysController.gasPrice}"/>
+                    <h:inputText id="gasPrice" value="#{ethereumDemoKeysController.gasPrice}" required="true"/>
+                    <h:message for="gasPrice" errorStyle="color:red;"/>
 
                     <h:outputText value="Nonce:"/>
-                    <h:inputText value="#{ethereumDemoKeysController.nonce}"/>
+                    <h:inputText id="nonce" value="#{ethereumDemoKeysController.nonce}" required="true"/>
+                    <h:message for="nonce" errorStyle="color:red;"/>
 
                     <h:outputText value="Chain Id:"/>
-                    <h:inputText value="#{ethereumDemoKeysController.chainId}"/>
+                    <h:inputText id="chainId" value="#{ethereumDemoKeysController.chainId}"/>
+                    <h:message for="chainId" errorStyle="color:red;"/>
                 </h:panelGrid>
                 <h:panelGrid columns="2">
                     <h:commandButton value="Sign" action="#{ethereumDemoKeysController.signTransaction}"/>
-                    <h:commandButton value="Back" action="/keys/index"/>
+                    <h:commandButton value="Back" action="/keys/index" immediate="true"/>
                 </h:panelGrid>
             </h:form>
         </h:body>
