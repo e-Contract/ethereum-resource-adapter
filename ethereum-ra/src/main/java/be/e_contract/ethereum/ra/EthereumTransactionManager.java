@@ -17,6 +17,7 @@
  */
 package be.e_contract.ethereum.ra;
 
+import be.e_contract.ethereum.ra.api.EthereumException;
 import java.io.IOException;
 import java.math.BigInteger;
 import javax.resource.ResourceException;
@@ -84,6 +85,9 @@ public class EthereumTransactionManager extends TransactionManager {
         try {
             this.ethereumManagedConnection.sendRawTransaction(hexValue);
         } catch (ResourceException ex) {
+            LOGGER.error("error sending raw transaction: " + ex.getMessage(), ex);
+            throw new IOException(ex);
+        } catch (EthereumException ex) {
             LOGGER.error("error sending raw transaction: " + ex.getMessage(), ex);
             throw new IOException(ex);
         }

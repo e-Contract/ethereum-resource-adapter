@@ -17,6 +17,7 @@
  */
 package be.e_contract.ethereum.rar.demo;
 
+import be.e_contract.ethereum.ra.api.EthereumException;
 import be.e_contract.ethereum.rar.demo.model.EthereumBean;
 import be.e_contract.ethereum.rar.demo.model.RollbackException;
 import java.io.Serializable;
@@ -86,6 +87,8 @@ public class EthereumDemoRawController implements Serializable {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "transaction hash: " + transactionHash, null));
         } catch (RollbackException ex) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "rollback error", null));
+        } catch (EthereumException ex) {
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "ethereum error: " + ex.getMessage(), null));
         }
         return "/raw/result";
     }

@@ -64,7 +64,7 @@ public class EthereumBean {
         }
     }
 
-    public String sendRawTransaction(String rawTransaction, boolean rollback) throws RollbackException {
+    public String sendRawTransaction(String rawTransaction, boolean rollback) throws RollbackException, EthereumException {
         String transactionHash;
         try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
             transactionHash = ethereumConnection.sendRawTransaction(rawTransaction);
@@ -78,7 +78,7 @@ public class EthereumBean {
         return transactionHash;
     }
 
-    public String sendRawTransactionLocalTransaction(String rawTransaction, boolean rollback) throws RollbackException {
+    public String sendRawTransactionLocalTransaction(String rawTransaction, boolean rollback) throws RollbackException, EthereumException {
         String transactionHash;
         try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
             LocalTransaction localTransaction = ethereumConnection.getLocalTransaction();

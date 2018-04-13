@@ -25,6 +25,7 @@ import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigInteger;
+import java.security.SignatureException;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -44,6 +45,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.Hash;
+import org.web3j.crypto.RawTransaction;
+import org.web3j.crypto.SignedRawTransaction;
+import org.web3j.crypto.TransactionDecoder;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.admin.Admin;
 import org.web3j.protocol.admin.methods.response.PersonalUnlockAccount;
@@ -275,8 +279,24 @@ public class EthereumManagedConnection implements ManagedConnection {
         return blockNumber;
     }
 
-    public String sendRawTransaction(String rawTransaction) throws ResourceException {
+    public String sendRawTransaction(String rawTransaction) throws ResourceException, EthereumException {
         LOGGER.debug("send raw transaction: {}", rawTransaction);
+        RawTransaction decodedRawTransaction = TransactionDecoder.decode(rawTransaction);
+        if (!(decodedRawTransaction instanceof SignedRawTransaction)) {
+            throw new EthereumException("unsigned transaction");
+        }
+        SignedRawTransaction signedRawTransaction = (SignedRawTransaction) decodedRawTransaction;
+        String from;
+        try {
+            from = signedRawTransaction.getFrom();
+        } catch (SignatureException ex) {
+            LOGGER.error("transaction signature error: " + ex.getMessage(), ex);
+            throw new EthereumException("transaction signature error: " + ex.getMessage());
+        }
+        LOGGER.debug("from: {}", from);
+        LOGGER.debug("to: {}", signedRawTransaction.getTo());
+        LOGGER.debug("nonce: {}", signedRawTransaction.getNonce());
+        LOGGER.debug("chain id: {}", signedRawTransaction.getChainId());
         // we want to support JCA transactions here
         // important to check local transaction first because of CCI local transactions
         String transactionHash = Hash.sha3(rawTransaction);

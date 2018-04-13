@@ -109,7 +109,7 @@ public class EthereumConnectionImpl implements EthereumConnection {
     }
 
     @Override
-    public String sendRawTransaction(String rawTransaction) throws ResourceException {
+    public String sendRawTransaction(String rawTransaction) throws ResourceException, EthereumException {
         return this.ethereumManagedConnection.sendRawTransaction(rawTransaction);
     }
 
