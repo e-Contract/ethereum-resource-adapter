@@ -369,7 +369,7 @@ public class EthereumManagedConnection implements ManagedConnection {
         // add one, since the transaction block also serves as confirmation
         BigInteger blocksOnTop = latestBlockNumber.subtract(transactionBlockNumber).add(BigInteger.ONE);
 
-        transactionConfirmation.setInfo(from, to, transactionBlockNumber, gasUsed, blocksOnTop.longValueExact(), timestampDate);
+        transactionConfirmation.setInfo(transactionReceipt, blocksOnTop.longValueExact(), timestampDate);
 
         return transactionConfirmation;
     }

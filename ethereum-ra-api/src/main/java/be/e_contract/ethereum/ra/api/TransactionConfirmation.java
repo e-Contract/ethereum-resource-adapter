@@ -18,8 +18,8 @@
 package be.e_contract.ethereum.ra.api;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.Date;
+import org.web3j.protocol.core.methods.response.TransactionReceipt;
 
 public class TransactionConfirmation implements Serializable {
 
@@ -29,17 +29,11 @@ public class TransactionConfirmation implements Serializable {
 
     private boolean failed;
 
-    private BigInteger blockNumber;
-
     private long confirmingBlocks;
 
     private Date timestamp;
 
-    private String to;
-
-    private String from;
-
-    private BigInteger gasUsed;
+    private TransactionReceipt transactionReceipt;
 
     public TransactionConfirmation(String transactionHash) {
         this.transactionHash = transactionHash;
@@ -65,17 +59,10 @@ public class TransactionConfirmation implements Serializable {
         this.failed = failed;
     }
 
-    public void setInfo(String from, String to, BigInteger blockNumber, BigInteger gasUsed, long confirmingBlocks, Date timestamp) {
-        this.from = from;
-        this.to = to;
-        this.blockNumber = blockNumber;
-        this.gasUsed = gasUsed;
+    public void setInfo(TransactionReceipt transactionReceipt, long confirmingBlocks, Date timestamp) {
+        this.transactionReceipt = transactionReceipt;
         this.confirmingBlocks = confirmingBlocks;
         this.timestamp = timestamp;
-    }
-
-    public BigInteger getBlockNumber() {
-        return this.blockNumber;
     }
 
     public long getConfirmingBlocks() {
@@ -86,15 +73,7 @@ public class TransactionConfirmation implements Serializable {
         return this.timestamp;
     }
 
-    public String getTo() {
-        return this.to;
-    }
-
-    public String getFrom() {
-        return this.from;
-    }
-
-    public BigInteger getGasUsed() {
-        return this.gasUsed;
+    public TransactionReceipt getTransactionReceipt() {
+        return this.transactionReceipt;
     }
 }

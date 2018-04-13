@@ -121,9 +121,12 @@ public class EthereumDemoKeysController implements Serializable {
     }
 
     public String newKey() {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
         try {
-            this.memoryKeysBean.newKey();
+            String address = this.memoryKeysBean.newKey();
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "new key address: " + address, null));
         } catch (Exception ex) {
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "new key error: " + ex.getMessage(), null));
             LOGGER.error("error: " + ex.getMessage(), ex);
         }
         return "/keys/index";
@@ -203,7 +206,9 @@ public class EthereumDemoKeysController implements Serializable {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         try {
             this.ethereumBean.invokeContract(this.contractAddress, credentials, this.value, this.rollback);
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "contract invoked: " + this.value, null));
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "contract invoked from: " + this.selectedAddress, null));
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "contract address: " + this.contractAddress, null));
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "contract invoked with value: " + this.value, null));
         } catch (RollbackException ex) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "transaction rollback", null));
         } catch (Exception ex) {
@@ -224,6 +229,7 @@ public class EthereumDemoKeysController implements Serializable {
         BigInteger contractValue;
         try {
             contractValue = this.ethereumBean.readContract(this.contractAddress, credentials);
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "contract address: " + this.contractAddress, null));
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "contract value: " + contractValue, null));
         } catch (Exception ex) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "contract invoke error: "

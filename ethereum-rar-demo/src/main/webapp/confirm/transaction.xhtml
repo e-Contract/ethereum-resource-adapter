@@ -28,22 +28,25 @@
                 <h:outputText value="#{ethereumDemoConfirmController.transactionConfirmation.pendingTransaction}"/>
 
                 <h:outputText value="to:"/>
-                <h:outputText value="#{ethereumDemoConfirmController.transactionConfirmation.to}"/>
+                <h:outputText value="#{ethereumDemoConfirmController.transactionConfirmation.transactionReceipt.to}"/>
 
                 <h:outputText value="from:"/>
-                <h:outputText value="#{ethereumDemoConfirmController.transactionConfirmation.from}"/>
+                <h:outputText value="#{ethereumDemoConfirmController.transactionConfirmation.transactionReceipt.from}"/>
 
                 <h:outputText value="gas used:"/>
-                <h:outputText value="#{ethereumDemoConfirmController.transactionConfirmation.gasUsed}"/>
+                <h:outputText value="#{ethereumDemoConfirmController.transactionConfirmation.transactionReceipt.gasUsed}"/>
 
                 <h:outputText value="block number:"/>
-                <h:outputText value="#{ethereumDemoConfirmController.transactionConfirmation.blockNumber}"/>
+                <h:outputText value="#{ethereumDemoConfirmController.transactionConfirmation.transactionReceipt.blockNumber}"/>
 
                 <h:outputText value="number of confirming blocks:"/>
                 <h:outputText value="#{ethereumDemoConfirmController.transactionConfirmation.confirmingBlocks}"/>
 
                 <h:outputText value="timestamp:"/>
                 <h:outputText value="#{ethereumDemoConfirmController.transactionConfirmation.timestamp}"/>
+
+                <h:outputText value="contract address:"/>
+                <h:outputText value="#{ethereumDemoConfirmController.transactionConfirmation.transactionReceipt.contractAddress}"/>
             </h:panelGrid>
             <h:form>
                 <h:commandButton value="Back" action="/index"/>
