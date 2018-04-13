@@ -32,6 +32,7 @@ import javax.inject.Named;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.web3j.crypto.Credentials;
+import org.web3j.protocol.core.methods.response.TransactionReceipt;
 
 @Named("ethereumDemoKeysController")
 @RequestScoped
@@ -49,6 +50,8 @@ public class EthereumDemoKeysController implements Serializable {
 
     private BigInteger selectedAddressBalance;
 
+    private boolean rollback;
+
     private String to;
     private BigInteger value;
     private BigInteger gasPrice;
@@ -56,6 +59,14 @@ public class EthereumDemoKeysController implements Serializable {
     private Integer chainId;
 
     private String contractAddress;
+
+    public boolean isRollback() {
+        return this.rollback;
+    }
+
+    public void setRollback(boolean rollback) {
+        this.rollback = rollback;
+    }
 
     public String getTo() {
         return this.to;
@@ -171,8 +182,11 @@ public class EthereumDemoKeysController implements Serializable {
         Credentials credentials = this.memoryKeysBean.getCredentials(this.selectedAddress);
         FacesContext facesContext = FacesContext.getCurrentInstance();
         try {
-            String contractAddress = this.ethereumBean.deployDemoContract(credentials);
+            TransactionReceipt transactionReceipt = this.ethereumBean.deployDemoContract(credentials);
+            String contractAddress = transactionReceipt.getContractAddress();
+            String transactionHash = transactionReceipt.getTransactionHash();
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "contract address: " + contractAddress, null));
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "transaction hash: " + transactionHash, null));
         } catch (EthereumException ex) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "contract error: " + ex.getMessage(), null));
         }
@@ -188,8 +202,10 @@ public class EthereumDemoKeysController implements Serializable {
         Credentials credentials = this.memoryKeysBean.getCredentials(this.selectedAddress);
         FacesContext facesContext = FacesContext.getCurrentInstance();
         try {
-            this.ethereumBean.invokeContract(this.contractAddress, credentials, this.value);
+            this.ethereumBean.invokeContract(this.contractAddress, credentials, this.value, this.rollback);
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "contract invoked: " + this.value, null));
+        } catch (RollbackException ex) {
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "transaction rollback", null));
         } catch (Exception ex) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "contract invoke error: "
                     + ex.getMessage(), null));

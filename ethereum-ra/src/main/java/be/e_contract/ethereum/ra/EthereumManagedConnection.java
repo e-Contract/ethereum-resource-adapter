@@ -451,7 +451,7 @@ public class EthereumManagedConnection implements ManagedConnection {
         return ethSendTransaction.getTransactionHash();
     }
 
-    public String deploy(Class<? extends Contract> contractClass, BigInteger gasPrice, BigInteger gasLimit,
+    public TransactionReceipt deploy(Class<? extends Contract> contractClass, BigInteger gasPrice, BigInteger gasLimit,
             Credentials credentials, Byte chainId) throws Exception {
         Web3j web3j = getWeb3j();
         Field binaryField = contractClass.getDeclaredField("BINARY");
@@ -472,7 +472,7 @@ public class EthereumManagedConnection implements ManagedConnection {
             LOGGER.debug("could not deploy contract: " + ex.getMessage(), ex);
             throw new EthereumException("could not deploy contract: " + ex.getMessage());
         }
-        return contract.getContractAddress();
+        return contract.getTransactionReceipt().get();
     }
 
     public <T extends Contract> T load(Class<T> contractClass, String contractAddress,

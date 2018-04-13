@@ -35,6 +35,10 @@
                     <h:outputText value="Value:"/>
                     <h:inputText id="value" value="#{ethereumDemoKeysController.value}" required="true"/>
                     <h:message for="value" errorStyle="color:red;"/>
+
+                    <h:outputText value="Rollback transaction:"/>
+                    <h:selectBooleanCheckbox id="rollback" value="#{ethereumDemoKeysController.rollback}"/>
+                    <h:message for="rollback" errorStyle="color:red;"/>
                 </h:panelGrid>
                 <h:panelGrid columns="2">
                     <h:commandButton value="Invoke" action="#{ethereumDemoKeysController.invokeDemoContract}"/>

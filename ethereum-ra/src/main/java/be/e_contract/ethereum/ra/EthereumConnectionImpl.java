@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.core.methods.response.EthBlock;
 import org.web3j.protocol.core.methods.response.Transaction;
+import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.tx.Contract;
 
 public class EthereumConnectionImpl implements EthereumConnection {
@@ -211,7 +212,7 @@ public class EthereumConnectionImpl implements EthereumConnection {
     }
 
     @Override
-    public String deploy(Class<? extends Contract> contractClass, BigInteger gasPrice,
+    public TransactionReceipt deploy(Class<? extends Contract> contractClass, BigInteger gasPrice,
             BigInteger gasLimit, Credentials credentials, Byte chainId) throws ResourceException, EthereumException {
         try {
             return this.ethereumManagedConnection.deploy(contractClass, gasPrice, gasLimit, credentials, chainId);

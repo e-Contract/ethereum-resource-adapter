@@ -22,4 +22,11 @@ import javax.ejb.ApplicationException;
 @ApplicationException(rollback = true)
 public class RollbackException extends Exception {
 
+    public RollbackException() {
+        super();
+    }
+
+    public RollbackException(String message) {
+        super(message);
+    }
 }

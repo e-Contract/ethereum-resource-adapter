@@ -23,7 +23,7 @@
                     <h:inputText value="#{ethereumDemoAccountController.selectedAccount}" size="60"/>
 
                     <h:outputText value="Password"/>
-                    <h:inputText value="#{ethereumDemoAccountController.password}"/>
+                    <h:inputSecret value="#{ethereumDemoAccountController.password}"/>
                 </h:panelGrid>
                 <h:panelGrid columns="2">
                     <h:commandButton value="Unlock" action="#{ethereumDemoAccountController.doUnlock}"/>

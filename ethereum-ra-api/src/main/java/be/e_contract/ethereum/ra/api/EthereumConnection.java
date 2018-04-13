@@ -24,6 +24,7 @@ import javax.resource.cci.Connection;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.core.methods.response.EthBlock;
 import org.web3j.protocol.core.methods.response.Transaction;
+import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.tx.Contract;
 
 /**
@@ -157,11 +158,12 @@ public interface EthereumConnection extends Connection, AutoCloseable {
      * @param gasLimit
      * @param credentials
      * @param chainId
-     * @return the contract address.
+     * @return the contract transaction receipt, containing the transaction hash
+     * and the contract address.
      * @throws javax.resource.ResourceException
      * @throws be.e_contract.ethereum.ra.api.EthereumException
      */
-    String deploy(Class<? extends Contract> contractClass, BigInteger gasPrice,
+    TransactionReceipt deploy(Class<? extends Contract> contractClass, BigInteger gasPrice,
             BigInteger gasLimit, Credentials credentials, Byte chainId) throws ResourceException, EthereumException;
 
     /**

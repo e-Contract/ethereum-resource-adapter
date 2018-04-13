@@ -44,6 +44,8 @@ The transaction implementation also features automatic retry on commit just in c
 
 The JCA Resource Adapter even supports JCA transactions on smart contracts written in Solidity.
 
+Furthermore, fast Ethereum transactions are also supported via internal nonce caching.
+
 
 ## Message Listener
 
@@ -99,7 +101,7 @@ Depending on your max duration, this gas price oracle gives you a gas price that
 
 ## JSF Tag Library
 
-The project delivers a JSF Tag Library for validation and conversation of Ethereum types.
+The project delivers a JSF Tag Library for validation and conversion of Ethereum types.
 
 Example input validation of an Ethereum address:
 ```
@@ -110,7 +112,7 @@ xmlns:eth="urn:be:e-contract:ethereum:jsf"
 </h:inputText>
 ```
 
-Example conversation from wei to ether:
+Example conversion from wei to ether:
 ```
 xmlns:eth="urn:be:e-contract:ethereum:jsf"
 

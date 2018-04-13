@@ -35,6 +35,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.web3j.crypto.Credentials;
+import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.tx.Contract;
 
 @Stateless
@@ -157,7 +158,7 @@ public class EthereumBean {
         }
     }
 
-    public String deployDemoContract(Credentials credentials) throws EthereumException {
+    public TransactionReceipt deployDemoContract(Credentials credentials) throws EthereumException {
         try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
             Integer chainId = ethereumConnection.getChainId();
             LOGGER.debug("chain id: {}", chainId);
@@ -179,7 +180,7 @@ public class EthereumBean {
         }
     }
 
-    public void invokeContract(String contractAddress, Credentials credentials, BigInteger value) throws Exception {
+    public void invokeContract(String contractAddress, Credentials credentials, BigInteger value, boolean rollback) throws Exception {
         try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
             Integer chainId = ethereumConnection.getChainId();
             LOGGER.debug("chain id: {}", chainId);
@@ -199,6 +200,9 @@ public class EthereumBean {
             demoContract.setValue(value).send();
         } catch (ResourceException ex) {
             LOGGER.error("JCA error: " + ex.getMessage(), ex);
+        }
+        if (rollback) {
+            throw new RollbackException("rollback");
         }
     }
 
