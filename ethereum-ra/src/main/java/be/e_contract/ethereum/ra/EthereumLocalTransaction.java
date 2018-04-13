@@ -17,8 +17,6 @@
  */
 package be.e_contract.ethereum.ra;
 
-import java.util.LinkedList;
-import java.util.List;
 import javax.resource.ResourceException;
 import javax.resource.spi.LocalTransaction;
 import org.slf4j.Logger;
@@ -28,38 +26,36 @@ public class EthereumLocalTransaction implements LocalTransaction {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EthereumLocalTransaction.class);
 
-    private final List<String> rawTransactions;
+    private final EthereumTransactionCommit ethereumTransactionCommit;
 
     private final EthereumManagedConnection ethereumManagedConnection;
 
     public EthereumLocalTransaction(EthereumManagedConnection ethereumManagedConnection) {
         this.ethereumManagedConnection = ethereumManagedConnection;
-        this.rawTransactions = new LinkedList<>();
+        this.ethereumTransactionCommit = new EthereumTransactionCommit(this.ethereumManagedConnection);
     }
 
     @Override
     public void begin() throws ResourceException {
         LOGGER.debug("begin");
-        this.rawTransactions.clear();
+        this.ethereumTransactionCommit.getRawTransactions().clear();
     }
 
     @Override
     public void commit() throws ResourceException {
         LOGGER.debug("commit");
-        EthereumTransactionCommit ethereumTransactionCommit = new EthereumTransactionCommit(this.rawTransactions, this.ethereumManagedConnection);
-        ethereumTransactionCommit.commit();
-        this.rawTransactions.clear();
+        this.ethereumTransactionCommit.commit();
     }
 
     @Override
     public void rollback() throws ResourceException {
         LOGGER.debug("rollback");
-        LOGGER.debug("number of raw transactions in queue: {}", this.rawTransactions.size());
-        this.rawTransactions.clear();
+        LOGGER.debug("number of raw transactions in queue: {}", this.ethereumTransactionCommit.getRawTransactions().size());
+        this.ethereumTransactionCommit.rollback();
     }
 
     public void scheduleRawTransaction(String rawTransaction) {
         LOGGER.debug("schedule raw transaction: {}", rawTransaction);
-        this.rawTransactions.add(rawTransaction);
+        this.ethereumTransactionCommit.getRawTransactions().add(rawTransaction);
     }
 }

@@ -281,8 +281,15 @@ public class EthereumManagedConnection implements ManagedConnection {
 
     public String sendRawTransaction(String rawTransaction) throws ResourceException, EthereumException {
         LOGGER.debug("send raw transaction: {}", rawTransaction);
-        RawTransaction decodedRawTransaction = TransactionDecoder.decode(rawTransaction);
+        RawTransaction decodedRawTransaction;
+        try {
+            decodedRawTransaction = TransactionDecoder.decode(rawTransaction);
+        } catch (Exception ex) {
+            LOGGER.error("transaction decoding error: " + ex.getMessage(), ex);
+            throw new EthereumException("transaction decoding error: " + ex.getMessage());
+        }
         if (!(decodedRawTransaction instanceof SignedRawTransaction)) {
+            LOGGER.error("unsigned transaction");
             throw new EthereumException("unsigned transaction");
         }
         SignedRawTransaction signedRawTransaction = (SignedRawTransaction) decodedRawTransaction;
@@ -354,10 +361,7 @@ public class EthereumManagedConnection implements ManagedConnection {
             transactionConfirmation.setFailed(true);
             return transactionConfirmation;
         }
-        String from = transactionReceipt.getFrom();
-        String to = transactionReceipt.getTo();
         BigInteger transactionBlockNumber = transactionReceipt.getBlockNumber();
-        BigInteger gasUsed = transactionReceipt.getGasUsed();
 
         EthBlock ethBlock = web3j.ethGetBlockByNumber(DefaultBlockParameter.valueOf(transactionBlockNumber), false).send();
         EthBlock.Block block = ethBlock.getBlock();

@@ -180,7 +180,7 @@ public class EthereumBean {
         }
     }
 
-    public void invokeContract(String contractAddress, Credentials credentials, BigInteger value, boolean rollback) throws Exception {
+    public String invokeContract(String contractAddress, Credentials credentials, BigInteger value, boolean rollback) throws Exception {
         try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
             Integer chainId = ethereumConnection.getChainId();
             LOGGER.debug("chain id: {}", chainId);
@@ -197,12 +197,14 @@ public class EthereumBean {
             BigInteger gasPrice = ethereumConnection.getGasPrice();
             DemoContract demoContract = ethereumConnection.load(DemoContract.class, contractAddress,
                     credentials, _chainId, gasPrice, Contract.GAS_LIMIT);
-            demoContract.setValue(value).send();
+            String transactionHash = demoContract.setValue(value).send().getTransactionHash();
+            if (rollback) {
+                throw new RollbackException("rollback");
+            }
+            return transactionHash;
         } catch (ResourceException ex) {
             LOGGER.error("JCA error: " + ex.getMessage(), ex);
-        }
-        if (rollback) {
-            throw new RollbackException("rollback");
+            return null;
         }
     }
 

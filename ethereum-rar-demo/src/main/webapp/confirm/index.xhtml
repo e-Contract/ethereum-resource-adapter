@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:h="http://java.sun.com/jsf/html">
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:eth="urn:be:e-contract:ethereum:jsf">
 
     <f:view>
         <h:head>
@@ -20,7 +21,9 @@
             <h:form>
                 <h:panelGrid columns="3">
                     <h:outputText value="Transaction hash:"/>
-                    <h:inputText id="transactionHash" value="#{ethereumDemoConfirmController.transactionHash}" size="70" required="true"/>
+                    <h:inputText id="transactionHash" value="#{ethereumDemoConfirmController.transactionHash}" size="70" required="true">
+                        <eth:transactionHashValidator/>
+                    </h:inputText>
                     <h:message for="transactionHash" errorStyle="color:red;"/>
                 </h:panelGrid>
                 <h:panelGrid columns="2">

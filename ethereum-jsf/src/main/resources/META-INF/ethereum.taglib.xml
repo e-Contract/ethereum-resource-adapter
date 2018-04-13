@@ -37,5 +37,13 @@
             <type>org.web3j.utils.Convert.Unit</type>
         </attribute>
     </tag>
+    
+    <tag>
+        <tag-name>transactionHashValidator</tag-name>
+        <validator>
+            <validator-id>be.e_contract.ethereum.jsf.TransactionHashValidator</validator-id>
+        </validator>
+        <description>Verifies whether the value is a transaction hash.</description>
+    </tag>
 
 </facelet-taglib>

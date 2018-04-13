@@ -205,7 +205,8 @@ public class EthereumDemoKeysController implements Serializable {
         Credentials credentials = this.memoryKeysBean.getCredentials(this.selectedAddress);
         FacesContext facesContext = FacesContext.getCurrentInstance();
         try {
-            this.ethereumBean.invokeContract(this.contractAddress, credentials, this.value, this.rollback);
+            String transactionHash = this.ethereumBean.invokeContract(this.contractAddress, credentials, this.value, this.rollback);
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "transaction hash: " + transactionHash, null));
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "contract invoked from: " + this.selectedAddress, null));
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "contract address: " + this.contractAddress, null));
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "contract invoked with value: " + this.value, null));

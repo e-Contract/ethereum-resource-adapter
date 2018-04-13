@@ -58,6 +58,10 @@ public class EthereumTransactionCommit {
         this.xid = xid;
     }
 
+    public EthereumTransactionCommit(EthereumManagedConnection ethereumManagedConnection) {
+        this(ethereumManagedConnection, null);
+    }
+
     public boolean isPrepared() {
         return this.prepared;
     }
@@ -70,12 +74,29 @@ public class EthereumTransactionCommit {
         return this.rawTransactions;
     }
 
-    public void clear() {
-        this.rawTransactions.clear();
-    }
-
     public Xid getXid() {
         return this.xid;
+    }
+
+    public void rollback() {
+        // we have to clear the relevant nonces cache here
+        EthereumResourceAdapter ethereumResourceAdapter = this.ethereumManagedConnection.getResourceAdapter();
+        Map<String, BigInteger> nonces = ethereumResourceAdapter.getNonces();
+        for (String rawTransaction : this.rawTransactions) {
+            SignedRawTransaction signedRawTransaction = (SignedRawTransaction) TransactionDecoder.decode(rawTransaction);
+            String from;
+            try {
+                from = signedRawTransaction.getFrom();
+            } catch (SignatureException ex) {
+                LOGGER.error("transaction signature error: " + ex.getMessage(), ex);
+                continue;
+            }
+            synchronized (nonces) {
+                nonces.remove(from);
+            }
+        }
+        this.rawTransactions.clear();
+        this.prepared = false;
     }
 
     public void commit() throws ResourceException {

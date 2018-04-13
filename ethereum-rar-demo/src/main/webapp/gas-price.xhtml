@@ -16,7 +16,7 @@
         </h:head>
 
         <h:body>
-            <h:messages/>
+            <h:messages errorStyle="color:red;" infoStyle="color:blue;"/>
             <h:form>
                 <h:panelGrid columns="2">
                     <h:outputText value="node gas price:"/>
@@ -41,7 +41,7 @@
                 </h:dataTable>
                 <h:panelGrid columns="2">
                     <h:commandButton value="Refresh" action="#{ethereumDemoGasPriceController.refresh}"/>
-                    <h:commandButton value="Back" action="/index"/>
+                    <h:commandButton value="Back" action="/index" immediate="true"/>
                 </h:panelGrid>
             </h:form>
         </h:body>

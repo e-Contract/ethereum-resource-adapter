@@ -29,11 +29,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.web3j.protocol.Web3j;
 
-/**
- * Although the basics already work, this class still needs some work.
- *
- * @author Frank Cornelis
- */
 public class EthereumXAResource implements XAResource {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EthereumXAResource.class);
@@ -51,13 +46,13 @@ public class EthereumXAResource implements XAResource {
         this.xidRawTransactions = new HashMap<>();
     }
 
-    private List<String> getRawTransactions(Xid xid) {
+    private EthereumTransactionCommit getEthereumTransactionCommit(Xid xid) {
         EthereumTransactionCommit ethereumTransactionCommit = this.xidRawTransactions.get(xid);
         if (null == ethereumTransactionCommit) {
             ethereumTransactionCommit = new EthereumTransactionCommit(this.ethereumManagedConnection, xid);
             this.xidRawTransactions.put(xid, ethereumTransactionCommit);
         }
-        return ethereumTransactionCommit.getRawTransactions();
+        return ethereumTransactionCommit;
     }
 
     @Override
@@ -86,15 +81,12 @@ public class EthereumXAResource implements XAResource {
             LOGGER.error("invalid xid: {}", xid);
             throw new XAException("invalid xid");
         }
-        List<String> rawTransactions = getRawTransactions(xid);
         if (isFlagSet(flags, TMFAIL)) {
             LOGGER.debug("end: TMFAIL");
-            rawTransactions.clear();
-            // don't remove here... since we need to know the xid on rollback
-            //this.xidRawTransactions.remove(xid);
             return;
         }
-        if (!rawTransactions.isEmpty()) {
+        EthereumTransactionCommit ethereumTransactionCommit = getEthereumTransactionCommit(xid);
+        if (!ethereumTransactionCommit.getRawTransactions().isEmpty()) {
             try {
                 Web3j web3j = this.ethereumManagedConnection.getWeb3j();
                 // make sure the node is available
@@ -173,6 +165,7 @@ public class EthereumXAResource implements XAResource {
         }
         List<String> rawTransactions = ethereumTransactionCommit.getRawTransactions();
         LOGGER.debug("number of raw transactions in queue: {}", rawTransactions.size());
+        ethereumTransactionCommit.rollback();
         this.xidRawTransactions.remove(xid);
     }
 
@@ -196,9 +189,9 @@ public class EthereumXAResource implements XAResource {
             this.currentXid = xid;
         }
 
-        List<String> rawTransactions = getRawTransactions(xid);
+        EthereumTransactionCommit ethereumTransactionCommit = getEthereumTransactionCommit(xid);
         if (!isFlagSet(flags, TMRESUME)) {
-            rawTransactions.clear();
+            ethereumTransactionCommit.getRawTransactions().clear();
         }
         if (isFlagSet(flags, TMRESUME)) {
             if (this.currentXid.equals(xid)) {
