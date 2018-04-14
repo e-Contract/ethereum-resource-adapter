@@ -115,11 +115,12 @@ public class EthereumBean {
         }
     }
 
-    public void newAccount(String password) {
+    public String newAccount(String password) {
         try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
-            ethereumConnection.newAccount(password);
+            return ethereumConnection.newAccount(password);
         } catch (ResourceException ex) {
             LOGGER.error("JCA error: " + ex.getMessage(), ex);
+            return null;
         }
     }
 

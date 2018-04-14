@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:h="http://java.sun.com/jsf/html">
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:eth="urn:be:e-contract:ethereum:jsf">
 
     <f:view>
         <h:head>
@@ -35,6 +36,11 @@
 
                 <h:outputText value="gas used:"/>
                 <h:outputText value="#{ethereumDemoConfirmController.transactionConfirmation.transactionReceipt.gasUsed}"/>
+
+                <h:outputText value="gas used (gwei):"/>
+                <h:outputText value="#{ethereumDemoConfirmController.transactionConfirmation.transactionReceipt.gasUsed}">
+                    <eth:fromWei unit="GWEI"/>
+                </h:outputText>
 
                 <h:outputText value="block number:"/>
                 <h:outputText value="#{ethereumDemoConfirmController.transactionConfirmation.transactionReceipt.blockNumber}"/>

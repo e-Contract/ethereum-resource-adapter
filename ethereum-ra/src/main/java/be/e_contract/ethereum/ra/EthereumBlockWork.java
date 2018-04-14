@@ -59,7 +59,8 @@ public class EthereumBlockWork implements Work {
         Web3j web3j = Web3jFactory.createWeb3j(nodeLocation);
         BigInteger filterId = web3j.ethNewBlockFilter().send().getFilterId();
         while (!this.shutdown) {
-            List<EthLog.LogResult> logResultList = web3j.ethGetFilterChanges(filterId).send().getResult();
+            List<EthLog.LogResult> logResultList
+                    = web3j.ethGetFilterChanges(filterId).send().getResult();
             Date timestamp = new Date();
             if (logResultList.isEmpty()) {
                 try {
@@ -74,7 +75,8 @@ public class EthereumBlockWork implements Work {
                 if (logResult instanceof EthLog.Hash) {
                     EthLog.Hash hash = (EthLog.Hash) logResult;
                     String blockHash = hash.get();
-                    List<EthereumActivationSpec> ethereumActivationSpecs = this.ethereumWork.getEthereumActivationSpecs();
+                    List<EthereumActivationSpec> ethereumActivationSpecs
+                            = this.ethereumWork.getEthereumActivationSpecs();
                     for (EthereumActivationSpec ethereumActivationSpec : ethereumActivationSpecs) {
                         Boolean deliverBlock = ethereumActivationSpec.isDeliverBlock();
                         if (null == deliverBlock) {
@@ -83,7 +85,8 @@ public class EthereumBlockWork implements Work {
                         if (!deliverBlock) {
                             continue;
                         }
-                        EthereumMessageListener ethereumMessageListener = ethereumActivationSpec.getEthereumMessageListener();
+                        EthereumMessageListener ethereumMessageListener
+                                = ethereumActivationSpec.getEthereumMessageListener();
                         ethereumMessageListener.block(blockHash, timestamp);
                     }
                 }

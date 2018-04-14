@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:h="http://java.sun.com/jsf/html">
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:eth="urn:be:e-contract:ethereum:jsf">
 
     <f:view>
         <h:head>
@@ -21,8 +22,18 @@
                 <h:outputText value="Address"/>
                 <h:outputText value="#{ethereumDemoKeysController.selectedAddress}"/>
 
+                <h:outputText value="Address (checksum)"/>
+                <h:outputText value="#{ethereumDemoKeysController.selectedAddress}">
+                    <eth:checksumAddress/>
+                </h:outputText>
+
                 <h:outputText value="Balance"/>
                 <h:outputText value="#{ethereumDemoKeysController.selectedAddressBalance}"/>
+
+                <h:outputText value="Balance (ether)"/>
+                <h:outputText value="#{ethereumDemoKeysController.selectedAddressBalance}">
+                    <eth:fromWei unit="ETHER"/>
+                </h:outputText>
             </h:panelGrid>
             <h:form>
                 <h:panelGrid columns="1">

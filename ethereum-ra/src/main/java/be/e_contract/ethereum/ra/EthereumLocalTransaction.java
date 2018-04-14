@@ -50,7 +50,8 @@ public class EthereumLocalTransaction implements LocalTransaction {
     @Override
     public void rollback() throws ResourceException {
         LOGGER.debug("rollback");
-        LOGGER.debug("number of raw transactions in queue: {}", this.ethereumTransactionCommit.getRawTransactions().size());
+        LOGGER.debug("number of raw transactions in queue: {}",
+                this.ethereumTransactionCommit.getRawTransactions().size());
         this.ethereumTransactionCommit.rollback();
     }
 

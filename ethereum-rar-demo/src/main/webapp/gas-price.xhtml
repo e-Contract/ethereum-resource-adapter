@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:h="http://java.sun.com/jsf/html">
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:eth="urn:be:e-contract:ethereum:jsf">
 
     <f:view>
         <h:head>
@@ -22,6 +23,11 @@
                     <h:outputText value="node gas price:"/>
                     <h:outputText value="#{ethereumDemoGasPriceController.gasPrice}"/>
 
+                    <h:outputText value="node gas price (gwei):"/>
+                    <h:outputText value="#{ethereumDemoGasPriceController.gasPrice}">
+                        <eth:fromWei unit="GWEI"/>
+                    </h:outputText>
+
                     <h:outputText value="maximum transaction duration:"/>
                     <h:inputText value="#{ethereumDemoGasPriceController.maxDuration}"/>
                 </h:panelGrid>
@@ -37,6 +43,14 @@
                             Price
                         </f:facet>
                         <h:outputText value="#{gasPriceEntry.gasPrice}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            Price (gwei)
+                        </f:facet>
+                        <h:outputText value="#{gasPriceEntry.gasPrice}">
+                            <eth:fromWei unit="GWEI"/>
+                        </h:outputText>
                     </h:column>
                 </h:dataTable>
                 <h:panelGrid columns="2">

@@ -32,12 +32,16 @@
                     </h:inputText>
                     <h:message for="to" errorStyle="color:red;"/>
 
-                    <h:outputText value="Value:"/>
-                    <h:inputText id="value" value="#{ethereumDemoAccountController.value}" required="true"/>
+                    <h:outputText value="Value (ether):"/>
+                    <h:inputText id="value" value="#{ethereumDemoAccountController.value}" required="true">
+                        <eth:fromWei unit="ETHER"/>
+                    </h:inputText>
                     <h:message for="value" errorStyle="color:red;"/>
 
-                    <h:outputText value="Gas Price:"/>
-                    <h:inputText id="gasPrice" value="#{ethereumDemoAccountController.gasPrice}" required="true"/>
+                    <h:outputText value="Gas Price (gwei):"/>
+                    <h:inputText id="gasPrice" value="#{ethereumDemoAccountController.gasPrice}" required="true">
+                        <eth:fromWei unit="GWEI"/>
+                    </h:inputText>
                     <h:message for="gasPrice" errorStyle="color:red;"/>
 
                     <h:outputText value="Nonce:"/>

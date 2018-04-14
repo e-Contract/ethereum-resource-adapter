@@ -39,8 +39,9 @@ public class FromWeiConverter implements Converter {
 
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
-        // TODO
-        return value;
+        BigDecimal unitValue = new BigDecimal(value);
+        BigDecimal weiValue = Convert.toWei(unitValue, this.unit);
+        return weiValue;
     }
 
     @Override

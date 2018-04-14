@@ -66,7 +66,8 @@ public class EthereumConnectionImpl implements EthereumConnection {
     @Override
     public LocalTransaction getLocalTransaction() throws ResourceException {
         LOGGER.debug("getLocalTransaction");
-        EthereumLocalTransaction ethereumLocalTransaction = (EthereumLocalTransaction) this.ethereumManagedConnection.getLocalTransaction();
+        EthereumLocalTransaction ethereumLocalTransaction
+                = (EthereumLocalTransaction) this.ethereumManagedConnection.getLocalTransaction();
         LocalTransaction localTransaction = new EthereumCCILocalTransaction(ethereumLocalTransaction);
         return localTransaction;
     }

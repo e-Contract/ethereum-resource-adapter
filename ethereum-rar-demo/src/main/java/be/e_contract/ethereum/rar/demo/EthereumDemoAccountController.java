@@ -108,7 +108,9 @@ public class EthereumDemoAccountController implements Serializable {
     }
 
     public String newAccount() {
-        this.ethereumBean.newAccount(this.password);
+        String address = this.ethereumBean.newAccount(this.password);
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "new account: " + address, null));
         return "/accounts/index";
     }
 
@@ -141,11 +143,13 @@ public class EthereumDemoAccountController implements Serializable {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         try {
             this.ethereumBean.unlockAccount(this.selectedAccount, this.password);
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Unlocked: " + this.selectedAccount, null));
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+                    "Unlocked: " + this.selectedAccount, null));
         } catch (EthereumException ex) {
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ex.getMessage(), null));
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    this.selectedAccount + " unlock error: " + ex.getMessage(), null));
         }
-        return "/accounts/unlocked";
+        return "/accounts/index";
     }
 
     public String initTransaction(String account) {

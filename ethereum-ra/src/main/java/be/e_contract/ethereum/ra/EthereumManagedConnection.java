@@ -91,7 +91,8 @@ public class EthereumManagedConnection implements ManagedConnection {
 
     private final EthereumResourceAdapter resourceAdapter;
 
-    public EthereumManagedConnection(EthereumConnectionRequestInfo ethereumConnectionRequestInfo, EthereumResourceAdapter resourceAdapter) {
+    public EthereumManagedConnection(EthereumConnectionRequestInfo ethereumConnectionRequestInfo,
+            EthereumResourceAdapter resourceAdapter) {
         LOGGER.debug("constructor");
         this.listeners = new HashSet<>();
         this.ethereumConnectionRequestInfo = ethereumConnectionRequestInfo;
@@ -199,7 +200,7 @@ public class EthereumManagedConnection implements ManagedConnection {
         return this.logWriter;
     }
 
-    public void fireConnectionEvent(final EthereumConnection connection, final int eventId, final Exception exception) {
+    public void fireConnectionEvent(EthereumConnection connection, int eventId, Exception exception) {
         ConnectionEvent event;
         if (exception == null) {
             event = new ConnectionEvent(this, eventId);

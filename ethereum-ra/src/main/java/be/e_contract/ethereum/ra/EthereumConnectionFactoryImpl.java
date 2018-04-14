@@ -47,7 +47,8 @@ public class EthereumConnectionFactoryImpl implements EthereumConnectionFactory 
         LOGGER.debug("default constructor");
     }
 
-    public EthereumConnectionFactoryImpl(ManagedConnectionFactory managedConnectionFactory, ConnectionManager cxManager) {
+    public EthereumConnectionFactoryImpl(ManagedConnectionFactory managedConnectionFactory,
+            ConnectionManager cxManager) {
         LOGGER.debug("constructor");
         this.managedConnectionFactory = managedConnectionFactory;
         this.connectionManager = cxManager;
@@ -68,7 +69,8 @@ public class EthereumConnectionFactoryImpl implements EthereumConnectionFactory 
         } else {
             ethereumConnectionRequestInfo = null;
         }
-        return (EthereumConnection) this.connectionManager.allocateConnection(this.managedConnectionFactory, ethereumConnectionRequestInfo);
+        return (EthereumConnection) this.connectionManager.allocateConnection(this.managedConnectionFactory,
+                ethereumConnectionRequestInfo);
     }
 
     @Override

@@ -6,7 +6,7 @@ This project delivers a standard Java EE JCA Resource Adapter to connect to Ethe
 Tested Java EE application servers:
 
 * JBoss EAP 6.4.19
-* JBoss WildFly 12
+* JBoss WildFly 12.0.0
 * Oracle WebLogic 12.2.1.3.0
 
 We should be able to support every Java EE 6+ application server.
@@ -15,7 +15,7 @@ We target the Java EE JCA version 1.6 specification.
 
 If you like this project, please consider a donation at:
 ```
-0x0c56073db91c2ba57ff362301eb32262bbee6147
+0x0c56073db91c2Ba57FF362301eb32262BBeE6147
 ```
 
 
