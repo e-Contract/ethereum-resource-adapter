@@ -71,6 +71,7 @@
                 <filtering>false</filtering>
                 <excludes>
                     <exclude>META-INF/jboss-ejb3.xml</exclude>
+                    <exclude>META-INF/sun-ejb-jar.xml</exclude>
                 </excludes>
             </resource>
             <resource>
@@ -78,6 +79,7 @@
                 <filtering>true</filtering>
                 <includes>
                     <include>META-INF/jboss-ejb3.xml</include>
+                    <include>META-INF/sun-ejb-jar.xml</include>
                 </includes>
             </resource>
             <resource>

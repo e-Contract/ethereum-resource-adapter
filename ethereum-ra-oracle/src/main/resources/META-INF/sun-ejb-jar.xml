@@ -4,6 +4,12 @@
 <sun-ejb-jar>
     <enterprise-beans>
         <ejb>
+            <ejb-name>GasPriceOracleMDB</ejb-name>
+            <mdb-resource-adapter>
+                <resource-adapter-mid>ethereum-rar-demo-deploy-${project.version}#ethereum-rar</resource-adapter-mid>
+            </mdb-resource-adapter>
+        </ejb>
+        <ejb>
             <ejb-name>OracleEthereumConnectionFactoryBean</ejb-name>
             <resource-ref>
                 <res-ref-name>EthereumConnectionFactory</res-ref-name>

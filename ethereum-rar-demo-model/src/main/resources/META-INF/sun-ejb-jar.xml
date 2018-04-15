@@ -6,7 +6,7 @@
         <ejb>
             <ejb-name>EthereumMDB</ejb-name>
             <mdb-resource-adapter>
-                <resource-adapter-mid>ethereum-rar</resource-adapter-mid>
+                <resource-adapter-mid>ethereum-rar-demo-deploy-${project.version}#ethereum-rar</resource-adapter-mid>
             </mdb-resource-adapter>
         </ejb>
         <ejb>
