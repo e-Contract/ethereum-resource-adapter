@@ -324,6 +324,17 @@ Following the logging via:
 tail -F standalone/log/ethereum.log
 ```
 
+
+## Integration Tests
+
+The project comes with Arquillian based integration tests.
+To run the integration tests, you need a local running WildFly.
+Run the integration tests via:
+```
+mvn clean install -Pintegration-tests-wildfly
+```
+
+
 ## Contributions
 
 We use Netbeans as IDE.

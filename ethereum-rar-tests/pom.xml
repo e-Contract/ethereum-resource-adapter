@@ -51,6 +51,12 @@
     
     <dependencies>
         <dependency>
+            <groupId>be.e-contract.ethereum-resource-adapter</groupId>
+            <artifactId>ethereum-rar</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+            <type>rar</type>
+        </dependency>
+        <dependency>
             <groupId>org.jboss.spec</groupId>
             <artifactId>jboss-javaee-all-6.0</artifactId>
             <scope>provided</scope>
