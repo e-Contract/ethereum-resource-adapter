@@ -167,6 +167,10 @@
             <url>sftp://192.168.100.1/maven2</url>
             <uniqueVersion>false</uniqueVersion>
         </repository>
+        <site>
+            <id>e-contract-jtrust-site</id>
+            <url>sftp://192.168.100.1/sites/ethereum-resource-adapter/</url>
+        </site>
     </distributionManagement>
     <issueManagement>
         <url>https://github.com/e-Contract/ethereum-resource-adapter/issues</url>

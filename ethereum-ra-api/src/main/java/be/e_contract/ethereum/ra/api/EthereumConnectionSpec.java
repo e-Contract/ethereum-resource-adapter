@@ -25,12 +25,17 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  * Via this Ethereum connection specification you can override the detail client
  * node location. The resource adapter supports both HTTP and IPC locations.
  *
- * @author fcorneli
+ * @author Frank Cornelis
  */
 public class EthereumConnectionSpec implements ConnectionSpec {
 
     private final String nodeLocation;
 
+    /**
+     * Main constructor.
+     *
+     * @param nodeLocation
+     */
     public EthereumConnectionSpec(String nodeLocation) {
         this.nodeLocation = nodeLocation;
     }

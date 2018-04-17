@@ -21,6 +21,11 @@ import java.io.Serializable;
 import java.util.Date;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 
+/**
+ * Transaction confirmation class.
+ *
+ * @author Frank Cornelis
+ */
 public class TransactionConfirmation implements Serializable {
 
     private final String transactionHash;
