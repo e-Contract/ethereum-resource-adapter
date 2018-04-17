@@ -17,12 +17,19 @@
  */
 package test.integ.be.e_contract.ethereum.ra;
 
-import javax.ejb.Stateless;
+import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-@Stateless
-public class HelloBean {
+public class ShrinkWrapTest {
 
-    public String hello(String message) {
-        return message;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ShrinkWrapTest.class);
+
+    @Test
+    public void testEAR() throws Exception {
+        LOGGER.debug("hello world");
+        EnterpriseArchive ear = TestUtils.createBasicEAR();
+        LOGGER.debug("EAR: {}", ear.toString(true));
     }
 }

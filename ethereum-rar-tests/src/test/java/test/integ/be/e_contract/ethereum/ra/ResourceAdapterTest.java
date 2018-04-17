@@ -17,15 +17,14 @@
  */
 package test.integ.be.e_contract.ethereum.ra;
 
-import java.io.File;
+import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
-import org.jboss.shrinkwrap.resolver.api.maven.Maven;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -39,21 +38,27 @@ public class ResourceAdapterTest {
 
     @Deployment
     public static EnterpriseArchive createDeployment() throws Exception {
-        File rarFile = Maven.resolver().loadPomFromFile("pom.xml")
-                .resolve("be.e-contract.ethereum-resource-adapter:ethereum-rar:rar:1.0.0-SNAPSHOT")
-                .withoutTransitivity().asSingleFile();
-        ResourceAdapterArchive rar = ShrinkWrap.createFromZipFile(ResourceAdapterArchive.class, rarFile);
+        EnterpriseArchive ear = TestUtils.createBasicEAR();
+
         JavaArchive ejbJar = ShrinkWrap.create(JavaArchive.class, "ejb.jar")
-                .addClass(HelloBean.class).addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
+                .addClass(HelloBean.class);
+        ear.addAsModule(ejbJar);
+
         JavaArchive libJar = ShrinkWrap.create(JavaArchive.class, "lib.jar")
                 .addClasses(ResourceAdapterTest.class)
                 .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
-        return ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
-                .addAsModule(ejbJar).addAsModule(rar).addAsLibraries(libJar);
+        ear.addAsLibraries(libJar);
+
+        return ear;
     }
+
+    @Inject
+    private HelloBean helloBean;
 
     @Test
     public void testLoading() throws Exception {
-
+        String message = "hello world";
+        String result = this.helloBean.hello(message);
+        assertEquals(message, result);
     }
 }

@@ -57,6 +57,11 @@
             <type>rar</type>
         </dependency>
         <dependency>
+            <groupId>be.e-contract.ethereum-resource-adapter</groupId>
+            <artifactId>ethereum-ra-api</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>org.jboss.spec</groupId>
             <artifactId>jboss-javaee-all-6.0</artifactId>
             <scope>provided</scope>
@@ -80,6 +85,11 @@
         <dependency>
             <groupId>org.jboss.shrinkwrap.resolver</groupId>
             <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

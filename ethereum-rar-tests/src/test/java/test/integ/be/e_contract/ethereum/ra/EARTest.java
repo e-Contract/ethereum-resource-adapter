@@ -19,33 +19,45 @@ package test.integ.be.e_contract.ethereum.ra;
 
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import static org.junit.Assert.assertEquals;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Simple Integration Test just to check whether Arquillian runtime is
- * functional.
+ * Integration Test to check EAR based testing.
  *
  * @author Frank Cornelis
  */
 @RunWith(Arquillian.class)
-public class ArquillianTest {
+public class EARTest {
+    
+    private static final Logger LOGGER = LoggerFactory.getLogger(EARTest.class);
+
+    @Deployment
+    public static EnterpriseArchive createDeployment() throws Exception {
+        JavaArchive ejbJar = ShrinkWrap.create(JavaArchive.class, "ejb.jar")
+                .addClass(HelloBean.class);
+        JavaArchive libJar = ShrinkWrap.create(JavaArchive.class, "lib.jar")
+                .addClasses(EARTest.class)
+                .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
+        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
+                .addAsModule(ejbJar).addAsLibraries(libJar);
+        LOGGER.debug("EAR: {}", ear.toString(true));
+        return ear;
+    }
 
     @Inject
     private HelloBean helloBean;
 
-    @Deployment
-    public static JavaArchive createDeployment() {
-        return ShrinkWrap.create(JavaArchive.class)
-                .addClass(HelloBean.class);
-    }
-
     @Test
-    public void testArquillian() throws Exception {
+    public void testLoading() throws Exception {
         String message = "hello world";
         String result = this.helloBean.hello(message);
         assertEquals(message, result);

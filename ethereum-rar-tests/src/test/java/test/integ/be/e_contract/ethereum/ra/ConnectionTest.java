@@ -19,35 +19,43 @@ package test.integ.be.e_contract.ethereum.ra;
 
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import static org.junit.Assert.assertEquals;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
- * Simple Integration Test just to check whether Arquillian runtime is
- * functional.
+ * Integration Test to verify basic Ethereum connection.
  *
  * @author Frank Cornelis
  */
 @RunWith(Arquillian.class)
-public class ArquillianTest {
-
-    @Inject
-    private HelloBean helloBean;
+public class ConnectionTest {
 
     @Deployment
-    public static JavaArchive createDeployment() {
-        return ShrinkWrap.create(JavaArchive.class)
-                .addClass(HelloBean.class);
+    public static EnterpriseArchive createDeployment() throws Exception {
+        EnterpriseArchive ear = TestUtils.createBasicEAR();
+
+        JavaArchive ejbJar = ShrinkWrap.create(JavaArchive.class, "ejb.jar")
+                .addClass(ConnectionBean.class);
+        ear.addAsModule(ejbJar);
+
+        JavaArchive libJar = ShrinkWrap.create(JavaArchive.class, "lib.jar")
+                .addClasses(ConnectionTest.class)
+                .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
+        ear.addAsLibraries(libJar);
+
+        return ear;
     }
 
+    @Inject
+    private ConnectionBean connectionBean;
+
     @Test
-    public void testArquillian() throws Exception {
-        String message = "hello world";
-        String result = this.helloBean.hello(message);
-        assertEquals(message, result);
+    public void testLoading() throws Exception {
+        this.connectionBean.connection();
     }
 }

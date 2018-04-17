@@ -328,7 +328,19 @@ tail -F standalone/log/ethereum.log
 ## Integration Tests
 
 The project comes with Arquillian based integration tests.
-To run the integration tests, you need a local running WildFly.
+To run the integration tests, you need a local running WildFly and Ethereum client node.
+
+Start WildFly via:
+```
+cd wildfly-12.0.0.Final/bin
+./standalone.sh --server-config=standalone-full.xml
+```
+
+Start a `geth` Ethereum client node in development mode via:
+```
+geth --dev --rpc --rpcapi personal,eth,net --dev.period 0
+```
+
 Run the integration tests via:
 ```
 mvn clean install -Pintegration-tests-wildfly

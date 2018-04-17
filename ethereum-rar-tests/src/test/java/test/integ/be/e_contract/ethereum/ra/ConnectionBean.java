@@ -17,12 +17,20 @@
  */
 package test.integ.be.e_contract.ethereum.ra;
 
+import be.e_contract.ethereum.ra.api.EthereumConnection;
+import be.e_contract.ethereum.ra.api.EthereumConnectionFactory;
+import javax.annotation.Resource;
 import javax.ejb.Stateless;
 
 @Stateless
-public class HelloBean {
+public class ConnectionBean {
 
-    public String hello(String message) {
-        return message;
+    @Resource(mappedName = "java:/EthereumConnectionFactory")
+    private EthereumConnectionFactory ethereumConnectionFactory;
+    
+    public void connection() throws Exception {
+        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+            ethereumConnection.getGasPrice();
+        }
     }
 }
