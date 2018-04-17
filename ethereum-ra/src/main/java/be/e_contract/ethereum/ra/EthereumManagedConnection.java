@@ -25,7 +25,6 @@ import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigInteger;
-import java.security.SignatureException;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -294,10 +293,12 @@ public class EthereumManagedConnection implements ManagedConnection {
             throw new EthereumException("unsigned transaction");
         }
         SignedRawTransaction signedRawTransaction = (SignedRawTransaction) decodedRawTransaction;
+        LOGGER.debug("r size: {}", signedRawTransaction.getSignatureData().getR().length);
+        LOGGER.debug("s size: {}", signedRawTransaction.getSignatureData().getS().length);
         String from;
         try {
             from = signedRawTransaction.getFrom();
-        } catch (SignatureException ex) {
+        } catch (Exception ex) {
             LOGGER.error("transaction signature error: " + ex.getMessage(), ex);
             throw new EthereumException("transaction signature error: " + ex.getMessage());
         }

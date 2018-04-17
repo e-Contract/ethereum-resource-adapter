@@ -103,6 +103,22 @@ public class ContractBean {
             }
 
             assertEquals(contractValue, contract.getValue().send());
+
+            // fast transactions on contract
+            localTransaction.begin();
+            for (int idx = 0; idx < 100; idx++) {
+                contractValue = BigInteger.valueOf(idx);
+                contractTransactionHash = contract.setValue(contractValue).send().getTransactionHash();
+            }
+            localTransaction.commit();
+
+            transactionConfirmation = ethereumConnection.getTransactionConfirmation(contractTransactionHash);
+            while (transactionConfirmation.getConfirmingBlocks() == 0) {
+                Thread.sleep(1000);
+                transactionConfirmation = ethereumConnection.getTransactionConfirmation(contractTransactionHash);
+            }
+
+            assertEquals(contractValue, contract.getValue().send());
         } finally {
             Security.removeProvider(BouncyCastleProvider.PROVIDER_NAME);
         }
