@@ -76,7 +76,7 @@ public class EthereumTransactionManager extends TransactionManager {
                 value,
                 data);
         byte[] signedMessage;
-        if (this.chainId > ChainId.NONE) {
+        if (this.chainId != ChainId.NONE) {
             signedMessage = TransactionEncoder.signMessage(rawTransaction, this.chainId, this.credentials);
         } else {
             signedMessage = TransactionEncoder.signMessage(rawTransaction, this.credentials);

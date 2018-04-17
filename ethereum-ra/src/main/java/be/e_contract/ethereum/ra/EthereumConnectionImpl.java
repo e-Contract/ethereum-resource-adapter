@@ -54,7 +54,9 @@ public class EthereumConnectionImpl implements EthereumConnection {
     @Override
     public BigInteger getGasPrice() throws ResourceException {
         LOGGER.debug("getGasPrice");
-        return this.ethereumManagedConnection.getGasPrice();
+        BigInteger gasPrice = this.ethereumManagedConnection.getGasPrice();
+        LOGGER.debug("gas price: {}", gasPrice);
+        return gasPrice;
     }
 
     @Override
@@ -214,7 +216,7 @@ public class EthereumConnectionImpl implements EthereumConnection {
 
     @Override
     public TransactionReceipt deploy(Class<? extends Contract> contractClass, BigInteger gasPrice,
-            BigInteger gasLimit, Credentials credentials, Byte chainId) throws ResourceException, EthereumException {
+            BigInteger gasLimit, Credentials credentials, Integer chainId) throws ResourceException, EthereumException {
         try {
             return this.ethereumManagedConnection.deploy(contractClass, gasPrice, gasLimit, credentials, chainId);
         } catch (EthereumException ex) {
@@ -228,7 +230,7 @@ public class EthereumConnectionImpl implements EthereumConnection {
 
     @Override
     public <T extends Contract> T load(Class<T> contractClass, String contractAddress,
-            Credentials credentials, Byte chainId, BigInteger gasPrice, BigInteger gasLimit) throws ResourceException {
+            Credentials credentials, Integer chainId, BigInteger gasPrice, BigInteger gasLimit) throws ResourceException {
         try {
             return this.ethereumManagedConnection.load(contractClass, contractAddress, credentials,
                     chainId, gasPrice, gasLimit);

@@ -163,7 +163,7 @@ public class EthereumBean {
         try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
             Integer chainId = ethereumConnection.getChainId();
             LOGGER.debug("chain id: {}", chainId);
-            Byte _chainId;
+            Integer _chainId;
             if (null == chainId) {
                 _chainId = null;
             } else if (chainId > 255) {
@@ -171,7 +171,7 @@ public class EthereumBean {
                 // dev network has ip155 option to 0
                 _chainId = null;
             } else {
-                _chainId = chainId.byteValue();
+                _chainId = chainId;
             }
             BigInteger gasPrice = ethereumConnection.getGasPrice();
             return ethereumConnection.deploy(DemoContract.class, gasPrice, Contract.GAS_LIMIT, credentials, _chainId);
@@ -185,15 +185,16 @@ public class EthereumBean {
         try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
             Integer chainId = ethereumConnection.getChainId();
             LOGGER.debug("chain id: {}", chainId);
-            Byte _chainId;
+            Integer _chainId;
             if (null == chainId) {
                 _chainId = null;
-            } else if (chainId > 255) {
+            } else if (chainId > 46) {
+                // web3j cannot handle chainId above 46
                 // TODO: chainId can be larger than byte... web3j TODO
                 // dev network has ip155 option to 0
                 _chainId = null;
             } else {
-                _chainId = chainId.byteValue();
+                _chainId = chainId;
             }
             BigInteger gasPrice = ethereumConnection.getGasPrice();
             DemoContract demoContract = ethereumConnection.load(DemoContract.class, contractAddress,
@@ -213,15 +214,16 @@ public class EthereumBean {
         try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
             Integer chainId = ethereumConnection.getChainId();
             LOGGER.debug("chain id: {}", chainId);
-            Byte _chainId;
+            Integer _chainId;
             if (null == chainId) {
                 _chainId = null;
-            } else if (chainId > 255) {
+            } else if (chainId > 46) {
+                // web3j cannot handle chainId above 46
                 // TODO: chainId can be larger than byte... web3j TODO
                 // dev network has ip155 option to 0
                 _chainId = null;
             } else {
-                _chainId = chainId.byteValue();
+                _chainId = chainId;
             }
             BigInteger gasPrice = ethereumConnection.getGasPrice();
             DemoContract demoContract = ethereumConnection.load(DemoContract.class, contractAddress,

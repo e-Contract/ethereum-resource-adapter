@@ -457,7 +457,7 @@ public class EthereumManagedConnection implements ManagedConnection {
     }
 
     public TransactionReceipt deploy(Class<? extends Contract> contractClass, BigInteger gasPrice, BigInteger gasLimit,
-            Credentials credentials, Byte chainId) throws Exception {
+            Credentials credentials, Integer chainId) throws Exception {
         Web3j web3j = getWeb3j();
         Field binaryField = contractClass.getDeclaredField("BINARY");
         binaryField.setAccessible(true);
@@ -467,7 +467,7 @@ public class EthereumManagedConnection implements ManagedConnection {
         if (null == chainId) {
             _chainId = ChainId.NONE;
         } else {
-            _chainId = chainId;
+            _chainId = chainId.byteValue();
         }
         TransactionManager transactionManager = new EthereumTransactionManager(this, credentials, _chainId);
         Contract contract;
@@ -481,7 +481,7 @@ public class EthereumManagedConnection implements ManagedConnection {
     }
 
     public <T extends Contract> T load(Class<T> contractClass, String contractAddress,
-            Credentials credentials, Byte chainId, BigInteger gasPrice, BigInteger gasLimit) throws Exception {
+            Credentials credentials, Integer chainId, BigInteger gasPrice, BigInteger gasLimit) throws Exception {
         Method method = contractClass.getMethod("load", String.class, Web3j.class,
                 TransactionManager.class, BigInteger.class, BigInteger.class);
         Web3j web3j = getWeb3j();
@@ -489,7 +489,7 @@ public class EthereumManagedConnection implements ManagedConnection {
         if (null == chainId) {
             _chainId = ChainId.NONE;
         } else {
-            _chainId = chainId;
+            _chainId = chainId.byteValue();
         }
         TransactionManager transactionManager = new EthereumTransactionManager(this, credentials, _chainId);
         T contract = (T) method.invoke(null, contractAddress, web3j, transactionManager, gasPrice, gasLimit);
@@ -508,9 +508,11 @@ public class EthereumManagedConnection implements ManagedConnection {
                 Transaction transaction = transactionObject.get();
                 int v = transaction.getV();
                 if (v == LOWER_REAL_V || v == (LOWER_REAL_V + 1)) {
+                    LOGGER.debug("getChainId: null");
                     return null;
                 }
                 Integer chainId = (v - CHAIN_ID_INC) / 2;
+                LOGGER.debug("getChainId: {}", chainId);
                 return chainId;
             }
             blockNumber = blockNumber.subtract(BigInteger.ONE);
