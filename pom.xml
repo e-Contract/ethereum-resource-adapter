@@ -253,5 +253,6 @@
         <module>ethereum-ra-api</module>
         <module>ethereum-ra-oracle-default</module>
         <module>ethereum-jsf</module>
+        <module>ethereum-rar-tests</module>
     </modules>
 </project>
