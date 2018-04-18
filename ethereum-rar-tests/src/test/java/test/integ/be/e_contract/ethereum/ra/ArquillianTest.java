@@ -23,6 +23,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import static org.junit.Assert.assertEquals;
 
@@ -41,7 +42,7 @@ public class ArquillianTest {
     @Deployment
     public static JavaArchive createDeployment() {
         return ShrinkWrap.create(JavaArchive.class)
-                .addClass(HelloBean.class);
+                .addClass(HelloBean.class).addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 
     @Test

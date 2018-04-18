@@ -351,3 +351,4 @@ mvn clean install -Pintegration-tests-wildfly
 
 We use Netbeans as IDE.
 If you send pull requests, please keep the code clean to ease the review process.
+If you found a bug, please provide an integration test to demonstrate the issue.
