@@ -15,26 +15,28 @@
  * License along with this software; if not, see 
  * http://www.gnu.org/licenses/.
  */
-package be.e_contract.ethereum.ra.oracle;
+package be.e_contract.ethereum.ra.oracle.spi;
 
-import java.util.Date;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import javax.inject.Qualifier;
 
-public class LatestBlockEvent {
+/**
+ * Annotation for Gas Price Oracles.
+ *
+ * @author Frank Cornelis
+ */
+@Qualifier
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.METHOD, ElementType.TYPE, ElementType.FIELD, ElementType.PARAMETER})
+public @interface GasPriceOracleType {
 
-    private final Date timestamp;
-
-    private final String blockHash;
-
-    public LatestBlockEvent(String blockHash, Date timestamp) {
-        this.blockHash = blockHash;
-        this.timestamp = timestamp;
-    }
-
-    public String getBlockHash() {
-        return this.blockHash;
-    }
-
-    public Date getTimestamp() {
-        return this.timestamp;
-    }
+    /**
+     * Unique name for the gas price oracle.
+     *
+     * @return
+     */
+    String value();
 }

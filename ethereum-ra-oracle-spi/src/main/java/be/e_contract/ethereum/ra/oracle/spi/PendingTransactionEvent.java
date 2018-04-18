@@ -15,28 +15,26 @@
  * License along with this software; if not, see 
  * http://www.gnu.org/licenses/.
  */
-package be.e_contract.ethereum.ra.oracle;
+package be.e_contract.ethereum.ra.oracle.spi;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import javax.inject.Qualifier;
+import java.util.Date;
 
-/**
- * Annotation for Gas Price Oracles.
- *
- * @author Frank Cornelis
- */
-@Qualifier
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.TYPE, ElementType.FIELD, ElementType.PARAMETER})
-public @interface GasPriceOracleType {
+public class PendingTransactionEvent {
 
-    /**
-     * Unique name for the gas price oracle.
-     *
-     * @return
-     */
-    String value();
+    private final Date timestamp;
+
+    private final String transactionHash;
+
+    public PendingTransactionEvent(String transactionHash, Date timestamp) {
+        this.transactionHash = transactionHash;
+        this.timestamp = timestamp;
+    }
+
+    public String getTransactionHash() {
+        return this.transactionHash;
+    }
+
+    public Date getTimestamp() {
+        return this.timestamp;
+    }
 }

@@ -15,23 +15,17 @@
  * License along with this software; if not, see 
  * http://www.gnu.org/licenses/.
  */
-package be.e_contract.ethereum.ra.oracle;
+package be.e_contract.ethereum.ra.oracle.spi;
 
-import java.io.Serializable;
-import java.math.BigInteger;
+public class ConnectionStatusEvent {
 
-/**
- * Interface for gas price oracles.
- *
- * @author Frank Cornelis
- */
-public interface GasPriceOracle extends Serializable {
+    private final boolean connected;
 
-    /**
-     * Gives back the oracle gas price, given the maximum transaction duration.
-     *
-     * @param maxDuration the optional maximal transaction duration.
-     * @return
-     */
-    BigInteger getGasPrice(Integer maxDuration);
+    public ConnectionStatusEvent(boolean connected) {
+        this.connected = connected;
+    }
+
+    public boolean isConnected() {
+        return this.connected;
+    }
 }

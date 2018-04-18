@@ -17,6 +17,8 @@
  */
 package be.e_contract.ethereum.ra.oracle;
 
+import be.e_contract.ethereum.ra.oracle.spi.GasPriceOracle;
+import be.e_contract.ethereum.ra.oracle.spi.GasPriceOracleType;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Iterator;

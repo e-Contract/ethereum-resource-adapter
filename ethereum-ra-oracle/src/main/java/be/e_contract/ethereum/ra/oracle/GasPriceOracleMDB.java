@@ -17,6 +17,9 @@
  */
 package be.e_contract.ethereum.ra.oracle;
 
+import be.e_contract.ethereum.ra.oracle.spi.PendingTransactionEvent;
+import be.e_contract.ethereum.ra.oracle.spi.LatestBlockEvent;
+import be.e_contract.ethereum.ra.oracle.spi.ConnectionStatusEvent;
 import be.e_contract.ethereum.ra.api.EthereumMessageListener;
 import java.util.Date;
 import javax.ejb.ActivationConfigProperty;

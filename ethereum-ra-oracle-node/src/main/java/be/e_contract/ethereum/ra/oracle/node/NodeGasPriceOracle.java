@@ -19,9 +19,9 @@ package be.e_contract.ethereum.ra.oracle.node;
 
 import be.e_contract.ethereum.ra.api.EthereumConnection;
 import be.e_contract.ethereum.ra.api.EthereumConnectionFactory;
-import be.e_contract.ethereum.ra.oracle.GasPriceOracle;
-import be.e_contract.ethereum.ra.oracle.GasPriceOracleType;
-import be.e_contract.ethereum.ra.oracle.OracleEthereumConnectionFactory;
+import be.e_contract.ethereum.ra.oracle.spi.GasPriceOracle;
+import be.e_contract.ethereum.ra.oracle.spi.GasPriceOracleType;
+import be.e_contract.ethereum.ra.oracle.spi.OracleEthereumConnectionFactory;
 import java.math.BigInteger;
 import javax.inject.Inject;
 import javax.resource.ResourceException;

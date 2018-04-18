@@ -15,26 +15,23 @@
  * License along with this software; if not, see 
  * http://www.gnu.org/licenses/.
  */
-package be.e_contract.ethereum.ra.oracle;
+package be.e_contract.ethereum.ra.oracle.spi;
 
-import java.util.Date;
+import java.io.Serializable;
+import java.math.BigInteger;
 
-public class PendingTransactionEvent {
+/**
+ * Interface for gas price oracles.
+ *
+ * @author Frank Cornelis
+ */
+public interface GasPriceOracle extends Serializable {
 
-    private final Date timestamp;
-
-    private final String transactionHash;
-
-    public PendingTransactionEvent(String transactionHash, Date timestamp) {
-        this.transactionHash = transactionHash;
-        this.timestamp = timestamp;
-    }
-
-    public String getTransactionHash() {
-        return this.transactionHash;
-    }
-
-    public Date getTimestamp() {
-        return this.timestamp;
-    }
+    /**
+     * Gives back the oracle gas price, given the maximum transaction duration.
+     *
+     * @param maxDuration the optional maximal transaction duration.
+     * @return
+     */
+    BigInteger getGasPrice(Integer maxDuration);
 }

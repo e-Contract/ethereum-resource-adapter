@@ -19,12 +19,12 @@ package be.e_contract.ethereum.ra.oracle.std;
 
 import be.e_contract.ethereum.ra.api.EthereumConnection;
 import be.e_contract.ethereum.ra.api.EthereumConnectionFactory;
-import be.e_contract.ethereum.ra.oracle.ConnectionStatusEvent;
-import be.e_contract.ethereum.ra.oracle.GasPriceOracle;
-import be.e_contract.ethereum.ra.oracle.GasPriceOracleType;
-import be.e_contract.ethereum.ra.oracle.LatestBlockEvent;
-import be.e_contract.ethereum.ra.oracle.OracleEthereumConnectionFactory;
-import be.e_contract.ethereum.ra.oracle.PendingTransactionEvent;
+import be.e_contract.ethereum.ra.oracle.spi.ConnectionStatusEvent;
+import be.e_contract.ethereum.ra.oracle.spi.GasPriceOracle;
+import be.e_contract.ethereum.ra.oracle.spi.GasPriceOracleType;
+import be.e_contract.ethereum.ra.oracle.spi.LatestBlockEvent;
+import be.e_contract.ethereum.ra.oracle.spi.OracleEthereumConnectionFactory;
+import be.e_contract.ethereum.ra.oracle.spi.PendingTransactionEvent;
 import static be.e_contract.ethereum.ra.oracle.std.Timing.MOVING_WINDOW_SIZE_MINUTES;
 import java.math.BigDecimal;
 import java.math.BigInteger;

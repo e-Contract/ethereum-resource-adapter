@@ -15,17 +15,23 @@
  * License along with this software; if not, see 
  * http://www.gnu.org/licenses/.
  */
-package be.e_contract.ethereum.ra.oracle;
+package be.e_contract.ethereum.ra.oracle.spi;
 
-public class ConnectionStatusEvent {
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import javax.inject.Qualifier;
 
-    private final boolean connected;
+/**
+ * Annotation CDI injection of EthereumConnectionFactory within gas price
+ * oracles.
+ *
+ * @author Frank Cornelis
+ */
+@Qualifier
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.METHOD, ElementType.TYPE, ElementType.FIELD, ElementType.PARAMETER})
+public @interface OracleEthereumConnectionFactory {
 
-    public ConnectionStatusEvent(boolean connected) {
-        this.connected = connected;
-    }
-
-    public boolean isConnected() {
-        return this.connected;
-    }
 }

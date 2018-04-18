@@ -17,6 +17,7 @@
  */
 package be.e_contract.ethereum.ra.oracle;
 
+import be.e_contract.ethereum.ra.oracle.spi.GasPriceOracleType;
 import javax.enterprise.util.AnnotationLiteral;
 
 public class GasPriceOracleTypeQualifier extends AnnotationLiteral<GasPriceOracleType> implements GasPriceOracleType {

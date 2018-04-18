@@ -69,12 +69,16 @@ public class TransactionBean {
             ECKeyPair ecKeyPair2 = Keys.createEcKeyPair();
             String address2 = "0x" + Keys.getAddress(ecKeyPair2);
             Credentials credentials = Credentials.create(ecKeyPair);
-            BigInteger value2 = Convert.toWei(BigDecimal.valueOf(1), Convert.Unit.ETHER).toBigInteger();
+            BigInteger value2 = Convert.toWei(BigDecimal.valueOf(0.1), Convert.Unit.ETHER).toBigInteger();
             Integer chainId = ethereumConnection.getChainId();
 
             LocalTransaction localTransaction = ethereumConnection.getLocalTransaction();
             localTransaction.begin();
-            transactionHash = ethereumConnection.sendTransaction(credentials, address2, value2, gasPrice, chainId);
+            BigInteger totalValue2 = BigInteger.ZERO;
+            for (int idx = 0; idx < 10; idx++) {
+                totalValue2 = totalValue2.add(value2);
+                transactionHash = ethereumConnection.sendTransaction(credentials, address2, value2, gasPrice, chainId);
+            }
             localTransaction.commit();
 
             transactionConfirmation = ethereumConnection.getTransactionConfirmation(transactionHash);
@@ -83,7 +87,7 @@ public class TransactionBean {
                 transactionConfirmation = ethereumConnection.getTransactionConfirmation(transactionHash);
             }
             BigInteger balance2 = ethereumConnection.getBalance(address2);
-            assertEquals(value2, balance2);
+            assertEquals(totalValue2, balance2);
         } finally {
             Security.removeProvider(BouncyCastleProvider.PROVIDER_NAME);
         }

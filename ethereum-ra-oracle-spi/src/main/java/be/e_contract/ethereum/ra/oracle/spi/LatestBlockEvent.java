@@ -15,23 +15,26 @@
  * License along with this software; if not, see 
  * http://www.gnu.org/licenses/.
  */
-package be.e_contract.ethereum.ra.oracle;
+package be.e_contract.ethereum.ra.oracle.spi;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import javax.inject.Qualifier;
+import java.util.Date;
 
-/**
- * Annotation CDI injection of EthereumConnectionFactory within gas price
- * oracles.
- *
- * @author Frank Cornelis
- */
-@Qualifier
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.TYPE, ElementType.FIELD, ElementType.PARAMETER})
-public @interface OracleEthereumConnectionFactory {
+public class LatestBlockEvent {
 
+    private final Date timestamp;
+
+    private final String blockHash;
+
+    public LatestBlockEvent(String blockHash, Date timestamp) {
+        this.blockHash = blockHash;
+        this.timestamp = timestamp;
+    }
+
+    public String getBlockHash() {
+        return this.blockHash;
+    }
+
+    public Date getTimestamp() {
+        return this.timestamp;
+    }
 }

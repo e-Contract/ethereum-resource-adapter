@@ -17,6 +17,7 @@
  */
 package be.e_contract.ethereum.ra.oracle;
 
+import be.e_contract.ethereum.ra.oracle.spi.OracleEthereumConnectionFactory;
 import be.e_contract.ethereum.ra.api.EthereumConnectionFactory;
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
