@@ -1,3 +1,5 @@
 Ethereum JCA Resource Adapter Project
 
  {{{./ethereum-ra-api/index.html}Ethereum Resource Adapter API}}
+
+ {{{./ethereum-ra-oracle-api/index.html}Ethereum Resource Adapter Oracle API}}

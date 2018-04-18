@@ -91,11 +91,11 @@ Of course we provide a default gas price oracle, next to the client node gas pri
 Example code:
 ```
 @EJB
-private GasPriceOracleBean gasPriceOracleBean;
+private GasPriceOracle gasPriceOracle;
 
 Integer maxDurationInSeconds = 60;
 String oracle = "default";
-BigInteger gasPrice = this.gasPriceOracleBean.getGasPrice(oracle, maxDurationInSeconds);
+BigInteger gasPrice = this.gasPriceOracle.getGasPrice(oracle, maxDurationInSeconds);
 ```
 
 Depending on your max duration, this gas price oracle gives you a gas price that is on average 30-50% lower than the gas price set by the client node.
