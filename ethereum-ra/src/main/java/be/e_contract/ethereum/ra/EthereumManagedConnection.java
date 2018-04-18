@@ -47,6 +47,7 @@ import org.web3j.crypto.Hash;
 import org.web3j.crypto.RawTransaction;
 import org.web3j.crypto.SignedRawTransaction;
 import org.web3j.crypto.TransactionDecoder;
+import org.web3j.crypto.TransactionEncoder;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.admin.Admin;
 import org.web3j.protocol.admin.methods.response.PersonalUnlockAccount;
@@ -523,5 +524,33 @@ public class EthereumManagedConnection implements ManagedConnection {
 
     public EthereumResourceAdapter getResourceAdapter() {
         return this.resourceAdapter;
+    }
+
+    public String sendTransaction(Credentials credentials, String to, BigInteger value, BigInteger gasPrice, Integer chainId) throws Exception {
+        BigInteger nonce = getNextNonce(credentials.getAddress());
+        BigInteger gasLimit = BigInteger.valueOf(21000);
+        RawTransaction rawTransaction = RawTransaction.createEtherTransaction(nonce, gasPrice, gasLimit, to, value);
+        byte _chainId;
+        if (null != chainId) {
+            LOGGER.debug("Chain Id: {}", chainId);
+            // https://github.com/web3j/web3j/issues/234
+            if (chainId > 46) {
+                LOGGER.warn("web3j cannot sign with chainId > 46");
+                _chainId = ChainId.NONE;
+            } else {
+                _chainId = chainId.byteValue();
+            }
+        } else {
+            _chainId = ChainId.NONE;
+        }
+
+        byte[] signedTransaction;
+        if (_chainId != ChainId.NONE) {
+            signedTransaction = TransactionEncoder.signMessage(rawTransaction, _chainId, credentials);
+        } else {
+            signedTransaction = TransactionEncoder.signMessage(rawTransaction, credentials);
+        }
+        String hexValue = Numeric.toHexString(signedTransaction);
+        return sendRawTransaction(hexValue);
     }
 }

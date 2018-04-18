@@ -152,6 +152,7 @@ public interface EthereumConnection extends Connection, AutoCloseable {
 
     /**
      * Deploys a given contract. Contract should have been compiled via web3j.
+     * Contract deployment is part of the JTA transaction.
      *
      * @param contractClass
      * @param gasPrice
@@ -167,7 +168,9 @@ public interface EthereumConnection extends Connection, AutoCloseable {
             BigInteger gasLimit, Credentials credentials, Integer chainId) throws ResourceException, EthereumException;
 
     /**
-     * Loads a contract.
+     * Loads a contract. Ethereum contract transactions are part of the JTA
+     * transaction. The nonce is managed internally, so fast transactions are
+     * possible.
      *
      * @param <T>
      * @param contractClass
@@ -190,4 +193,20 @@ public interface EthereumConnection extends Connection, AutoCloseable {
      * @throws be.e_contract.ethereum.ra.api.EthereumException
      */
     Integer getChainId() throws ResourceException, EthereumException;
+
+    /**
+     * Sends an Ethereum transaction. Supports JTA transactions. The nonce is
+     * managed internally, so fast transactions are possible.
+     *
+     * @param credentials
+     * @param to
+     * @param value
+     * @param gasPrice
+     * @param chainId
+     * @return
+     * @throws javax.resource.ResourceException
+     * @throws be.e_contract.ethereum.ra.api.EthereumException
+     */
+    String sendTransaction(Credentials credentials, String to, BigInteger value,
+            BigInteger gasPrice, Integer chainId) throws ResourceException, EthereumException;
 }

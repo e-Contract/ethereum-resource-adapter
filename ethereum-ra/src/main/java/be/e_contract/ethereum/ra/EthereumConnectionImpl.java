@@ -252,4 +252,18 @@ public class EthereumConnectionImpl implements EthereumConnection {
             throw new ResourceException(ex);
         }
     }
+
+    @Override
+    public String sendTransaction(Credentials credentials, String to, BigInteger value,
+            BigInteger gasPrice, Integer chainId) throws ResourceException, EthereumException {
+        try {
+            return this.ethereumManagedConnection.sendTransaction(credentials, to, value, gasPrice, chainId);
+        } catch (EthereumException ex) {
+            LOGGER.error("ethereum error: " + ex.getMessage(), ex);
+            throw ex;
+        } catch (Exception ex) {
+            LOGGER.error("error: " + ex.getMessage(), ex);
+            throw new ResourceException(ex);
+        }
+    }
 }

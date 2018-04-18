@@ -20,16 +20,20 @@ package test.integ.be.e_contract.ethereum.ra;
 import be.e_contract.ethereum.ra.api.EthereumConnection;
 import be.e_contract.ethereum.ra.api.EthereumConnectionFactory;
 import be.e_contract.ethereum.ra.api.TransactionConfirmation;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.security.Security;
 import java.util.List;
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
+import javax.resource.cci.LocalTransaction;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.Keys;
+import org.web3j.utils.Convert;
 
 @Stateless
 public class TransactionBean {
@@ -51,7 +55,7 @@ public class TransactionBean {
 
             BigInteger gasPrice = ethereumConnection.getGasPrice();
             BigInteger nonce = ethereumConnection.getTransactionCount(account);
-            BigInteger value = BigInteger.valueOf(10);
+            BigInteger value = Convert.toWei(BigDecimal.valueOf(10), Convert.Unit.ETHER).toBigInteger();
             String transactionHash = ethereumConnection.sendAccountTransaction(account, address, value, gasPrice, nonce);
 
             TransactionConfirmation transactionConfirmation = ethereumConnection.getTransactionConfirmation(transactionHash);
@@ -61,6 +65,25 @@ public class TransactionBean {
             }
             BigInteger balance = ethereumConnection.getBalance(address);
             assertEquals(value, balance);
+
+            ECKeyPair ecKeyPair2 = Keys.createEcKeyPair();
+            String address2 = "0x" + Keys.getAddress(ecKeyPair2);
+            Credentials credentials = Credentials.create(ecKeyPair);
+            BigInteger value2 = Convert.toWei(BigDecimal.valueOf(1), Convert.Unit.ETHER).toBigInteger();
+            Integer chainId = ethereumConnection.getChainId();
+
+            LocalTransaction localTransaction = ethereumConnection.getLocalTransaction();
+            localTransaction.begin();
+            transactionHash = ethereumConnection.sendTransaction(credentials, address2, value2, gasPrice, chainId);
+            localTransaction.commit();
+
+            transactionConfirmation = ethereumConnection.getTransactionConfirmation(transactionHash);
+            while (transactionConfirmation.getConfirmingBlocks() == 0) {
+                Thread.sleep(1000);
+                transactionConfirmation = ethereumConnection.getTransactionConfirmation(transactionHash);
+            }
+            BigInteger balance2 = ethereumConnection.getBalance(address2);
+            assertEquals(value2, balance2);
         } finally {
             Security.removeProvider(BouncyCastleProvider.PROVIDER_NAME);
         }

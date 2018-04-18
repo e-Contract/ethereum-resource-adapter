@@ -11,7 +11,7 @@ Tested Java EE application servers:
 
 We should be able to support every Java EE 6+ application server.
 
-We target the Java EE JCA version 1.6 specification.
+We target the Java EE JCA version 1.6 specification and Java 8+.
 
 If you like this project, please consider a donation at:
 ```
