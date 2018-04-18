@@ -17,7 +17,7 @@
  */
 package be.e_contract.ethereum.rar.demo;
 
-import be.e_contract.ethereum.ra.oracle.GasPriceOracleBean;
+import be.e_contract.ethereum.ra.oracle.api.GasPriceOracle;
 import be.e_contract.ethereum.rar.demo.model.EthereumBean;
 import be.e_contract.ethereum.rar.demo.model.RollbackException;
 import java.io.Serializable;
@@ -36,7 +36,7 @@ import javax.inject.Named;
 public class EthereumDemoGasPriceController implements Serializable {
 
     @EJB
-    private GasPriceOracleBean gasPriceOracleBean;
+    private GasPriceOracle gasPriceOracleBean;
 
     @EJB
     private EthereumBean ethereumBean;

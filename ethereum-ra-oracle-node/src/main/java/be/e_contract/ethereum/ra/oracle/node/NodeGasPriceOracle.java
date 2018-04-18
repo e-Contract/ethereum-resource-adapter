@@ -19,7 +19,7 @@ package be.e_contract.ethereum.ra.oracle.node;
 
 import be.e_contract.ethereum.ra.api.EthereumConnection;
 import be.e_contract.ethereum.ra.api.EthereumConnectionFactory;
-import be.e_contract.ethereum.ra.oracle.spi.GasPriceOracle;
+import be.e_contract.ethereum.ra.oracle.spi.GasPriceOracleSpi;
 import be.e_contract.ethereum.ra.oracle.spi.GasPriceOracleType;
 import be.e_contract.ethereum.ra.oracle.spi.OracleEthereumConnectionFactory;
 import java.math.BigInteger;
@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
  * @author Frank Cornelis
  */
 @GasPriceOracleType("node")
-public class NodeGasPriceOracle implements GasPriceOracle {
+public class NodeGasPriceOracle implements GasPriceOracleSpi {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NodeGasPriceOracle.class);
 

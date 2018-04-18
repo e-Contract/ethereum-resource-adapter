@@ -15,23 +15,8 @@
  * License along with this software; if not, see 
  * http://www.gnu.org/licenses/.
  */
-package be.e_contract.ethereum.ra.oracle.spi;
+package be.e_contract.ethereum.ra.oracle.api;
 
-import java.io.Serializable;
-import java.math.BigInteger;
+public class UnknownGasPriceOracleException extends Exception {
 
-/**
- * Interface for gas price oracles.
- *
- * @author Frank Cornelis
- */
-public interface GasPriceOracle extends Serializable {
-
-    /**
-     * Gives back the oracle gas price, given the maximum transaction duration.
-     *
-     * @param maxDuration the optional maximal transaction duration.
-     * @return
-     */
-    BigInteger getGasPrice(Integer maxDuration);
 }

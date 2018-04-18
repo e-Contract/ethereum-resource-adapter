@@ -17,7 +17,6 @@
  */
 package be.e_contract.ethereum.ra.oracle;
 
-import be.e_contract.ethereum.ra.oracle.spi.GasPriceOracle;
 import be.e_contract.ethereum.ra.oracle.spi.GasPriceOracleType;
 import java.math.BigInteger;
 import java.util.HashMap;
@@ -31,21 +30,24 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import be.e_contract.ethereum.ra.oracle.spi.GasPriceOracleSpi;
+import be.e_contract.ethereum.ra.oracle.api.GasPriceOracle;
+import be.e_contract.ethereum.ra.oracle.api.UnknownGasPriceOracleException;
 
 @Stateless
-public class GasPriceOracleBean {
+public class GasPriceOracleBean implements GasPriceOracle {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GasPriceOracleBean.class);
 
     @Inject
     @Any
-    private Instance<GasPriceOracle> gasPriceOracleTypes;
+    private Instance<GasPriceOracleSpi> gasPriceOracleTypes;
 
-    public Map<String, GasPriceOracle> getGasPriceOracles() {
-        Map<String, GasPriceOracle> result = new HashMap<>();
-        Iterator<GasPriceOracle> gasPriceOracleIterator = this.gasPriceOracleTypes.iterator();
+    public Map<String, GasPriceOracleSpi> getGasPriceOracles() {
+        Map<String, GasPriceOracleSpi> result = new HashMap<>();
+        Iterator<GasPriceOracleSpi> gasPriceOracleIterator = this.gasPriceOracleTypes.iterator();
         while (gasPriceOracleIterator.hasNext()) {
-            GasPriceOracle gasTypeOracle = gasPriceOracleIterator.next();
+            GasPriceOracleSpi gasTypeOracle = gasPriceOracleIterator.next();
             LOGGER.debug("gas type oracle: {}", gasTypeOracle.getClass().getName());
             GasPriceOracleType gasPriceOracleTypeAnnotation = findGasPriceOracleTypeAnnotation(gasTypeOracle.getClass());
             if (null == gasPriceOracleTypeAnnotation) {
@@ -58,11 +60,12 @@ public class GasPriceOracleBean {
         return result;
     }
 
+    @Override
     public List<String> getGasPriceOracleNames() {
         List<String> result = new LinkedList<>();
-        Iterator<GasPriceOracle> gasPriceOracleIterator = this.gasPriceOracleTypes.iterator();
+        Iterator<GasPriceOracleSpi> gasPriceOracleIterator = this.gasPriceOracleTypes.iterator();
         while (gasPriceOracleIterator.hasNext()) {
-            GasPriceOracle gasTypeOracle = gasPriceOracleIterator.next();
+            GasPriceOracleSpi gasTypeOracle = gasPriceOracleIterator.next();
             GasPriceOracleType gasPriceOracleTypeAnnotation = findGasPriceOracleTypeAnnotation(gasTypeOracle.getClass());
             if (null == gasPriceOracleTypeAnnotation) {
                 // seems like this can happen
@@ -74,26 +77,28 @@ public class GasPriceOracleBean {
         return result;
     }
 
+    @Override
     public Map<String, BigInteger> getGasPrices(Integer maxDuration) {
         LOGGER.debug("get gas prices for max duration: {}", maxDuration);
-        Map<String, GasPriceOracle> gasPriceOracles = getGasPriceOracles();
+        Map<String, GasPriceOracleSpi> gasPriceOracles = getGasPriceOracles();
         Map<String, BigInteger> gasPrices = new HashMap<>();
-        for (Map.Entry<String, GasPriceOracle> gasPriceOracleEntry : gasPriceOracles.entrySet()) {
+        for (Map.Entry<String, GasPriceOracleSpi> gasPriceOracleEntry : gasPriceOracles.entrySet()) {
             BigInteger gasPrice = gasPriceOracleEntry.getValue().getGasPrice(maxDuration);
             gasPrices.put(gasPriceOracleEntry.getKey(), gasPrice);
         }
         return gasPrices;
     }
 
-    public BigInteger getGasPrice(String oracle, Integer maxDuration) {
-        Instance<GasPriceOracle> gasPriceOracleInstance = this.gasPriceOracleTypes.select(new GasPriceOracleTypeQualifier(oracle));
+    @Override
+    public BigInteger getGasPrice(String oracle, Integer maxDuration) throws UnknownGasPriceOracleException {
+        Instance<GasPriceOracleSpi> gasPriceOracleInstance = this.gasPriceOracleTypes.select(new GasPriceOracleTypeQualifier(oracle));
         if (gasPriceOracleInstance.isUnsatisfied()) {
-            return null;
+            throw new UnknownGasPriceOracleException();
         }
         if (gasPriceOracleInstance.isAmbiguous()) {
-            return null;
+            throw new UnknownGasPriceOracleException();
         }
-        GasPriceOracle gasPriceOracle = gasPriceOracleInstance.get();
+        GasPriceOracleSpi gasPriceOracle = gasPriceOracleInstance.get();
         BigInteger gasPrice = gasPriceOracle.getGasPrice(maxDuration);
         return gasPrice;
     }

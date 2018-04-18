@@ -20,7 +20,7 @@ package be.e_contract.ethereum.ra.oracle.std;
 import be.e_contract.ethereum.ra.api.EthereumConnection;
 import be.e_contract.ethereum.ra.api.EthereumConnectionFactory;
 import be.e_contract.ethereum.ra.oracle.spi.ConnectionStatusEvent;
-import be.e_contract.ethereum.ra.oracle.spi.GasPriceOracle;
+import be.e_contract.ethereum.ra.oracle.spi.GasPriceOracleSpi;
 import be.e_contract.ethereum.ra.oracle.spi.GasPriceOracleType;
 import be.e_contract.ethereum.ra.oracle.spi.LatestBlockEvent;
 import be.e_contract.ethereum.ra.oracle.spi.OracleEthereumConnectionFactory;
@@ -54,7 +54,7 @@ import org.web3j.utils.Convert;
  */
 @GasPriceOracleType("default")
 @ApplicationScoped
-public class DefaultGasPriceOracle implements GasPriceOracle {
+public class DefaultGasPriceOracle implements GasPriceOracleSpi {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultGasPriceOracle.class);
 
