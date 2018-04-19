@@ -32,6 +32,7 @@ import javax.resource.spi.ConnectionEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.web3j.crypto.Credentials;
+import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.methods.response.EthBlock;
 import org.web3j.protocol.core.methods.response.Transaction;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
@@ -261,6 +262,56 @@ public class EthereumConnectionImpl implements EthereumConnection {
         } catch (EthereumException ex) {
             LOGGER.error("ethereum error: " + ex.getMessage(), ex);
             throw ex;
+        } catch (Exception ex) {
+            LOGGER.error("error: " + ex.getMessage(), ex);
+            throw new ResourceException(ex);
+        }
+    }
+
+    @Override
+    public EthBlock.Block getBlock(DefaultBlockParameter defaultBlockParameter, boolean returnFullTransactionObjects) throws ResourceException {
+        try {
+            return this.ethereumManagedConnection.getBlock(defaultBlockParameter, returnFullTransactionObjects);
+        } catch (Exception ex) {
+            LOGGER.error("error: " + ex.getMessage(), ex);
+            throw new ResourceException(ex);
+        }
+    }
+
+    @Override
+    public String getNetVersion() throws ResourceException {
+        try {
+            return this.ethereumManagedConnection.getNetVersion();
+        } catch (Exception ex) {
+            LOGGER.error("error: " + ex.getMessage(), ex);
+            throw new ResourceException(ex);
+        }
+    }
+
+    @Override
+    public BigInteger getPeerCount() throws ResourceException {
+        try {
+            return this.ethereumManagedConnection.getPeerCount();
+        } catch (Exception ex) {
+            LOGGER.error("error: " + ex.getMessage(), ex);
+            throw new ResourceException(ex);
+        }
+    }
+
+    @Override
+    public String getProtocolVersion() throws ResourceException {
+        try {
+            return this.ethereumManagedConnection.getProtocolVersion();
+        } catch (Exception ex) {
+            LOGGER.error("error: " + ex.getMessage(), ex);
+            throw new ResourceException(ex);
+        }
+    }
+
+    @Override
+    public boolean isSyncing() throws ResourceException {
+        try {
+            return this.ethereumManagedConnection.isSyncing();
         } catch (Exception ex) {
             LOGGER.error("error: " + ex.getMessage(), ex);
             throw new ResourceException(ex);

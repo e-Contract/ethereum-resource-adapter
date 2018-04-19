@@ -22,6 +22,7 @@ import java.util.List;
 import javax.resource.ResourceException;
 import javax.resource.cci.Connection;
 import org.web3j.crypto.Credentials;
+import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.methods.response.EthBlock;
 import org.web3j.protocol.core.methods.response.Transaction;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
@@ -87,6 +88,16 @@ public interface EthereumConnection extends Connection, AutoCloseable {
      * @throws ResourceException
      */
     EthBlock.Block getBlock(String blockHash, boolean fullTransactions) throws ResourceException;
+
+    /**
+     * Gives back a block for the given block number.
+     *
+     * @param defaultBlockParameter
+     * @param fullTransactions
+     * @return
+     * @throws ResourceException
+     */
+    EthBlock.Block getBlock(DefaultBlockParameter defaultBlockParameter, boolean fullTransactions) throws ResourceException;
 
     /**
      * Gives back the balance for the address.
@@ -209,4 +220,36 @@ public interface EthereumConnection extends Connection, AutoCloseable {
      */
     String sendTransaction(Credentials credentials, String to, BigInteger value,
             BigInteger gasPrice, Integer chainId) throws ResourceException, EthereumException;
+
+    /**
+     * Gives back the net version.
+     *
+     * @return
+     * @throws ResourceException
+     */
+    String getNetVersion() throws ResourceException;
+
+    /**
+     * Gives back the peer count of the Ethereum client node.
+     *
+     * @return
+     * @throws ResourceException
+     */
+    BigInteger getPeerCount() throws ResourceException;
+
+    /**
+     * Gives back the protocol version of the Ethereum network.
+     *
+     * @return
+     * @throws ResourceException
+     */
+    String getProtocolVersion() throws ResourceException;
+
+    /**
+     * Returns true if the Ethereum client node is synchronizing.
+     *
+     * @return
+     * @throws ResourceException
+     */
+    boolean isSyncing() throws ResourceException;
 }

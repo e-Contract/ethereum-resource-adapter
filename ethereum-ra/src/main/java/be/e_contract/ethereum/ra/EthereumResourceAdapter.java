@@ -44,7 +44,9 @@ import org.slf4j.LoggerFactory;
 
 @Connector(
         reauthenticationSupport = false,
-        transactionSupport = TransactionSupport.TransactionSupportLevel.XATransaction)
+        transactionSupport = TransactionSupport.TransactionSupportLevel.XATransaction,
+        displayName = "Ethereum Resource Adapter",
+        vendorName = "e-Contract.be BVBA")
 public class EthereumResourceAdapter implements ResourceAdapter, Serializable, Referenceable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EthereumResourceAdapter.class);

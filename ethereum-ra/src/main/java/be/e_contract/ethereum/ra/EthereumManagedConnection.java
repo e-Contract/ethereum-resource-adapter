@@ -553,4 +553,30 @@ public class EthereumManagedConnection implements ManagedConnection {
         String hexValue = Numeric.toHexString(signedTransaction);
         return sendRawTransaction(hexValue);
     }
+
+    public EthBlock.Block getBlock(DefaultBlockParameter defaultBlockParameter, boolean returnFullTransactionObjects) throws Exception {
+        Web3j web3j = getWeb3j();
+        EthBlock.Block block = web3j.ethGetBlockByNumber(defaultBlockParameter, returnFullTransactionObjects).send().getBlock();
+        return block;
+    }
+
+    public String getNetVersion() throws Exception {
+        Web3j web3j = getWeb3j();
+        return web3j.netVersion().send().getNetVersion();
+    }
+
+    public BigInteger getPeerCount() throws Exception {
+        Web3j web3j = getWeb3j();
+        return web3j.netPeerCount().send().getQuantity();
+    }
+
+    public String getProtocolVersion() throws Exception {
+        Web3j web3j = getWeb3j();
+        return web3j.ethProtocolVersion().send().getProtocolVersion();
+    }
+
+    public boolean isSyncing() throws Exception {
+        Web3j web3j = getWeb3j();
+        return web3j.ethSyncing().send().isSyncing();
+    }
 }
