@@ -19,6 +19,11 @@ package be.e_contract.ethereum.ra.oracle.spi;
 
 import java.util.Date;
 
+/**
+ * CDI event fired when a new block has been mined within the Ethereum network.
+ *
+ * @author Frank Cornelis
+ */
 public class LatestBlockEvent {
 
     private final Date timestamp;

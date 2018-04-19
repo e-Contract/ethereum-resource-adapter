@@ -9,3 +9,9 @@ JSF Tag Library Usage
     <version>${project.version}</version>
 </dependency>
 +--
+
+ Add the following namespace definition to your XHTML pages to start using the JSF library:
+
++--
+xmlns:eth="urn:be:e-contract:ethereum:jsf"
++--

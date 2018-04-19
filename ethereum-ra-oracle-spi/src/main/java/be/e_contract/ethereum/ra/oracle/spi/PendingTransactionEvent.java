@@ -19,6 +19,11 @@ package be.e_contract.ethereum.ra.oracle.spi;
 
 import java.util.Date;
 
+/**
+ * CDI event fired when a new pending transaction becomes available.
+ *
+ * @author Frank Cornelis
+ */
 public class PendingTransactionEvent {
 
     private final Date timestamp;

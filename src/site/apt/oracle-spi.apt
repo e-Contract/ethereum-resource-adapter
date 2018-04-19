@@ -2,4 +2,39 @@ Ethereum Resource Adapter Oracle SPI
 
  If you want to develop your own Gas Price Oracle, you need to provide an implementation against the Oracle SPI.
 
+ Basic implementation looks as follows:
+
++--
+@GasPriceOracleType("my-oracle")
+@ApplicationScoped
+public class MyGasPriceOracle implements GasPriceOracleSpi {
+
+    @Override
+    public BigInteger getGasPrice(Integer maxDuration) {
+        // do your magic here
+    }
+}
++--
+
+ If you need access to the underlying Ethereum connection, you can inject it via:
+
++--
+@Inject
+@OracleEthereumConnectionFactory
+private EthereumConnectionFactory ethereumConnectionFactory;
++--
+
+ You can listen for several Ethereum events via CDI observers:
+
++--
+private void observePendingTransaction(@Observes PendingTransactionEvent pendingTransactionEvent) {
+}
+
+private void observeLatestBlock(@Observes LatestBlockEvent latestBlockEvent) {
+}
+
+public void observeConnectionStatus(@Observes ConnectionStatusEvent event) {
+}
++--
+
   {{{./ethereum-ra-oracle-spi/apidocs/index.html}Ethereum Resource Adapter Oracle SPI Javadoc}}

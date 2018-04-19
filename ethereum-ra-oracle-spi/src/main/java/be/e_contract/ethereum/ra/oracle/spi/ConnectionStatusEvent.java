@@ -17,6 +17,11 @@
  */
 package be.e_contract.ethereum.ra.oracle.spi;
 
+/**
+ * CDI event fires when the connection status changes.
+ *
+ * @author Frank Cornelis
+ */
 public class ConnectionStatusEvent {
 
     private final boolean connected;
