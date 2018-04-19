@@ -1,0 +1,10 @@
+Development
+
+ Build the project via Maven:
+
++--
+mvn clean install
++--
+
+ We use NetBeans as IDE.
+ Simply open the project within NetBeans and you are ready to go.

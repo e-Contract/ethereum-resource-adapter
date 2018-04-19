@@ -1,0 +1,11 @@
+JSF Tag Library Usage
+
+ Use the JSF Tag Library within your WAR by including under <<<dependencies>>>:
+
++--
+<dependency>
+    <groupId>be.e-contract.ethereum-resource-adapter</groupId>
+    <artifactId>ethereum-jsf</artifactId>
+    <version>${project.version}</version>
+</dependency>
++--

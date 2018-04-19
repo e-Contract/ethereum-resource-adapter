@@ -1,0 +1,48 @@
+Integration Tests
+
+ The project comes with Arquillian based integration tests.
+ To run the integration tests, you need a local running Java EE application server and Ethereum client node.
+
+* Ethereum client node
+
+ Start a <<<geth>>> Ethereum client node in development mode via:
+
++--
+geth --dev --rpc --rpcapi personal,eth,net --dev.period 0
++--
+
+* Java EE Application Server
+
+ The integration tests can run against WildFly or JBoss EAP.
+
+** WildFly
+
+ Start WildFly via:
+
++--
+cd wildfly-12.0.0.Final/bin
+./standalone.sh --server-config=standalone-full.xml
++--
+
+ Run the integration tests via:
+
++--
+mvn clean install -Pintegration-tests-wildfly
++--
+
+** JBoss EAP
+
+ Start JBoss EAP via:
+
++--
+cd jboss-eap-6.4.19
+./standalone.sh --server-config=standalone-full.xml
++--
+
+ Run the integration tests via:
+
++--
+mvn clean install -Pintegration-tests-jboss-eap
++--
+
+ 

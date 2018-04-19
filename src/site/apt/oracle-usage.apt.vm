@@ -1,0 +1,52 @@
+Gas Price Oracle Usage
+
+ For usage of the gas price oracle, you need to include the corresponding EJB within the EAR via:
+
++--
+<dependency>
+    <groupId>be.e-contract.ethereum-resource-adapter</groupId>
+    <artifactId>ethereum-ra-oracle</artifactId>
+    <version>${project.version}</version>
+    <type>ejb</type>
+</dependency>
++--
+
+ and as <<<maven-ear-plugin>>> configuration under <<<modules>>> you put:
+
++--
+<ejbModule>
+    <groupId>be.e-contract.ethereum-resource-adapter</groupId>
+    <artifactId>ethereum-ra-oracle</artifactId>
+</ejbModule>
++--
+
+ within your EJB JAR or WAR you add the API dependency under <<<dependencies>>> via:
+
++--
+<dependency>
+    <groupId>be.e-contract.ethereum-resource-adapter</groupId>
+    <artifactId>ethereum-ra-oracle-api</artifactId>
+    <version>${project.version}</version>
+    <scope>provided</scope>
+</dependency>
++--
+
+ And per gas price oracle implemention, you include the corresponding EJB JAR within the EAR. For the default oracle you include:
+
++--
+<dependency>
+    <groupId>be.e-contract.ethereum-resource-adapter</groupId>
+    <artifactId>ethereum-ra-oracle-default</artifactId>
+    <version>${project.version}</version>
+    <type>ejb</type>
+</dependency>
++--
+
+ and as <<<maven-ear-plugin>>> configuration under <<<modules>>> you put:
+
++--
+<ejbModule>
+    <groupId>be.e-contract.ethereum-resource-adapter</groupId>
+    <artifactId>ethereum-ra-oracle-default</artifactId>
+</ejbModule>
++--

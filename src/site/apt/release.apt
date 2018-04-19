@@ -1,0 +1,21 @@
+Release Procedure
+
+ The project depends on some e-contract.be infrastructure:
+
+ * we have our own internal GIT repository, independent from Github.
+
+ * a release gets deployed to the e-contract.be Maven repository.
+
+ * a release pushes a new site to the e-contract.be servers.
+
+ []
+
+ However with a few minor changes to the parent <<<pom.xml>>> you should be able to run your own releases if you feel like.
+
+ We use the <<<maven-release-plugin>>> to manage the release of the project.
+ Release the project via:
+
++--
+mvn release:prepare
+mvn release:perform
++--

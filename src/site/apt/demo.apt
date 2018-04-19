@@ -1,0 +1,53 @@
+Demo Web Application
+ 
+ We provide a demo web application to get you easily started.
+
+ Start a <<<geth>>> Ethereum client node in development mode via:
+
++--
+geth --dev --rpc --rpcapi personal,eth,net --dev.period 0
++--
+
+ Start WildFly via:
+
++--
+cd wildfly-12.0.0.Final/bin
+./standalone.sh --server-config=standalone-full.xml
++--
+
+ Compile and deploy the demo web application via:
+
++--
+mvn clean install
+cd ethereum-rar-demo-deploy/
+mvn wildfly:deploy
++--
+
+ The demo web application is now available at:
+ {{http://localhost:8080/ethereum-demo/}}
+
+ If you want debug logging, add to <<<standalone/configuration/standalone-full.xml>>> under <<<subsystem xmlns="urn:jboss:domain:logging:4.0">>> the following configuration:
+
++--
+<periodic-rotating-file-handler name="ETHEREUM" autoflush="true">
+    <level name="DEBUG"/>
+    <formatter>
+        <named-formatter name="PATTERN"/>
+    </formatter>
+    <file relative-to="jboss.server.log.dir" path="ethereum.log"/>
+    <suffix value=".yyyy-MM-dd"/>
+    <append value="true"/>
+</periodic-rotating-file-handler>
+<logger category="be.e_contract.ethereum" use-parent-handlers="false">
+    <level name="DEBUG"/>
+    <handlers>
+        <handler name="ETHEREUM"/>
+    </handlers>
+</logger>
++--
+
+ Following the logging via:
+
++--
+tail -F standalone/log/ethereum.log
++--

@@ -1,0 +1,5 @@
+Ethereum Resource Adapter Oracle SPI
+
+ If you want to develop your own Gas Price Oracle, you need to provide an implementation against the Oracle SPI.
+
+  {{{./ethereum-ra-oracle-spi/apidocs/index.html}Ethereum Resource Adapter Oracle SPI Javadoc}}
