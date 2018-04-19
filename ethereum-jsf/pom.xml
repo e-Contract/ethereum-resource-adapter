@@ -24,4 +24,14 @@
         </dependency>
     </dependencies>
     
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>com.github.matinh.vdldoc</groupId>
+                <artifactId>vdldoc-maven-plugin</artifactId>
+                <version>1.0</version>
+            </plugin>
+        </plugins>
+    </reporting>
+    
 </project>

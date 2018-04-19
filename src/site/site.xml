@@ -15,6 +15,7 @@
             <item name="JCA API" href="api.html"/>
             <item name="Gas Price Oracle API" href="oracle-api.html"/>
             <item name="Gas Price Oracle SPI" href="oracle-spi.html"/>
+            <item name="JSF Library API" href="jsf-api.html"/>
         </menu>
         <menu name="Development">
             <item name="Compilation" href="devel.html"/>
