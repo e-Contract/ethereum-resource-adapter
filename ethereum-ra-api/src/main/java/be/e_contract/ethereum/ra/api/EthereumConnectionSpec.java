@@ -43,7 +43,7 @@ public class EthereumConnectionSpec implements ConnectionSpec {
     /**
      * Gives back the location of the Ethereum client node.
      *
-     * @return
+     * @return the node location.
      */
     public String getNodeLocation() {
         return this.nodeLocation;

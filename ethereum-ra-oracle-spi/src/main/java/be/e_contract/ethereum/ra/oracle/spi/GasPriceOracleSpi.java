@@ -31,7 +31,7 @@ public interface GasPriceOracleSpi extends Serializable {
      * Gives back the oracle gas price, given the maximum transaction duration.
      *
      * @param maxDuration the optional maximal transaction duration.
-     * @return
+     * @return the gas price in wei.
      */
     BigInteger getGasPrice(Integer maxDuration);
 }

@@ -36,7 +36,7 @@ public @interface GasPriceOracleType {
     /**
      * Unique name for the gas price oracle.
      *
-     * @return
+     * @return the gas price oracle name.
      */
     String value();
 }

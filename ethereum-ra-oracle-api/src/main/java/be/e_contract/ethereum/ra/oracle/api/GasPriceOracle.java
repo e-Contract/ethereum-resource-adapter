@@ -33,7 +33,7 @@ public interface GasPriceOracle {
     /**
      * Gives back a list of all available gas price oracles.
      *
-     * @return
+     * @return list of gas price oracle names.
      */
     List<String> getGasPriceOracleNames();
 
@@ -41,7 +41,7 @@ public interface GasPriceOracle {
      * Gives back all gas prices from the available gas price oracles.
      *
      * @param maxDuration
-     * @return
+     * @return map with key oracle name and value the gas price in wei.
      */
     Map<String, BigInteger> getGasPrices(Integer maxDuration);
 
@@ -50,7 +50,7 @@ public interface GasPriceOracle {
      *
      * @param oracle
      * @param maxDuration
-     * @return
+     * @return the gas price in wei.
      * @throws
      * be.e_contract.ethereum.ra.oracle.api.UnknownGasPriceOracleException
      */

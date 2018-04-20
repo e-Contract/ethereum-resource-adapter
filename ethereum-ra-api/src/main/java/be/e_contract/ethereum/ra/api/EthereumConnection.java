@@ -38,7 +38,7 @@ public interface EthereumConnection extends Connection, AutoCloseable {
     /**
      * Gives back the node gas price.
      *
-     * @return
+     * @return the gas price in wei.
      * @throws javax.resource.ResourceException
      */
     BigInteger getGasPrice() throws ResourceException;
@@ -46,7 +46,7 @@ public interface EthereumConnection extends Connection, AutoCloseable {
     /**
      * Gives back the latest block number.
      *
-     * @return
+     * @return the block number.
      * @throws ResourceException
      */
     BigInteger getBlockNumber() throws ResourceException;
@@ -55,7 +55,7 @@ public interface EthereumConnection extends Connection, AutoCloseable {
      * Sends a raw transaction. Supports JCA transactions.
      *
      * @param rawTransaction
-     * @return
+     * @return the transaction hash.
      * @throws ResourceException
      * @throws be.e_contract.ethereum.ra.api.EthereumException
      */
@@ -65,7 +65,7 @@ public interface EthereumConnection extends Connection, AutoCloseable {
      * Gives back the status of a transaction.
      *
      * @param transactionHash
-     * @return
+     * @return the transaction confirmation.
      * @throws ResourceException
      */
     TransactionConfirmation getTransactionConfirmation(String transactionHash) throws ResourceException;
@@ -74,7 +74,7 @@ public interface EthereumConnection extends Connection, AutoCloseable {
      * Gives back the transaction for a given transaction hash. Can return null.
      *
      * @param transactionHash
-     * @return
+     * @return the transaction, if available. Otherwise, null.
      * @throws ResourceException
      */
     Transaction findTransaction(String transactionHash) throws ResourceException;
@@ -84,7 +84,7 @@ public interface EthereumConnection extends Connection, AutoCloseable {
      *
      * @param blockHash
      * @param fullTransactions
-     * @return
+     * @return the Ethereum block.
      * @throws ResourceException
      */
     EthBlock.Block getBlock(String blockHash, boolean fullTransactions) throws ResourceException;
@@ -94,7 +94,7 @@ public interface EthereumConnection extends Connection, AutoCloseable {
      *
      * @param defaultBlockParameter
      * @param fullTransactions
-     * @return
+     * @return the Ethereum block.
      * @throws ResourceException
      */
     EthBlock.Block getBlock(DefaultBlockParameter defaultBlockParameter, boolean fullTransactions) throws ResourceException;
@@ -103,7 +103,7 @@ public interface EthereumConnection extends Connection, AutoCloseable {
      * Gives back the balance for the address.
      *
      * @param address
-     * @return
+     * @return the balance in wei.
      * @throws ResourceException
      */
     BigInteger getBalance(String address) throws ResourceException;
@@ -112,7 +112,8 @@ public interface EthereumConnection extends Connection, AutoCloseable {
      * Gives back the transaction nonce for the given address.
      *
      * @param address
-     * @return
+     * @return the transaction count, which equals nonce in case there are no
+     * pending transactions.
      * @throws ResourceException
      */
     BigInteger getTransactionCount(String address) throws ResourceException;
@@ -120,7 +121,7 @@ public interface EthereumConnection extends Connection, AutoCloseable {
     /**
      * Gives back a list of all accounts managed by the client node.
      *
-     * @return
+     * @return the list of account addresses.
      * @throws ResourceException
      */
     List<String> getAccounts() throws ResourceException;
@@ -139,7 +140,7 @@ public interface EthereumConnection extends Connection, AutoCloseable {
      *
      * @param account
      * @param password
-     * @return
+     * @return true on successful unlock.
      * @throws ResourceException
      * @throws be.e_contract.ethereum.ra.api.EthereumException
      */
@@ -154,7 +155,7 @@ public interface EthereumConnection extends Connection, AutoCloseable {
      * @param value
      * @param gasPrice
      * @param nonce
-     * @return
+     * @return the transaction hash.
      * @throws ResourceException
      * @throws be.e_contract.ethereum.ra.api.EthereumException
      */
@@ -190,7 +191,7 @@ public interface EthereumConnection extends Connection, AutoCloseable {
      * @param chainId
      * @param gasPrice
      * @param gasLimit
-     * @return
+     * @return a contract instance.
      * @throws ResourceException
      */
     <T extends Contract> T load(Class<T> contractClass, String contractAddress,
@@ -199,7 +200,8 @@ public interface EthereumConnection extends Connection, AutoCloseable {
     /**
      * Retrieve the chain identifier of the Ethereum network.
      *
-     * @return
+     * @return the chain identifier, or null of EIP-155 is not active on the
+     * network.
      * @throws ResourceException
      * @throws be.e_contract.ethereum.ra.api.EthereumException
      */
@@ -214,7 +216,7 @@ public interface EthereumConnection extends Connection, AutoCloseable {
      * @param value
      * @param gasPrice
      * @param chainId
-     * @return
+     * @return the transaction hash.
      * @throws javax.resource.ResourceException
      * @throws be.e_contract.ethereum.ra.api.EthereumException
      */
@@ -224,7 +226,7 @@ public interface EthereumConnection extends Connection, AutoCloseable {
     /**
      * Gives back the net version.
      *
-     * @return
+     * @return the net version.
      * @throws ResourceException
      */
     String getNetVersion() throws ResourceException;
@@ -232,7 +234,7 @@ public interface EthereumConnection extends Connection, AutoCloseable {
     /**
      * Gives back the peer count of the Ethereum client node.
      *
-     * @return
+     * @return the peer count.
      * @throws ResourceException
      */
     BigInteger getPeerCount() throws ResourceException;
@@ -240,7 +242,7 @@ public interface EthereumConnection extends Connection, AutoCloseable {
     /**
      * Gives back the protocol version of the Ethereum network.
      *
-     * @return
+     * @return the protocol version.
      * @throws ResourceException
      */
     String getProtocolVersion() throws ResourceException;
@@ -248,7 +250,7 @@ public interface EthereumConnection extends Connection, AutoCloseable {
     /**
      * Returns true if the Ethereum client node is synchronizing.
      *
-     * @return
+     * @return true if the client node is still syncing.
      * @throws ResourceException
      */
     boolean isSyncing() throws ResourceException;
