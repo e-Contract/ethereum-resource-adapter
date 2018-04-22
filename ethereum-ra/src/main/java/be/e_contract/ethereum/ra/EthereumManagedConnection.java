@@ -72,9 +72,6 @@ public class EthereumManagedConnection implements ManagedConnection {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EthereumManagedConnection.class);
 
-    private static final int CHAIN_ID_INC = 35;
-    private static final int LOWER_REAL_V = 27;
-
     private final Set<ConnectionEventListener> listeners;
 
     private final EthereumConnectionRequestInfo ethereumConnectionRequestInfo;
@@ -326,15 +323,6 @@ public class EthereumManagedConnection implements ManagedConnection {
         return transactionHash;
     }
 
-    private boolean isStatusOK(TransactionReceipt transactionReceipt) {
-        String status = transactionReceipt.getStatus();
-        if (null == status) {
-            return true;
-        }
-        BigInteger statusQuantity = Numeric.decodeQuantity(status);
-        return BigInteger.ONE.equals(statusQuantity);
-    }
-
     public TransactionConfirmation getTransactionConfirmation(String transactionHash) throws Exception {
         Web3j web3j = getWeb3j();
 
@@ -359,7 +347,7 @@ public class EthereumManagedConnection implements ManagedConnection {
             return transactionConfirmation;
         }
         TransactionReceipt transactionReceipt = transactionReceiptOptional.get();
-        if (!isStatusOK(transactionReceipt)) {
+        if (!transactionReceipt.isStatusOK()) {
             LOGGER.debug("Transaction has failed with status: " + transactionReceipt.getStatus());
             transactionConfirmation.setFailed(true);
             return transactionConfirmation;
@@ -508,12 +496,7 @@ public class EthereumManagedConnection implements ManagedConnection {
                 EthBlock.TransactionResult transactionResult = transactions.get(0);
                 EthBlock.TransactionObject transactionObject = (EthBlock.TransactionObject) transactionResult;
                 Transaction transaction = transactionObject.get();
-                int v = transaction.getV();
-                if (v == LOWER_REAL_V || v == (LOWER_REAL_V + 1)) {
-                    LOGGER.debug("getChainId: null");
-                    return null;
-                }
-                Integer chainId = (v - CHAIN_ID_INC) / 2;
+                Integer chainId = transaction.getChainId();
                 LOGGER.debug("getChainId: {}", chainId);
                 return chainId;
             }

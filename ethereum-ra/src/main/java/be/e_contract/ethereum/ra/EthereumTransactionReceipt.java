@@ -17,7 +17,6 @@
  */
 package be.e_contract.ethereum.ra;
 
-import org.web3j.tx.Contract;
 import org.web3j.tx.response.EmptyTransactionReceipt;
 
 public class EthereumTransactionReceipt extends EmptyTransactionReceipt {
@@ -31,7 +30,7 @@ public class EthereumTransactionReceipt extends EmptyTransactionReceipt {
 
     @Override
     public String getStatus() {
-        return Contract.SUCCESSFUL_TRANSACTION_STATUS;
+        return "0x1";
     }
 
     @Override
