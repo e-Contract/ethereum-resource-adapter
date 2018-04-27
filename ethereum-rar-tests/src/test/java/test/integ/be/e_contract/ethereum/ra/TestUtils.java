@@ -20,7 +20,6 @@ package test.integ.be.e_contract.ethereum.ra;
 import java.io.File;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
-import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 
 public class TestUtils {
@@ -31,13 +30,17 @@ public class TestUtils {
         File rarFile = Maven.resolver().loadPomFromFile("pom.xml")
                 .resolve("be.e-contract.ethereum-resource-adapter:ethereum-rar:rar:?")
                 .withoutTransitivity().asSingleFile();
-        ResourceAdapterArchive rar = ShrinkWrap.createFromZipFile(ResourceAdapterArchive.class, rarFile);
-        ear.addAsModule(rar);
+        ear.addAsModule(rarFile, "ethereum-rar.rar");
 
         File[] web3jDependencies = Maven.resolver().loadPomFromFile("pom.xml")
                 .resolve("org.web3j:core")
                 .withTransitivity().asFile();
         ear.addAsLibraries(web3jDependencies);
+
+        File[] commonsLangDependencies = Maven.resolver().loadPomFromFile("pom.xml")
+                .resolve("commons-lang:commons-lang")
+                .withTransitivity().asFile();
+        ear.addAsLibraries(commonsLangDependencies);
 
         return ear;
     }
