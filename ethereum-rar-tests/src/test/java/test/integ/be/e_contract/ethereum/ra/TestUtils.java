@@ -35,7 +35,7 @@ public class TestUtils {
         ear.addAsModule(rar);
 
         File[] web3jDependencies = Maven.resolver().loadPomFromFile("pom.xml")
-                .resolve("org.web3j:core:3.3.2-econtract-1")
+                .resolve("org.web3j:core:3.4.0")
                 .withTransitivity().asFile();
         ear.addAsLibraries(web3jDependencies);
 
