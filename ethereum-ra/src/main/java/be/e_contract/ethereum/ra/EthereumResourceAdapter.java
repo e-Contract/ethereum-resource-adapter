@@ -37,6 +37,7 @@ import javax.resource.spi.endpoint.MessageEndpointFactory;
 import javax.transaction.xa.XAResource;
 import javax.resource.spi.TransactionSupport;
 import javax.resource.spi.work.WorkManager;
+import javax.validation.constraints.NotNull;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.slf4j.Logger;
@@ -52,6 +53,7 @@ public class EthereumResourceAdapter implements ResourceAdapter, Serializable, R
     private static final Logger LOGGER = LoggerFactory.getLogger(EthereumResourceAdapter.class);
 
     @ConfigProperty(defaultValue = "http://localhost:8545")
+    @NotNull
     private String nodeLocation;
 
     private BootstrapContext bootstrapContext;

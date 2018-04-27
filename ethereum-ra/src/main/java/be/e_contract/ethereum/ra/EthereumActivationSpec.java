@@ -18,6 +18,7 @@
 package be.e_contract.ethereum.ra;
 
 import be.e_contract.ethereum.ra.api.EthereumMessageListener;
+import java.io.Serializable;
 import javax.resource.ResourceException;
 import javax.resource.spi.Activation;
 import javax.resource.spi.ActivationSpec;
@@ -28,11 +29,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Activation(messageListeners = EthereumMessageListener.class)
-public class EthereumActivationSpec implements ActivationSpec {
+public class EthereumActivationSpec implements ActivationSpec, Serializable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EthereumActivationSpec.class);
 
-    private EthereumResourceAdapter resourceAdapter;
+    private transient EthereumResourceAdapter resourceAdapter;
 
     @ConfigProperty
     private String nodeLocation;
