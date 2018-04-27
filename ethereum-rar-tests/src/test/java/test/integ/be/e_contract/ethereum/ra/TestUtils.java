@@ -29,13 +29,13 @@ public class TestUtils {
         EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "test.ear");
 
         File rarFile = Maven.resolver().loadPomFromFile("pom.xml")
-                .resolve("be.e-contract.ethereum-resource-adapter:ethereum-rar:rar:1.0.0-SNAPSHOT")
+                .resolve("be.e-contract.ethereum-resource-adapter:ethereum-rar:rar:?")
                 .withoutTransitivity().asSingleFile();
         ResourceAdapterArchive rar = ShrinkWrap.createFromZipFile(ResourceAdapterArchive.class, rarFile);
         ear.addAsModule(rar);
 
         File[] web3jDependencies = Maven.resolver().loadPomFromFile("pom.xml")
-                .resolve("org.web3j:core:3.4.0")
+                .resolve("org.web3j:core")
                 .withTransitivity().asFile();
         ear.addAsLibraries(web3jDependencies);
 
