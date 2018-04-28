@@ -28,8 +28,13 @@ public class ShrinkWrapTest {
 
     @Test
     public void testEAR() throws Exception {
-        LOGGER.debug("hello world");
         EnterpriseArchive ear = TestUtils.createBasicEAR();
+        LOGGER.debug("EAR: {}", ear.toString(true));
+    }
+
+    @Test
+    public void testEARWithOracles() throws Exception {
+        EnterpriseArchive ear = TestUtils.createEARWithOracles();
         LOGGER.debug("EAR: {}", ear.toString(true));
     }
 }

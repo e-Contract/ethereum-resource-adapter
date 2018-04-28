@@ -27,10 +27,10 @@ public class TestUtils {
     public static EnterpriseArchive createBasicEAR() throws Exception {
         EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "test.ear");
 
-        File rarFile = Maven.resolver().loadPomFromFile("pom.xml")
+        File rarFile = Maven.configureResolver().workOffline().loadPomFromFile("pom.xml")
                 .resolve("be.e-contract.ethereum-resource-adapter:ethereum-rar:rar:?")
                 .withoutTransitivity().asSingleFile();
-        ear.addAsModule(rarFile, "ethereum-rar.rar");
+        ear.addAsModule(rarFile, "ethereum-ra.rar");
 
         File[] web3jDependencies = Maven.resolver().loadPomFromFile("pom.xml")
                 .resolve("org.web3j:core")
@@ -41,6 +41,37 @@ public class TestUtils {
                 .resolve("commons-lang:commons-lang")
                 .withTransitivity().asFile();
         ear.addAsLibraries(commonsLangDependencies);
+
+        return ear;
+    }
+
+    public static EnterpriseArchive createEARWithOracles() throws Exception {
+        EnterpriseArchive ear = createBasicEAR();
+
+        File oracleSpiFile = Maven.configureResolver().workOffline().loadPomFromFile("pom.xml")
+                .resolve("be.e-contract.ethereum-resource-adapter:ethereum-ra-oracle-spi")
+                .withoutTransitivity().asSingleFile();
+        ear.addAsLibrary(oracleSpiFile);
+
+        File oracleApiFile = Maven.configureResolver().workOffline().loadPomFromFile("pom.xml")
+                .resolve("be.e-contract.ethereum-resource-adapter:ethereum-ra-oracle-api")
+                .withoutTransitivity().asSingleFile();
+        ear.addAsLibrary(oracleApiFile);
+
+        File oracleEjbFile = Maven.configureResolver().workOffline().loadPomFromFile("pom.xml")
+                .resolve("be.e-contract.ethereum-resource-adapter:ethereum-ra-oracle:ejb:?")
+                .withoutTransitivity().asSingleFile();
+        ear.addAsModule(oracleEjbFile);
+
+        File nodeOracleEjbFile = Maven.configureResolver().workOffline().loadPomFromFile("pom.xml")
+                .resolve("be.e-contract.ethereum-resource-adapter:ethereum-ra-oracle-node:ejb:?")
+                .withoutTransitivity().asSingleFile();
+        ear.addAsModule(nodeOracleEjbFile);
+
+        File defaultOracleEjbFile = Maven.configureResolver().workOffline().loadPomFromFile("pom.xml")
+                .resolve("be.e-contract.ethereum-resource-adapter:ethereum-ra-oracle-default:ejb:?")
+                .withoutTransitivity().asSingleFile();
+        ear.addAsModule(defaultOracleEjbFile);
 
         return ear;
     }
