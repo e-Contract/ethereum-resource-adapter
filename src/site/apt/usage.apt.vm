@@ -91,9 +91,17 @@ private EthereumConnectionFactory ethereumConnectionFactory;
 <assembly-descriptor>
     <mdb:resource-adapter-binding>
         <ejb-name>YourEthereumMDB</ejb-name>
-        <mdb:resource-adapter-name>your-ear-file-name-here.ear#ethereum-ra.rar</mdb:resource-adapter-name>
+        <mdb:resource-adapter-name>#ethereum-ra.rar</mdb:resource-adapter-name>
     </mdb:resource-adapter-binding>
 </assembly-descriptor>
++--
+
+ Or via a JBoss specific annotation on the MDB class:
+
++--
+import org.jboss.ejb3.annotation.ResourceAdapter;
+
+@ResourceAdapter("#ethereum-ra.rar")
 +--
 
 * Oracle WebLogic

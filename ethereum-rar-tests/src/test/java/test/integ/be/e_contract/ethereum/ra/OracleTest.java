@@ -29,7 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Integration Test to check EAR based testing.
+ * Integration Test for the Gas Price Oracles.
  *
  * @author Frank Cornelis
  */
