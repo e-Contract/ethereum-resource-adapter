@@ -49,7 +49,7 @@ cd wildfly-12.0.0.Final/bin
 mvn clean install -Pintegration-tests-wildfly
 +--
 
-** JBoss EAP
+** JBoss EAP 6
 
  Start JBoss EAP via:
 
@@ -62,6 +62,21 @@ cd jboss-eap-6.4.19
 
 +--
 mvn clean install -Pintegration-tests-jboss-eap
++--
+
+** JBoss EAP 7
+
+ Start JBoss EAP via:
+
++--
+cd jboss-eap-7.1.2
+./standalone.sh --server-config=standalone-full.xml
++--
+
+ Run the integration tests via:
+
++--
+mvn clean install -Pintegration-tests-wildfly
 +--
 
  

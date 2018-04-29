@@ -5,6 +5,8 @@ Ethereum JCA Resource Adapter Project
  Tested Java EE application servers:
 
  * JBoss EAP 6.4.19
+ 
+ * JBoss EAP 7.1.2
 
  * JBoss WildFly 12.0.0
 
