@@ -12,6 +12,14 @@ Ethereum JCA Resource Adapter Project
 
  []
 
+ Tested Ethereum client nodes:
+
+ * go-ethereum 1.8.6
+
+ * parity 1.10.2
+
+ []
+
  We should be able to support every Java EE 6+ application server.
 
  We target the Java EE JCA version 1.6 specification and Java 8+.

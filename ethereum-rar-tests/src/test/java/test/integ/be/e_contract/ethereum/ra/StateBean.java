@@ -17,15 +17,22 @@
  */
 package test.integ.be.e_contract.ethereum.ra;
 
+import be.e_contract.ethereum.ra.api.EthereumConnection;
+import be.e_contract.ethereum.ra.api.EthereumConnectionFactory;
 import java.util.HashSet;
 import java.util.Set;
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
+import javax.resource.ResourceException;
 
 @Singleton
 @Startup
 public class StateBean {
+
+    @Resource(mappedName = "java:/EthereumConnectionFactory")
+    private EthereumConnectionFactory ethereumConnectionFactory;
 
     private Set<String> pendingTransactions;
 
@@ -45,7 +52,14 @@ public class StateBean {
         this.blocks.add(blockHash);
     }
 
-    public boolean hasPendingTransactions() {
+    public boolean hasPendingTransactions() throws ResourceException {
+        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+            String clientVersion = ethereumConnection.getClientVersion();
+            if (null != clientVersion && clientVersion.startsWith("Parity")) {
+                // Parity in dev mode does not yield pending transactions
+                return true;
+            }
+        }
         return !this.pendingTransactions.isEmpty();
     }
 

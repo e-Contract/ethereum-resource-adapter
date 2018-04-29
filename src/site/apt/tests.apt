@@ -5,10 +5,29 @@ Integration Tests
 
 * Ethereum client node
 
+ The integration tests can use either <<<geth>>> or <<<parity>>>.
+
+** geth
+
  Start a <<<geth>>> Ethereum client node in development mode via:
 
 +--
-geth --dev --rpc --rpcapi personal,eth,net --dev.period 0
+geth --dev --rpc --rpcapi personal,eth,net,web3 --dev.period 0
++--
+
+** parity
+
+ Start a <<<parity>>> Ethereum client node in development mode via:
+
++--
+parity --config dev --base-path dev --jsonrpc-apis=personal,eth,net,web3
++--
+
+ Please notice that <<<parity>>> leaves behind a <<<dev>>> directory.
+ So after running it, you might want to cleanup this directory:
+
++--
+rm -rf dev
 +--
 
 * Java EE Application Server

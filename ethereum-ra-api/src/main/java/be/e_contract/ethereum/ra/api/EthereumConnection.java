@@ -254,4 +254,13 @@ public interface EthereumConnection extends Connection, AutoCloseable {
      * @throws ResourceException
      */
     boolean isSyncing() throws ResourceException;
+
+    /**
+     * Gives back the web3 client version.
+     *
+     * @return the web3 client version.
+     *
+     * @throws ResourceException
+     */
+    String getClientVersion() throws ResourceException;
 }

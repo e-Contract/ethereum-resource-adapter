@@ -562,4 +562,9 @@ public class EthereumManagedConnection implements ManagedConnection {
         Web3j web3j = getWeb3j();
         return web3j.ethSyncing().send().isSyncing();
     }
+
+    public String getClientVersion() throws Exception {
+        Web3j web3j = getWeb3j();
+        return web3j.web3ClientVersion().send().getWeb3ClientVersion();
+    }
 }
