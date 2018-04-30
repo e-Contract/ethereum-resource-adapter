@@ -168,7 +168,7 @@
             <uniqueVersion>false</uniqueVersion>
         </repository>
         <site>
-            <id>e-contract-jtrust-site</id>
+            <id>e-contract-site</id>
             <url>sftp://192.168.100.1/sites/ethereum-resource-adapter/</url>
         </site>
     </distributionManagement>
