@@ -3,7 +3,7 @@ Maven Site Development
  Compile the Maven site via:
 
 +--
-mvn clean site site:stage
+mvn clean install site site:stage
 +--
 
  View the site on Mac OS X via:

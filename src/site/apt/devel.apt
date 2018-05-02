@@ -1,5 +1,7 @@
 Development
 
+ You probably need to install the Solidity compiler first.
+
  Build the project via Maven:
 
 +--
