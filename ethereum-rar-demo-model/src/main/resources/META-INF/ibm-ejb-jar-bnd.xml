@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<ejb-jar-bnd xmlns="http://websphere.ibm.com/xml/ns/javaee"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee https://raw.githubusercontent.com/OpenLiberty/open-liberty/integration/dev/com.ibm.ws.javaee.dd/resources/schemas/ibm-ejb-jar-bnd_1_2.xsd"
+             version="1.2">
+    
+    <session name="EthereumBean">
+        <resource-ref name="EthereumConnectionFactory"
+                      binding-name="EthereumConnectionFactory" />
+    </session>
+    
+</ejb-jar-bnd>

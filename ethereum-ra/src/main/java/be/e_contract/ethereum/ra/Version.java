@@ -18,6 +18,7 @@
 package be.e_contract.ethereum.ra;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 public class Version {
@@ -29,8 +30,13 @@ public class Version {
     static {
         Properties properties = new Properties();
         try {
-            properties.load(Version.class
-                    .getResourceAsStream("/ethereum-resource-adapter-version.properties"));
+            InputStream versionInputStream = Version.class
+                    .getResourceAsStream("/ethereum-resource-adapter-version.properties");
+            if (null == versionInputStream) {
+                versionInputStream = Version.class
+                        .getResourceAsStream("ethereum-resource-adapter-version.properties");
+            }
+            properties.load(versionInputStream);
         } catch (IOException e) {
             throw new RuntimeException("could not load ethereum-resource-adapter-version.properties");
         }
