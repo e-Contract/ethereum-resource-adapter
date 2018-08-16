@@ -35,6 +35,8 @@ import javax.resource.spi.ResourceAdapter;
 import javax.resource.spi.ResourceAdapterAssociation;
 import javax.security.auth.Subject;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -137,14 +139,25 @@ public class EthereumManagedConnectionFactory implements ManagedConnectionFactor
         this.resourceAdapter = (EthereumResourceAdapter) ra;
     }
 
-    // implementation of equals and hashCode has to be provided
     @Override
-    public boolean equals(Object o) {
-        return super.equals(o);
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (obj == this) {
+            return true;
+        }
+        if (obj.getClass() != getClass()) {
+            return false;
+        }
+        EthereumManagedConnectionFactory rhs = (EthereumManagedConnectionFactory) obj;
+        return new EqualsBuilder()
+                .append(this.nodeLocation, rhs.nodeLocation)
+                .isEquals();
     }
 
     @Override
     public int hashCode() {
-        return super.hashCode();
+        return new HashCodeBuilder().append(this.nodeLocation).toHashCode();
     }
 }
