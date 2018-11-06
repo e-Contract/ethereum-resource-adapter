@@ -68,7 +68,7 @@ public class ContractBean {
             BigInteger balance = ethereumConnection.getBalance(address);
             assertEquals(value, balance);
 
-            Integer chainId = ethereumConnection.getChainId();
+            Long chainId = ethereumConnection.getChainId();
             if (chainId != null) {
                 if (chainId > 46) {
                     // test network

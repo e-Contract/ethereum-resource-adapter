@@ -177,7 +177,7 @@ public interface EthereumConnection extends Connection, AutoCloseable {
      * @throws be.e_contract.ethereum.ra.api.EthereumException
      */
     TransactionReceipt deploy(Class<? extends Contract> contractClass, BigInteger gasPrice,
-            BigInteger gasLimit, Credentials credentials, Integer chainId) throws ResourceException, EthereumException;
+            BigInteger gasLimit, Credentials credentials, Long chainId) throws ResourceException, EthereumException;
 
     /**
      * Loads a contract. Ethereum contract transactions are part of the JTA
@@ -195,7 +195,7 @@ public interface EthereumConnection extends Connection, AutoCloseable {
      * @throws ResourceException
      */
     <T extends Contract> T load(Class<T> contractClass, String contractAddress,
-            Credentials credentials, Integer chainId, BigInteger gasPrice, BigInteger gasLimit) throws ResourceException;
+            Credentials credentials, Long chainId, BigInteger gasPrice, BigInteger gasLimit) throws ResourceException;
 
     /**
      * Retrieve the chain identifier of the Ethereum network.
@@ -205,7 +205,7 @@ public interface EthereumConnection extends Connection, AutoCloseable {
      * @throws ResourceException
      * @throws be.e_contract.ethereum.ra.api.EthereumException
      */
-    Integer getChainId() throws ResourceException, EthereumException;
+    Long getChainId() throws ResourceException, EthereumException;
 
     /**
      * Sends an Ethereum transaction. Supports JTA transactions. The nonce is
@@ -221,7 +221,7 @@ public interface EthereumConnection extends Connection, AutoCloseable {
      * @throws be.e_contract.ethereum.ra.api.EthereumException
      */
     String sendTransaction(Credentials credentials, String to, BigInteger value,
-            BigInteger gasPrice, Integer chainId) throws ResourceException, EthereumException;
+            BigInteger gasPrice, Long chainId) throws ResourceException, EthereumException;
 
     /**
      * Gives back the net version.

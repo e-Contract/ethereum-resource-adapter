@@ -7,6 +7,10 @@ Integration Tests
 
  The integration tests can use either <<<geth>>> or <<<parity>>>.
 
+ Download <<<geth>>> from: {{https://geth.ethereum.org/}}
+
+ Download <<<parity>>> from: {{https://www.parity.io/ethereum/}}
+
 ** geth
 
  Start a <<<geth>>> Ethereum client node in development mode via:
@@ -39,7 +43,7 @@ rm -rf dev
  Start WildFly via:
 
 +--
-cd wildfly-12.0.0.Final/bin
+cd wildfly-14.0.1.Final/bin
 ./standalone.sh --server-config=standalone-full.xml
 +--
 
@@ -54,7 +58,7 @@ mvn clean install -Pintegration-tests-wildfly
  Start JBoss EAP via:
 
 +--
-cd jboss-eap-6.4.19
+cd jboss-eap-6.4.21/bin
 ./standalone.sh --server-config=standalone-full.xml
 +--
 
@@ -69,7 +73,7 @@ mvn clean install -Pintegration-tests-jboss-eap
  Start JBoss EAP via:
 
 +--
-cd jboss-eap-7.1.2
+cd jboss-eap-7.1.4/bin
 ./standalone.sh --server-config=standalone-full.xml
 +--
 

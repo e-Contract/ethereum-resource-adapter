@@ -2,7 +2,9 @@ Development
 
  You probably need to install the Solidity compiler first.
 
- Build the project via Maven:
+ We use Apache Maven version 3.6.0 to build the project.
+
+ Build the project via:
 
 +--
 mvn clean install

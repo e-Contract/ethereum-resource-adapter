@@ -161,9 +161,9 @@ public class EthereumBean {
 
     public TransactionReceipt deployDemoContract(Credentials credentials) throws EthereumException {
         try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
-            Integer chainId = ethereumConnection.getChainId();
+            Long chainId = ethereumConnection.getChainId();
             LOGGER.debug("chain id: {}", chainId);
-            Integer _chainId;
+            Long _chainId;
             if (null == chainId) {
                 _chainId = null;
             } else if (chainId > 255) {
@@ -183,9 +183,9 @@ public class EthereumBean {
 
     public String invokeContract(String contractAddress, Credentials credentials, BigInteger value, boolean rollback) throws Exception {
         try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
-            Integer chainId = ethereumConnection.getChainId();
+            Long chainId = ethereumConnection.getChainId();
             LOGGER.debug("chain id: {}", chainId);
-            Integer _chainId;
+            Long _chainId;
             if (null == chainId) {
                 _chainId = null;
             } else if (chainId > 46) {
@@ -212,9 +212,9 @@ public class EthereumBean {
 
     public BigInteger readContract(String contractAddress, Credentials credentials) throws Exception {
         try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
-            Integer chainId = ethereumConnection.getChainId();
+            Long chainId = ethereumConnection.getChainId();
             LOGGER.debug("chain id: {}", chainId);
-            Integer _chainId;
+            Long _chainId;
             if (null == chainId) {
                 _chainId = null;
             } else if (chainId > 46) {

@@ -11,7 +11,7 @@ geth --dev --rpc --rpcapi personal,eth,net --dev.period 0
  Start WildFly via:
 
 +--
-cd wildfly-12.0.0.Final/bin
+cd wildfly-14.0.1.Final/bin
 ./standalone.sh --server-config=standalone-full.xml
 +--
 

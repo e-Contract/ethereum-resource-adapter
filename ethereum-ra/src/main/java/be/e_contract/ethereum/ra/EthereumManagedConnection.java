@@ -447,7 +447,7 @@ public class EthereumManagedConnection implements ManagedConnection {
     }
 
     public TransactionReceipt deploy(Class<? extends Contract> contractClass, BigInteger gasPrice, BigInteger gasLimit,
-            Credentials credentials, Integer chainId) throws Exception {
+            Credentials credentials, Long chainId) throws Exception {
         Web3j web3j = getWeb3j();
         Field binaryField = contractClass.getDeclaredField("BINARY");
         binaryField.setAccessible(true);
@@ -471,7 +471,7 @@ public class EthereumManagedConnection implements ManagedConnection {
     }
 
     public <T extends Contract> T load(Class<T> contractClass, String contractAddress,
-            Credentials credentials, Integer chainId, BigInteger gasPrice, BigInteger gasLimit) throws Exception {
+            Credentials credentials, Long chainId, BigInteger gasPrice, BigInteger gasLimit) throws Exception {
         Method method = contractClass.getMethod("load", String.class, Web3j.class,
                 TransactionManager.class, BigInteger.class, BigInteger.class);
         Web3j web3j = getWeb3j();
@@ -486,7 +486,7 @@ public class EthereumManagedConnection implements ManagedConnection {
         return contract;
     }
 
-    public Integer getChainId() throws Exception {
+    public Long getChainId() throws Exception {
         Web3j web3j = getWeb3j();
         BigInteger blockNumber = web3j.ethBlockNumber().send().getBlockNumber();
         while (!blockNumber.equals(BigInteger.ZERO)) {
@@ -496,7 +496,7 @@ public class EthereumManagedConnection implements ManagedConnection {
                 EthBlock.TransactionResult transactionResult = transactions.get(0);
                 EthBlock.TransactionObject transactionObject = (EthBlock.TransactionObject) transactionResult;
                 Transaction transaction = transactionObject.get();
-                Integer chainId = transaction.getChainId();
+                Long chainId = transaction.getChainId();
                 LOGGER.debug("getChainId: {}", chainId);
                 return chainId;
             }
@@ -509,7 +509,7 @@ public class EthereumManagedConnection implements ManagedConnection {
         return this.resourceAdapter;
     }
 
-    public String sendTransaction(Credentials credentials, String to, BigInteger value, BigInteger gasPrice, Integer chainId) throws Exception {
+    public String sendTransaction(Credentials credentials, String to, BigInteger value, BigInteger gasPrice, Long chainId) throws Exception {
         BigInteger nonce = getNextNonce(credentials.getAddress());
         BigInteger gasLimit = BigInteger.valueOf(21000);
         RawTransaction rawTransaction = RawTransaction.createEtherTransaction(nonce, gasPrice, gasLimit, to, value);

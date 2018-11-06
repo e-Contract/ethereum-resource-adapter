@@ -70,7 +70,7 @@ public class TransactionBean {
             String address2 = "0x" + Keys.getAddress(ecKeyPair2);
             Credentials credentials = Credentials.create(ecKeyPair);
             BigInteger value2 = Convert.toWei(BigDecimal.valueOf(0.1), Convert.Unit.ETHER).toBigInteger();
-            Integer chainId = ethereumConnection.getChainId();
+            Long chainId = ethereumConnection.getChainId();
 
             LocalTransaction localTransaction = ethereumConnection.getLocalTransaction();
             localTransaction.begin();
