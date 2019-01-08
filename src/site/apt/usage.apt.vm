@@ -37,6 +37,16 @@ Usage
 </rarModule>
 +--
 
+ also add <<<web3j>>> as dependency within your EAR via:
+
++--
+<dependency>
+    <groupId>org.web3j</groupId>
+    <artifactId>core</artifactId>
+    <version>${web3j.version}</version>
+</dependency>
++--
+
  within your EJB JAR or WAR you add the API dependency under <<<dependencies>>> via:
 
 +--

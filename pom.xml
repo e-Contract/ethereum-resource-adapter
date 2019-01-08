@@ -43,7 +43,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>3.1.0</version>
+                    <version>3.1.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -153,6 +153,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <slf4j.version>1.7.25</slf4j.version>
         <log4j.version>2.11.1</log4j.version>
+        <web3j.version>3.6.0</web3j.version>
     </properties>
     <scm>
         <connection>scm:git:e-contract.be:git/ethereum-resource-adapter.git</connection>
@@ -223,7 +224,7 @@
             <dependency>
                 <groupId>org.web3j</groupId>
                 <artifactId>core</artifactId>
-                <version>3.6.0</version>
+                <version>${web3j.version}</version>
             </dependency>
             <dependency>
                 <groupId>joda-time</groupId>
