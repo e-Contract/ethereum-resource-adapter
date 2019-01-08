@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018 e-Contract.be BVBA.
+ * Copyright (C) 2018-2019 e-Contract.be BVBA.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -47,6 +47,9 @@ public class EthereumActivationSpec implements ActivationSpec, Serializable {
     @ConfigProperty(type = Boolean.class)
     private Boolean deliverBlock;
 
+    @ConfigProperty(type = Boolean.class)
+    private Boolean omitSyncing;
+
     private EthereumMessageListener ethereumMessageListener;
 
     public EthereumActivationSpec() {
@@ -90,6 +93,14 @@ public class EthereumActivationSpec implements ActivationSpec, Serializable {
 
     public void setDeliverBlock(Boolean deliverBlock) {
         this.deliverBlock = deliverBlock;
+    }
+
+    public Boolean isOmitSyncing() {
+        return this.omitSyncing;
+    }
+
+    public void setOmitSyncing(Boolean omitSyncing) {
+        this.omitSyncing = omitSyncing;
     }
 
     @Override

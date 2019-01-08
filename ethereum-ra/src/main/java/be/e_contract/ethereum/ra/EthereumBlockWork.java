@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018 e-Contract.be BVBA.
+ * Copyright (C) 2018-2019 e-Contract.be BVBA.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -84,6 +84,13 @@ public class EthereumBlockWork implements Work {
                         }
                         if (!deliverBlock) {
                             continue;
+                        }
+                        Boolean omitSyncing = ethereumActivationSpec.isOmitSyncing();
+                        if (null != omitSyncing && omitSyncing) {
+                            boolean syncing = web3j.ethSyncing().send().isSyncing();
+                            if (syncing) {
+                                continue;
+                            }
                         }
                         EthereumMessageListener ethereumMessageListener
                                 = ethereumActivationSpec.getEthereumMessageListener();
