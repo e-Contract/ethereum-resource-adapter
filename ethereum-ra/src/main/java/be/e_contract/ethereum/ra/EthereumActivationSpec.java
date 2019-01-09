@@ -39,9 +39,6 @@ public class EthereumActivationSpec implements ActivationSpec, Serializable {
     private String nodeLocation;
 
     @ConfigProperty(type = Boolean.class)
-    private Boolean fullBlock;
-
-    @ConfigProperty(type = Boolean.class)
     private Boolean deliverPending;
 
     @ConfigProperty(type = Boolean.class)
@@ -69,14 +66,6 @@ public class EthereumActivationSpec implements ActivationSpec, Serializable {
 
     public void setNodeLocation(String nodeLocation) {
         this.nodeLocation = nodeLocation;
-    }
-
-    public Boolean isFullBlock() {
-        return this.fullBlock;
-    }
-
-    public void setFullBlock(Boolean fullBlock) {
-        this.fullBlock = fullBlock;
     }
 
     public Boolean isDeliverPending() {

@@ -72,7 +72,8 @@ try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumC
 +--
 @MessageDriven(activationConfig = {
     @ActivationConfigProperty(propertyName = "deliverPending", propertyValue = "true"),
-    @ActivationConfigProperty(propertyName = "deliverBlock", propertyValue = "true")
+    @ActivationConfigProperty(propertyName = "deliverBlock", propertyValue = "true"),
+    @ActivationConfigProperty(propertyName = "omitSyncing", propertyValue = "true")
 })
 public class EthereumMDB implements EthereumMessageListener {
 

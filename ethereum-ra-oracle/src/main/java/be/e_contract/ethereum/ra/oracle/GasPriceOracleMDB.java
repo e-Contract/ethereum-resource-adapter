@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018 e-Contract.be BVBA.
+ * Copyright (C) 2018-2019 e-Contract.be BVBA.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -30,7 +30,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @MessageDriven(activationConfig = {
-    @ActivationConfigProperty(propertyName = "fullBlock", propertyValue = "true"),
     @ActivationConfigProperty(propertyName = "deliverPending", propertyValue = "true"),
     @ActivationConfigProperty(propertyName = "deliverBlock", propertyValue = "true")
 })
