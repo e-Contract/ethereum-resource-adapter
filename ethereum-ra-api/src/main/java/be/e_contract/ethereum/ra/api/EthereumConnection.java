@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018 e-Contract.be BVBA.
+ * Copyright (C) 2018-2019 e-Contract.be BVBA.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -200,7 +200,7 @@ public interface EthereumConnection extends Connection, AutoCloseable {
     /**
      * Retrieve the chain identifier of the Ethereum network.
      *
-     * @return the chain identifier, or null of EIP-155 is not active on the
+     * @return the chain identifier, or null if EIP-155 is not active on the
      * network.
      * @throws ResourceException
      * @throws be.e_contract.ethereum.ra.api.EthereumException
