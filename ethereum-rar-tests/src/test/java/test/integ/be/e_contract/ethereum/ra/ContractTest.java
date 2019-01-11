@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018 e-Contract.be BVBA.
+ * Copyright (C) 2018-2019 e-Contract.be BVBA.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -41,7 +41,7 @@ public class ContractTest {
         EnterpriseArchive ear = TestUtils.createBasicEAR();
 
         JavaArchive ejbJar = ShrinkWrap.create(JavaArchive.class, "ejb.jar")
-                .addClasses(ContractBean.class, DemoContract.class);
+                .addClasses(ContractBean.class, DemoContract.class, TestContractGasProvider.class);
         ear.addAsModule(ejbJar);
 
         JavaArchive libJar = ShrinkWrap.create(JavaArchive.class, "lib.jar")
