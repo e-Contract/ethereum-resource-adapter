@@ -27,6 +27,7 @@ import org.web3j.protocol.core.methods.response.EthBlock;
 import org.web3j.protocol.core.methods.response.Transaction;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.tx.Contract;
+import org.web3j.tx.gas.ContractGasProvider;
 
 /**
  * Interface for Ethereum network connections.
@@ -167,8 +168,7 @@ public interface EthereumConnection extends Connection, AutoCloseable {
      * Contract deployment is part of the JTA transaction.
      *
      * @param contractClass
-     * @param gasPrice
-     * @param gasLimit
+     * @param contractGasProvider
      * @param credentials
      * @param chainId
      * @return the contract transaction receipt, containing the transaction hash
@@ -176,8 +176,8 @@ public interface EthereumConnection extends Connection, AutoCloseable {
      * @throws javax.resource.ResourceException
      * @throws be.e_contract.ethereum.ra.api.EthereumException
      */
-    TransactionReceipt deploy(Class<? extends Contract> contractClass, BigInteger gasPrice,
-            BigInteger gasLimit, Credentials credentials, Long chainId) throws ResourceException, EthereumException;
+    TransactionReceipt deploy(Class<? extends Contract> contractClass, ContractGasProvider contractGasProvider,
+            Credentials credentials, Long chainId) throws ResourceException, EthereumException;
 
     /**
      * Loads a contract. Ethereum contract transactions are part of the JTA

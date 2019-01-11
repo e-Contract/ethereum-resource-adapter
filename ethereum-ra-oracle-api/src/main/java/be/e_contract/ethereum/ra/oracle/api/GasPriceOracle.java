@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018 e-Contract.be BVBA.
+ * Copyright (C) 2018-2019 e-Contract.be BVBA.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -40,7 +40,7 @@ public interface GasPriceOracle {
     /**
      * Gives back all gas prices from the available gas price oracles.
      *
-     * @param maxDuration
+     * @param maxDuration maximum duration for transaction commit in seconds.
      * @return map with key oracle name and value the gas price in wei.
      */
     Map<String, BigInteger> getGasPrices(Integer maxDuration);
@@ -48,8 +48,8 @@ public interface GasPriceOracle {
     /**
      * Gives back the gas price by a certain gas price oracle.
      *
-     * @param oracle
-     * @param maxDuration
+     * @param oracle the name of the oracle to be used.
+     * @param maxDuration maximum duration for transaction commit in seconds.
      * @return the gas price in wei.
      * @throws
      * be.e_contract.ethereum.ra.oracle.api.UnknownGasPriceOracleException

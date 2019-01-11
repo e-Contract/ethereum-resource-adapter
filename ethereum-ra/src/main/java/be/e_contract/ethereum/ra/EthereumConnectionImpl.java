@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018 e-Contract.be BVBA.
+ * Copyright (C) 2018-2019 e-Contract.be BVBA.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -37,6 +37,7 @@ import org.web3j.protocol.core.methods.response.EthBlock;
 import org.web3j.protocol.core.methods.response.Transaction;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.tx.Contract;
+import org.web3j.tx.gas.ContractGasProvider;
 
 public class EthereumConnectionImpl implements EthereumConnection {
 
@@ -216,10 +217,10 @@ public class EthereumConnectionImpl implements EthereumConnection {
     }
 
     @Override
-    public TransactionReceipt deploy(Class<? extends Contract> contractClass, BigInteger gasPrice,
-            BigInteger gasLimit, Credentials credentials, Long chainId) throws ResourceException, EthereumException {
+    public TransactionReceipt deploy(Class<? extends Contract> contractClass, ContractGasProvider contractGasProvider,
+            Credentials credentials, Long chainId) throws ResourceException, EthereumException {
         try {
-            return this.ethereumManagedConnection.deploy(contractClass, gasPrice, gasLimit, credentials, chainId);
+            return this.ethereumManagedConnection.deploy(contractClass, contractGasProvider, credentials, chainId);
         } catch (EthereumException ex) {
             LOGGER.error("ethereum error: " + ex.getMessage(), ex);
             throw ex;

@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018 e-Contract.be BVBA.
+ * Copyright (C) 2018-2019 e-Contract.be BVBA.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -26,6 +26,7 @@ import be.e_contract.ethereum.rar.demo.model.contract.DemoContract;
 import java.math.BigInteger;
 import java.util.List;
 import javax.annotation.Resource;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -37,6 +38,7 @@ import org.slf4j.LoggerFactory;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.tx.Contract;
+import org.web3j.tx.gas.ContractGasProvider;
 
 @Stateless
 public class EthereumBean {
@@ -45,6 +47,9 @@ public class EthereumBean {
 
     @Resource(name = "EthereumConnectionFactory")
     private EthereumConnectionFactory ethereumConnectionFactory;
+
+    @EJB
+    private ContractGasProvider contractGasProvider;
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public BigInteger getGasPrice(String nodeLocation, boolean rollback) throws RollbackException {
@@ -173,8 +178,7 @@ public class EthereumBean {
             } else {
                 _chainId = chainId;
             }
-            BigInteger gasPrice = ethereumConnection.getGasPrice();
-            return ethereumConnection.deploy(DemoContract.class, gasPrice, Contract.GAS_LIMIT, credentials, _chainId);
+            return ethereumConnection.deploy(DemoContract.class, this.contractGasProvider, credentials, _chainId);
         } catch (ResourceException ex) {
             LOGGER.error("JCA error: " + ex.getMessage(), ex);
             return null;

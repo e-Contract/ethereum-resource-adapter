@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018 e-Contract.be BVBA.
+ * Copyright (C) 2018-2019 e-Contract.be BVBA.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -62,6 +62,7 @@ import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.tx.ChainId;
 import org.web3j.tx.Contract;
 import org.web3j.tx.TransactionManager;
+import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.utils.Numeric;
 
 /**
@@ -446,7 +447,7 @@ public class EthereumManagedConnection implements ManagedConnection {
         return ethSendTransaction.getTransactionHash();
     }
 
-    public TransactionReceipt deploy(Class<? extends Contract> contractClass, BigInteger gasPrice, BigInteger gasLimit,
+    public TransactionReceipt deploy(Class<? extends Contract> contractClass, ContractGasProvider contractGasProvider,
             Credentials credentials, Long chainId) throws Exception {
         Web3j web3j = getWeb3j();
         Field binaryField = contractClass.getDeclaredField("BINARY");
@@ -462,7 +463,7 @@ public class EthereumManagedConnection implements ManagedConnection {
         TransactionManager transactionManager = new EthereumTransactionManager(this, credentials, _chainId);
         Contract contract;
         try {
-            contract = Contract.deployRemoteCall(contractClass, web3j, transactionManager, gasPrice, gasLimit, binary, "").send();
+            contract = Contract.deployRemoteCall(contractClass, web3j, transactionManager, contractGasProvider, binary, "").send();
         } catch (Exception ex) {
             LOGGER.debug("could not deploy contract: " + ex.getMessage(), ex);
             throw new EthereumException("could not deploy contract: " + ex.getMessage());
