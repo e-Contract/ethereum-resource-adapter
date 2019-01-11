@@ -232,10 +232,10 @@ public class EthereumConnectionImpl implements EthereumConnection {
 
     @Override
     public <T extends Contract> T load(Class<T> contractClass, String contractAddress,
-            Credentials credentials, Long chainId, BigInteger gasPrice, BigInteger gasLimit) throws ResourceException {
+            Credentials credentials, Long chainId, ContractGasProvider contractGasProvider) throws ResourceException {
         try {
             return this.ethereumManagedConnection.load(contractClass, contractAddress, credentials,
-                    chainId, gasPrice, gasLimit);
+                    chainId, contractGasProvider);
         } catch (Exception ex) {
             LOGGER.error("error: " + ex.getMessage(), ex);
             throw new ResourceException(ex);

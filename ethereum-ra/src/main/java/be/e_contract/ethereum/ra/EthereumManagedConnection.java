@@ -472,9 +472,9 @@ public class EthereumManagedConnection implements ManagedConnection {
     }
 
     public <T extends Contract> T load(Class<T> contractClass, String contractAddress,
-            Credentials credentials, Long chainId, BigInteger gasPrice, BigInteger gasLimit) throws Exception {
+            Credentials credentials, Long chainId, ContractGasProvider contractGasProvider) throws Exception {
         Method method = contractClass.getMethod("load", String.class, Web3j.class,
-                TransactionManager.class, BigInteger.class, BigInteger.class);
+                TransactionManager.class, ContractGasProvider.class);
         Web3j web3j = getWeb3j();
         byte _chainId;
         if (null == chainId) {
@@ -483,7 +483,7 @@ public class EthereumManagedConnection implements ManagedConnection {
             _chainId = chainId.byteValue();
         }
         TransactionManager transactionManager = new EthereumTransactionManager(this, credentials, _chainId);
-        T contract = (T) method.invoke(null, contractAddress, web3j, transactionManager, gasPrice, gasLimit);
+        T contract = (T) method.invoke(null, contractAddress, web3j, transactionManager, contractGasProvider);
         return contract;
     }
 

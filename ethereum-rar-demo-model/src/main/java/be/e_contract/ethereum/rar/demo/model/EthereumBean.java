@@ -200,9 +200,8 @@ public class EthereumBean {
             } else {
                 _chainId = chainId;
             }
-            BigInteger gasPrice = ethereumConnection.getGasPrice();
             DemoContract demoContract = ethereumConnection.load(DemoContract.class, contractAddress,
-                    credentials, _chainId, gasPrice, Contract.GAS_LIMIT);
+                    credentials, _chainId, this.contractGasProvider);
             String transactionHash = demoContract.setValue(value).send().getTransactionHash();
             if (rollback) {
                 throw new RollbackException("rollback");
@@ -229,9 +228,8 @@ public class EthereumBean {
             } else {
                 _chainId = chainId;
             }
-            BigInteger gasPrice = ethereumConnection.getGasPrice();
             DemoContract demoContract = ethereumConnection.load(DemoContract.class, contractAddress,
-                    credentials, _chainId, gasPrice, Contract.GAS_LIMIT);
+                    credentials, _chainId, this.contractGasProvider);
             return demoContract.getValue().send();
         } catch (ResourceException ex) {
             LOGGER.error("JCA error: " + ex.getMessage(), ex);

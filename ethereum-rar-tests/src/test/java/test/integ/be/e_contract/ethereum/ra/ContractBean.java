@@ -90,7 +90,7 @@ public class ContractBean {
                 transactionConfirmation = ethereumConnection.getTransactionConfirmation(contractTransactionReceipt.getTransactionHash());
             }
 
-            DemoContract contract = ethereumConnection.load(DemoContract.class, contractAddress, credentials, chainId, gasPrice, DemoContract.GAS_LIMIT);
+            DemoContract contract = ethereumConnection.load(DemoContract.class, contractAddress, credentials, chainId, contractGasProvider);
             assertEquals(BigInteger.ZERO, contract.getValue().send());
 
             BigInteger contractValue = BigInteger.valueOf(1234);
