@@ -37,7 +37,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
-import org.web3j.tx.Contract;
 import org.web3j.tx.gas.ContractGasProvider;
 
 @Stateless
@@ -234,6 +233,36 @@ public class EthereumBean {
         } catch (ResourceException ex) {
             LOGGER.error("JCA error: " + ex.getMessage(), ex);
             return null;
+        }
+    }
+
+    public String getClientVersion() throws Exception {
+        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+            return ethereumConnection.getClientVersion();
+        }
+    }
+
+    public String getNetVersion() throws Exception {
+        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+            return ethereumConnection.getNetVersion();
+        }
+    }
+
+    public String getProtocolVersion() throws Exception {
+        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+            return ethereumConnection.getProtocolVersion();
+        }
+    }
+
+    public BigInteger getPeerCount() throws Exception {
+        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+            return ethereumConnection.getPeerCount();
+        }
+    }
+
+    public boolean isSyncing() throws Exception {
+        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+            return ethereumConnection.isSyncing();
         }
     }
 }

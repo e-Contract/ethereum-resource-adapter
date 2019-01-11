@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018 e-Contract.be BVBA.
+ * Copyright (C) 2018-2019 e-Contract.be BVBA.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -22,8 +22,8 @@ import java.math.BigInteger;
 
 public class GasPrice implements Serializable {
 
-    private String oracle;
-    private BigInteger gasPrice;
+    private final String oracle;
+    private final BigInteger gasPrice;
 
     public GasPrice(String oracle, BigInteger gasPrice) {
         this.oracle = oracle;
