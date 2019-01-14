@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018 e-Contract.be BVBA.
+ * Copyright (C) 2018-2019 e-Contract.be BVBA.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -38,8 +38,6 @@ import javax.transaction.xa.XAResource;
 import javax.resource.spi.TransactionSupport;
 import javax.resource.spi.work.WorkManager;
 import javax.validation.constraints.NotNull;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -181,14 +179,12 @@ public class EthereumResourceAdapter implements ResourceAdapter, Serializable, R
             return false;
         }
         EthereumResourceAdapter rhs = (EthereumResourceAdapter) obj;
-        return new EqualsBuilder()
-                .append(this.nodeLocation, rhs.nodeLocation)
-                .isEquals();
+        return this.nodeLocation.equals(rhs.nodeLocation);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(this.nodeLocation).toHashCode();
+        return this.nodeLocation.hashCode();
     }
 
     @Override
