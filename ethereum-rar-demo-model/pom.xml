@@ -68,7 +68,7 @@
                 <directory>src/main/resources</directory>
                 <filtering>false</filtering>
                 <excludes>
-                    <exclude>META-INF/jboss-ejb3.xml</exclude>
+                    <exclude>META-INF/ejb-jar.xml</exclude>
                     <exclude>META-INF/sun-ejb-jar.xml</exclude>
                 </excludes>
             </resource>
@@ -76,7 +76,7 @@
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
                 <includes>
-                    <include>META-INF/jboss-ejb3.xml</include>
+                    <include>META-INF/ejb-jar.xml</include>
                     <include>META-INF/sun-ejb-jar.xml</include>
                 </includes>
             </resource>

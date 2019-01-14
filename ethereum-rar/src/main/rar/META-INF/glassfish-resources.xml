@@ -5,6 +5,6 @@
     <custom-resource jndi-name="java:/EthereumConnectionFactory"
                      factory-class="be.e_contract.ethereum.ra.EthereumManagedConnectionFactory"
                      res-type="String">
-        <property name="nodeLocation" value="http://localhost:8545"/>
+        <property name="nodeLocation" value="${ethereum-node-location}"/>
     </custom-resource>
 </resources>

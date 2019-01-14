@@ -50,6 +50,13 @@
                             <contextRoot>/ethereum-demo</contextRoot>
                         </webModule>
                     </modules>
+                    <envEntries>
+                        <env-entry>
+                            <env-entry-name>java:app/nodeLocation</env-entry-name>
+                            <env-entry-type>java.lang.String</env-entry-type>
+                            <env-entry-value>${ethereum-node-location}</env-entry-value>
+                        </env-entry>
+                    </envEntries>
                 </configuration>
             </plugin>
             <plugin>

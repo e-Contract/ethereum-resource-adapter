@@ -22,7 +22,7 @@
     <assembly-descriptor>
         <mdb:resource-adapter-binding>
             <ejb-name>EthereumMDB</ejb-name>
-            <mdb:resource-adapter-name>ethereum-rar-demo-deploy-${project.version}.ear#ethereum-ra.rar</mdb:resource-adapter-name>
+            <mdb:resource-adapter-name>#ethereum-ra.rar</mdb:resource-adapter-name>
         </mdb:resource-adapter-binding>
     </assembly-descriptor>
    
