@@ -16,7 +16,7 @@
  * http://www.gnu.org/licenses/.
  */
 
-pragma solidity ^0.4.19;
+pragma solidity ^0.4.25;
 
 contract DemoContract {
     event DemoEvent(address _from, int _value);
