@@ -175,6 +175,9 @@ public class EthereumXAResource implements XAResource {
             throw new XAException();
         }
         this.transactionTimeout = seconds;
+        for (EthereumTransactionCommit ethereumTransactionCommit : this.xidRawTransactions.values()) {
+            ethereumTransactionCommit.setTransactionTimeout(seconds);
+        }
         return true;
     }
 

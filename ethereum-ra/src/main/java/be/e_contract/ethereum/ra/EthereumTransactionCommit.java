@@ -44,6 +44,8 @@ public class EthereumTransactionCommit {
 
     private Xid xid;
 
+    private int transactionTimeout;
+
     public EthereumTransactionCommit(EthereumManagedConnection ethereumManagedConnection, Xid xid) {
         this.rawTransactions = new LinkedList<>();
         this.ethereumManagedConnection = ethereumManagedConnection;
@@ -115,7 +117,13 @@ public class EthereumTransactionCommit {
     public void commit() throws ResourceException {
         while (!this.rawTransactions.isEmpty()) {
             String rawTransaction = this.rawTransactions.get(0);
-            int count = 10;
+            int count;
+            if (this.transactionTimeout > 0) {
+                // not 100% accurate, but better than nothing
+                count = this.transactionTimeout / 5; // because we sleep 5 seconds for each retry
+            } else {
+                count = 10;
+            }
             LOGGER.debug("commit raw transaction: {}", rawTransaction);
             EthSendTransaction ethSendTransaction;
             while (true) {
@@ -160,5 +168,9 @@ public class EthereumTransactionCommit {
             this.rawTransactions.remove(0);
         }
         this.prepared = false;
+    }
+
+    void setTransactionTimeout(int seconds) {
+        this.transactionTimeout = seconds;
     }
 }
