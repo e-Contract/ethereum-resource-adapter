@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018 e-Contract.be BVBA.
+ * Copyright (C) 2018-2019 e-Contract.be BVBA.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -38,7 +38,7 @@ public class EthereumLocalTransaction implements LocalTransaction {
     @Override
     public void begin() throws ResourceException {
         LOGGER.debug("begin");
-        this.ethereumTransactionCommit.getRawTransactions().clear();
+        this.ethereumTransactionCommit.clear();
     }
 
     @Override
@@ -51,12 +51,12 @@ public class EthereumLocalTransaction implements LocalTransaction {
     public void rollback() throws ResourceException {
         LOGGER.debug("rollback");
         LOGGER.debug("number of raw transactions in queue: {}",
-                this.ethereumTransactionCommit.getRawTransactions().size());
+                this.ethereumTransactionCommit.getTransactionCount());
         this.ethereumTransactionCommit.rollback();
     }
 
-    public void scheduleRawTransaction(String rawTransaction) {
+    public void scheduleRawTransaction(String rawTransaction) throws ResourceException {
         LOGGER.debug("schedule raw transaction: {}", rawTransaction);
-        this.ethereumTransactionCommit.getRawTransactions().add(rawTransaction);
+        this.ethereumTransactionCommit.addRawTransaction(rawTransaction);
     }
 }

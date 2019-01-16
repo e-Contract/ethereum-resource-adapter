@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018 e-Contract.be BVBA.
+ * Copyright (C) 2018-2019 e-Contract.be BVBA.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -19,7 +19,6 @@ package be.e_contract.ethereum.ra;
 
 import java.math.BigInteger;
 import java.security.SignatureException;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +26,7 @@ import javax.resource.ResourceException;
 import javax.transaction.xa.Xid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.web3j.crypto.RawTransaction;
 import org.web3j.crypto.SignedRawTransaction;
 import org.web3j.crypto.TransactionDecoder;
 import org.web3j.protocol.Web3j;
@@ -44,17 +44,9 @@ public class EthereumTransactionCommit {
 
     private Xid xid;
 
-    public EthereumTransactionCommit(List<String> rawTransactions, EthereumManagedConnection ethereumManagedConnection) {
-        this.rawTransactions = rawTransactions;
-        this.ethereumManagedConnection = ethereumManagedConnection;
-    }
-
-    public EthereumTransactionCommit(String rawTransaction, EthereumManagedConnection ethereumManagedConnection) {
-        this(new LinkedList(Collections.singletonList(rawTransaction)), ethereumManagedConnection);
-    }
-
     public EthereumTransactionCommit(EthereumManagedConnection ethereumManagedConnection, Xid xid) {
-        this(new LinkedList<>(), ethereumManagedConnection);
+        this.rawTransactions = new LinkedList<>();
+        this.ethereumManagedConnection = ethereumManagedConnection;
         this.xid = xid;
     }
 
@@ -70,12 +62,33 @@ public class EthereumTransactionCommit {
         this.prepared = prepared;
     }
 
-    public List<String> getRawTransactions() {
-        return this.rawTransactions;
-    }
-
     public Xid getXid() {
         return this.xid;
+    }
+
+    public void clear() {
+        this.rawTransactions.clear();
+    }
+
+    public int getTransactionCount() {
+        return this.rawTransactions.size();
+    }
+
+    public void addRawTransaction(String rawTransaction) throws ResourceException {
+        // perform some basic input validation first
+        RawTransaction decodedRawTransaction = TransactionDecoder.decode(rawTransaction);
+        if (!(decodedRawTransaction instanceof SignedRawTransaction)) {
+            LOGGER.warn("transaction not signed");
+            throw new ResourceException("transaction not signed");
+        }
+        SignedRawTransaction signedRawTransaction = (SignedRawTransaction) decodedRawTransaction;
+        try {
+            signedRawTransaction.getFrom();
+        } catch (SignatureException ex) {
+            LOGGER.error("transaction signature error: " + ex.getMessage(), ex);
+            throw new ResourceException();
+        }
+        this.rawTransactions.add(rawTransaction);
     }
 
     public void rollback() {

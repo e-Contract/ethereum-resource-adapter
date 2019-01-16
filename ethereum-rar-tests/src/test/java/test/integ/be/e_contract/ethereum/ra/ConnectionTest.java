@@ -18,12 +18,14 @@
 package test.integ.be.e_contract.ethereum.ra;
 
 import javax.inject.Inject;
+import javax.resource.ResourceException;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import static org.junit.Assert.fail;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -57,7 +59,17 @@ public class ConnectionTest {
     private ConnectionBean connectionBean;
 
     @Test
-    public void testLoading() throws Exception {
+    public void testConnection() throws Exception {
         this.connectionBean.connection();
+    }
+
+    @Test
+    public void testConnectionError() throws Exception {
+        try {
+            this.connectionBean.connectionError();
+            fail();
+        } catch (ResourceException e) {
+            // expected
+        }
     }
 }

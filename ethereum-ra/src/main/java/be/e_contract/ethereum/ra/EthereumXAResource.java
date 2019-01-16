@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018 e-Contract.be BVBA.
+ * Copyright (C) 2018-2019 e-Contract.be BVBA.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -86,7 +86,7 @@ public class EthereumXAResource implements XAResource {
             return;
         }
         EthereumTransactionCommit ethereumTransactionCommit = getEthereumTransactionCommit(xid);
-        if (!ethereumTransactionCommit.getRawTransactions().isEmpty()) {
+        if (ethereumTransactionCommit.getTransactionCount() > 0) {
             try {
                 Web3j web3j = this.ethereumManagedConnection.getWeb3j();
                 // make sure the node is available
@@ -163,8 +163,7 @@ public class EthereumXAResource implements XAResource {
             LOGGER.error("rollback unknown transaction: {}", xid);
             throw new XAException("rollback unknown transaction: " + xid);
         }
-        List<String> rawTransactions = ethereumTransactionCommit.getRawTransactions();
-        LOGGER.debug("number of raw transactions in queue: {}", rawTransactions.size());
+        LOGGER.debug("number of raw transactions in queue: {}", ethereumTransactionCommit.getTransactionCount());
         ethereumTransactionCommit.rollback();
         this.xidRawTransactions.remove(xid);
     }
@@ -191,7 +190,7 @@ public class EthereumXAResource implements XAResource {
 
         EthereumTransactionCommit ethereumTransactionCommit = getEthereumTransactionCommit(xid);
         if (!isFlagSet(flags, TMRESUME)) {
-            ethereumTransactionCommit.getRawTransactions().clear();
+            ethereumTransactionCommit.clear();
         }
         if (isFlagSet(flags, TMRESUME)) {
             if (this.currentXid.equals(xid)) {
@@ -200,9 +199,9 @@ public class EthereumXAResource implements XAResource {
         }
     }
 
-    public void scheduleRawTransaction(String rawTransaction) {
+    public void scheduleRawTransaction(String rawTransaction) throws ResourceException {
         LOGGER.debug("schedule raw transaction: {}", rawTransaction);
         EthereumTransactionCommit ethereumTransactionCommit = this.xidRawTransactions.get(this.currentXid);
-        ethereumTransactionCommit.getRawTransactions().add(rawTransaction);
+        ethereumTransactionCommit.addRawTransaction(rawTransaction);
     }
 }

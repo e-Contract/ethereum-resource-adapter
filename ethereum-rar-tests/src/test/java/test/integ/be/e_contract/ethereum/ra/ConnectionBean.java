@@ -19,6 +19,7 @@ package test.integ.be.e_contract.ethereum.ra;
 
 import be.e_contract.ethereum.ra.api.EthereumConnection;
 import be.e_contract.ethereum.ra.api.EthereumConnectionFactory;
+import be.e_contract.ethereum.ra.api.EthereumConnectionSpec;
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
 
@@ -30,6 +31,13 @@ public class ConnectionBean {
 
     public void connection() throws Exception {
         try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+            ethereumConnection.getGasPrice();
+        }
+    }
+
+    public void connectionError() throws Exception {
+        EthereumConnectionSpec ethereumConnectionSpec = new EthereumConnectionSpec("http://localhost:1234");
+        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection(ethereumConnectionSpec)) {
             ethereumConnection.getGasPrice();
         }
     }

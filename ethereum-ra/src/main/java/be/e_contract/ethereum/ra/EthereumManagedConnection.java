@@ -319,7 +319,8 @@ public class EthereumManagedConnection implements ManagedConnection {
             return transactionHash;
         }
         LOGGER.debug("directly sending transaction");
-        EthereumTransactionCommit ethereumTransactionCommit = new EthereumTransactionCommit(rawTransaction, this);
+        EthereumTransactionCommit ethereumTransactionCommit = new EthereumTransactionCommit(this);
+        ethereumTransactionCommit.addRawTransaction(rawTransaction);
         ethereumTransactionCommit.commit();
         return transactionHash;
     }
