@@ -59,4 +59,9 @@ public class ContractTest {
     public void testTransaction() throws Exception {
         this.contractBean.performTransaction();
     }
+
+    @Test
+    public void testUnknownContract() throws Exception {
+        this.contractBean.testUnknownContract();
+    }
 }

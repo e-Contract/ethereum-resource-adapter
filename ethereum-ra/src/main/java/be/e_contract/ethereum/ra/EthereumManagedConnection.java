@@ -254,8 +254,8 @@ public class EthereumManagedConnection implements ManagedConnection {
             return true;
         }
         if (connectionRequestInfo == null) {
-            // TODO: should not be hardcoded
-            connectionRequestInfo = new EthereumConnectionRequestInfo("http://localhost:8545");
+            String nodeLocation = this.resourceAdapter.getNodeLocation();
+            connectionRequestInfo = new EthereumConnectionRequestInfo(nodeLocation);
         }
         return this.ethereumConnectionRequestInfo.equals(connectionRequestInfo);
     }
@@ -484,6 +484,9 @@ public class EthereumManagedConnection implements ManagedConnection {
         }
         TransactionManager transactionManager = new EthereumTransactionManager(this, credentials, _chainId);
         T contract = (T) method.invoke(null, contractAddress, web3j, transactionManager, contractGasProvider);
+        if (!contract.isValid()) {
+            throw new EthereumException("contract is invalid: " + contractAddress);
+        }
         return contract;
     }
 

@@ -26,8 +26,10 @@ import java.security.Security;
 import java.util.List;
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
+import javax.resource.ResourceException;
 import javax.resource.cci.LocalTransaction;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.web3j.crypto.Credentials;
@@ -121,6 +123,75 @@ public class ContractBean {
             }
 
             assertEquals(contractValue, contract.getValue().send());
+        } finally {
+            Security.removeProvider(BouncyCastleProvider.PROVIDER_NAME);
+        }
+    }
+
+    public void testUnknownContract() throws Exception {
+        Security.addProvider(new BouncyCastleProvider());
+        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+            List<String> accounts = ethereumConnection.getAccounts();
+            String account = accounts.get(0);
+            String password = "";
+            boolean unlockResult = ethereumConnection.unlockAccount(account, password);
+            assertTrue(unlockResult);
+
+            ECKeyPair ecKeyPair = Keys.createEcKeyPair();
+            String address = "0x" + Keys.getAddress(ecKeyPair);
+
+            BigInteger gasPrice = ethereumConnection.getGasPrice();
+            BigInteger nonce = ethereumConnection.getTransactionCount(account);
+            BigInteger value = Convert.toWei(BigDecimal.valueOf(10), Convert.Unit.ETHER).toBigInteger();
+            String transactionHash = ethereumConnection.sendAccountTransaction(account, address, value, gasPrice, nonce);
+
+            TransactionConfirmation transactionConfirmation = ethereumConnection.getTransactionConfirmation(transactionHash);
+            while (transactionConfirmation.getConfirmingBlocks() == 0) {
+                Thread.sleep(1000);
+                transactionConfirmation = ethereumConnection.getTransactionConfirmation(transactionHash);
+            }
+            BigInteger balance = ethereumConnection.getBalance(address);
+            assertEquals(value, balance);
+
+            Long chainId = ethereumConnection.getChainId();
+            if (chainId != null) {
+                if (chainId > 46) {
+                    // test network
+                    chainId = null;
+                }
+            }
+            Credentials credentials = Credentials.create(ecKeyPair);
+            LocalTransaction localTransaction = ethereumConnection.getLocalTransaction();
+            localTransaction.begin();
+            ContractGasProvider contractGasProvider = new TestContractGasProvider(ethereumConnection);
+            TransactionReceipt contractTransactionReceipt = ethereumConnection.deploy(DemoContract.class, contractGasProvider, credentials, chainId);
+            String contractAddress = contractTransactionReceipt.getContractAddress();
+            localTransaction.commit();
+
+            transactionConfirmation = ethereumConnection.getTransactionConfirmation(contractTransactionReceipt.getTransactionHash());
+            while (transactionConfirmation.getConfirmingBlocks() == 0) {
+                Thread.sleep(1000);
+                transactionConfirmation = ethereumConnection.getTransactionConfirmation(contractTransactionReceipt.getTransactionHash());
+            }
+
+            DemoContract contract = ethereumConnection.load(DemoContract.class, contractAddress, credentials, chainId, contractGasProvider);
+
+            localTransaction.begin();
+            String contractTransactionHash = contract.kill().send().getTransactionHash();
+            localTransaction.commit();
+
+            transactionConfirmation = ethereumConnection.getTransactionConfirmation(contractTransactionHash);
+            while (transactionConfirmation.getConfirmingBlocks() == 0) {
+                Thread.sleep(1000);
+                transactionConfirmation = ethereumConnection.getTransactionConfirmation(contractTransactionHash);
+            }
+
+            try {
+                ethereumConnection.load(DemoContract.class, contractAddress, credentials, chainId, contractGasProvider);
+                Assert.fail();
+            } catch (ResourceException e) {
+                // expected
+            }
         } finally {
             Security.removeProvider(BouncyCastleProvider.PROVIDER_NAME);
         }
