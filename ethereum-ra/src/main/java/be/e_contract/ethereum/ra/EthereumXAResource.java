@@ -109,6 +109,8 @@ public class EthereumXAResource implements XAResource {
             return;
         }
         if (xid.equals(this.currentXid)) {
+            EthereumTransactionCommit ethereumTransactionCommit = getEthereumTransactionCommit(xid);
+            ethereumTransactionCommit.clear();
             this.currentXid = null;
         }
     }
