@@ -70,6 +70,7 @@ public class EthereumBlockWork implements Work {
                         LOGGER.error("sleep error: " + e.getMessage(), e);
                     }
                 }
+                continue;
             }
             for (EthLog.LogResult logResult : logResultList) {
                 if (logResult instanceof EthLog.Hash) {
@@ -94,7 +95,11 @@ public class EthereumBlockWork implements Work {
                         }
                         EthereumMessageListener ethereumMessageListener
                                 = ethereumActivationSpec.getEthereumMessageListener();
-                        ethereumMessageListener.block(blockHash, timestamp);
+                        try {
+                            ethereumMessageListener.block(blockHash, timestamp);
+                        } catch (Exception e) {
+                            LOGGER.error("error invoking block: " + e.getMessage(), e);
+                        }
                     }
                 }
             }

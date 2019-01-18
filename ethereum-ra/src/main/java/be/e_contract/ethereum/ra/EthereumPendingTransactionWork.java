@@ -69,6 +69,7 @@ public class EthereumPendingTransactionWork implements Work {
                         LOGGER.error("sleep error: " + e.getMessage(), e);
                     }
                 }
+                continue;
             }
             for (EthLog.LogResult logResult : logResultList) {
                 if (logResult instanceof EthLog.Hash) {
@@ -84,7 +85,11 @@ public class EthereumPendingTransactionWork implements Work {
                             continue;
                         }
                         EthereumMessageListener ethereumMessageListener = ethereumActivationSpec.getEthereumMessageListener();
-                        ethereumMessageListener.pendingTransaction(transactionHash, timestamp);
+                        try {
+                            ethereumMessageListener.pendingTransaction(transactionHash, timestamp);
+                        } catch (Exception e) {
+                            LOGGER.error("error invoking pendingTransaction: " + e.getMessage(), e);
+                        }
                     }
                 }
             }

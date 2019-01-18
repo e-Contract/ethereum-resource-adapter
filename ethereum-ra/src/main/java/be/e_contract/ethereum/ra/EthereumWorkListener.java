@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018 e-Contract.be BVBA.
+ * Copyright (C) 2018-2019 e-Contract.be BVBA.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -62,6 +62,7 @@ public class EthereumWorkListener implements WorkListener {
                     messageListener.connectionStatus(!this.disconnected);
                 } catch (Exception ex) {
                     LOGGER.error("messaging error: {}", ex.getMessage(), ex);
+                    LOGGER.debug("error type: {}", ex.getClass().getName());
                 }
             }
         }
@@ -87,6 +88,7 @@ public class EthereumWorkListener implements WorkListener {
                 messageListener.connectionStatus(!this.disconnected);
             } catch (Exception ex) {
                 LOGGER.error("messaging error: {}", ex.getMessage(), ex);
+                LOGGER.debug("error type: {}", ex.getClass().getName());
             }
         }
         try {
