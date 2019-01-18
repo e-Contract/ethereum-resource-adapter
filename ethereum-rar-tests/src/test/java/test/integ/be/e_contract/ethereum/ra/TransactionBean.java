@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018 e-Contract.be BVBA.
+ * Copyright (C) 2018-2019 e-Contract.be BVBA.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -88,6 +88,35 @@ public class TransactionBean {
             }
             BigInteger balance2 = ethereumConnection.getBalance(address2);
             assertEquals(totalValue2, balance2);
+        } finally {
+            Security.removeProvider(BouncyCastleProvider.PROVIDER_NAME);
+        }
+    }
+
+    public void performSingleTransaction() throws Exception {
+        Security.addProvider(new BouncyCastleProvider());
+        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+            List<String> accounts = ethereumConnection.getAccounts();
+            String account = accounts.get(0);
+            String password = "";
+            boolean unlockResult = ethereumConnection.unlockAccount(account, password);
+            assertTrue(unlockResult);
+
+            ECKeyPair ecKeyPair = Keys.createEcKeyPair();
+            String address = "0x" + Keys.getAddress(ecKeyPair);
+
+            BigInteger gasPrice = ethereumConnection.getGasPrice();
+            BigInteger nonce = ethereumConnection.getTransactionCount(account);
+            BigInteger value = Convert.toWei(BigDecimal.valueOf(10), Convert.Unit.ETHER).toBigInteger();
+            String transactionHash = ethereumConnection.sendAccountTransaction(account, address, value, gasPrice, nonce);
+
+            TransactionConfirmation transactionConfirmation = ethereumConnection.getTransactionConfirmation(transactionHash);
+            while (transactionConfirmation.getConfirmingBlocks() == 0) {
+                Thread.sleep(1000);
+                transactionConfirmation = ethereumConnection.getTransactionConfirmation(transactionHash);
+            }
+            BigInteger balance = ethereumConnection.getBalance(address);
+            assertEquals(value, balance);
         } finally {
             Security.removeProvider(BouncyCastleProvider.PROVIDER_NAME);
         }

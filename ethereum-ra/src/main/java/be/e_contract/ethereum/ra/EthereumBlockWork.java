@@ -99,7 +99,8 @@ public class EthereumBlockWork implements Work {
                 }
             }
         }
-        web3j.ethUninstallFilter(filterId);
+        // avoid NoClassDefFoundError here
+        //web3j.ethUninstallFilter(filterId);
     }
 
     public void shutdown() {
