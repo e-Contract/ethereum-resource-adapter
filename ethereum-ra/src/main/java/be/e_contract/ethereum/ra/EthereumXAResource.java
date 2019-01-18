@@ -136,6 +136,10 @@ public class EthereumXAResource implements XAResource {
     @Override
     public int prepare(Xid xid) throws XAException {
         LOGGER.debug("prepare: {}", xid);
+        EthereumTransactionCommit ethereumTransactionCommit = getEthereumTransactionCommit(xid);
+        if (ethereumTransactionCommit.getTransactionCount() == 0) {
+            return XA_RDONLY;
+        }
         return XA_OK;
     }
 
