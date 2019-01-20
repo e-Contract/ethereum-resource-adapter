@@ -24,7 +24,6 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -41,7 +40,7 @@ public class RollbackMDBTest {
         EnterpriseArchive ear = TestUtils.createBasicEAR();
 
         JavaArchive ejbJar = ShrinkWrap.create(JavaArchive.class, "ejb.jar")
-                .addClasses(TransactionBean.class, RollbackMDB.class, EthereumMDB.class, StateBean.class);
+                .addClasses(TransactionBean.class, RollbackMDB.class, RollbackBean.class);
         ear.addAsModule(ejbJar);
 
         JavaArchive libJar = ShrinkWrap.create(JavaArchive.class, "lib.jar")
@@ -55,15 +54,10 @@ public class RollbackMDBTest {
     @Inject
     private TransactionBean transactionBean;
 
-    @Inject
-    private StateBean stateBean;
-
     @Test
     public void testTransaction() throws Exception {
         this.transactionBean.performSingleTransaction();
         // give the client node a bit time
-        Thread.sleep(1000);
-        assertTrue(this.stateBean.hasBlocks());
-        assertTrue(this.stateBean.hasPendingTransactions());
+        Thread.sleep(1000 * 5);
     }
 }

@@ -95,7 +95,9 @@ public class EthereumConnectionImpl implements EthereumConnection {
     @Override
     public void close() throws ResourceException {
         LOGGER.debug("close");
-        this.ethereumManagedConnection.fireConnectionEvent(this, ConnectionEvent.CONNECTION_CLOSED, null);
+        if (null != this.ethereumManagedConnection) {
+            this.ethereumManagedConnection.fireConnectionEvent(this, ConnectionEvent.CONNECTION_CLOSED, null);
+        }
     }
 
     void setManagedConnection(EthereumManagedConnection ethereumManagedConnection) {

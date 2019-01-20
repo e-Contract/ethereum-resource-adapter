@@ -19,12 +19,9 @@ package test.integ.be.e_contract.ethereum.ra;
 
 import be.e_contract.ethereum.ra.api.EthereumMessageListener;
 import java.util.Date;
-import javax.annotation.Resource;
 import javax.ejb.ActivationConfigProperty;
+import javax.ejb.EJB;
 import javax.ejb.MessageDriven;
-import javax.ejb.TransactionManagement;
-import javax.ejb.TransactionManagementType;
-import javax.transaction.UserTransaction;
 import org.jboss.ejb3.annotation.ResourceAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,13 +32,12 @@ import org.slf4j.LoggerFactory;
     @ActivationConfigProperty(propertyName = "deliverBlock", propertyValue = "true")
 })
 @ResourceAdapter("#ethereum-ra.rar")
-@TransactionManagement(TransactionManagementType.BEAN)
 public class RollbackMDB implements EthereumMessageListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RollbackMDB.class);
 
-    @Resource
-    private UserTransaction userTransaction;
+    @EJB
+    private RollbackBean rollbackBean;
 
     @Override
     public void block(String blockHash, Date timestamp) throws Exception {
@@ -51,8 +47,7 @@ public class RollbackMDB implements EthereumMessageListener {
     @Override
     public void pendingTransaction(String transactionHash, Date timestamp) throws Exception {
         LOGGER.debug("pending transaction hash: {}", transactionHash);
-        this.userTransaction.begin();
-        this.userTransaction.rollback();
+        this.rollbackBean.rollback();
     }
 
     @Override
