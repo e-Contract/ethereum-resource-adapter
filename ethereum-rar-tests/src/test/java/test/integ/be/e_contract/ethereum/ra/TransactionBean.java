@@ -26,6 +26,8 @@ import java.security.Security;
 import java.util.List;
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.resource.cci.LocalTransaction;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import static org.junit.Assert.assertEquals;
@@ -117,6 +119,48 @@ public class TransactionBean {
             }
             BigInteger balance = ethereumConnection.getBalance(address);
             assertEquals(value, balance);
+        } finally {
+            Security.removeProvider(BouncyCastleProvider.PROVIDER_NAME);
+        }
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void rollback() throws Exception {
+        Security.addProvider(new BouncyCastleProvider());
+        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+            List<String> accounts = ethereumConnection.getAccounts();
+            String account = accounts.get(0);
+            String password = "";
+            boolean unlockResult = ethereumConnection.unlockAccount(account, password);
+            assertTrue(unlockResult);
+
+            ECKeyPair ecKeyPair = Keys.createEcKeyPair();
+            String address = "0x" + Keys.getAddress(ecKeyPair);
+
+            BigInteger gasPrice = ethereumConnection.getGasPrice();
+            BigInteger nonce = ethereumConnection.getTransactionCount(account);
+            BigInteger value = Convert.toWei(BigDecimal.valueOf(10), Convert.Unit.ETHER).toBigInteger();
+            // next is not part of the JCA transaction
+            String transactionHash = ethereumConnection.sendAccountTransaction(account, address, value, gasPrice, nonce);
+
+            TransactionConfirmation transactionConfirmation = ethereumConnection.getTransactionConfirmation(transactionHash);
+            while (transactionConfirmation.getConfirmingBlocks() == 0) {
+                Thread.sleep(1000);
+                transactionConfirmation = ethereumConnection.getTransactionConfirmation(transactionHash);
+            }
+            BigInteger balance = ethereumConnection.getBalance(address);
+            assertEquals(value, balance);
+
+            ECKeyPair ecKeyPair2 = Keys.createEcKeyPair();
+            String address2 = "0x" + Keys.getAddress(ecKeyPair2);
+            Credentials credentials = Credentials.create(ecKeyPair);
+            BigInteger value2 = Convert.toWei(BigDecimal.valueOf(0.1), Convert.Unit.ETHER).toBigInteger();
+            Long chainId = ethereumConnection.getChainId();
+
+            // this one is part of the JCA transaction
+            transactionHash = ethereumConnection.sendTransaction(credentials, address2, value2, gasPrice, chainId);
+
+            throw new RollbackException(transactionHash);
         } finally {
             Security.removeProvider(BouncyCastleProvider.PROVIDER_NAME);
         }

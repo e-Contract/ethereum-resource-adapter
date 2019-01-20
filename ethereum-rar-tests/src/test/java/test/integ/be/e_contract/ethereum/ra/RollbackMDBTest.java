@@ -40,7 +40,7 @@ public class RollbackMDBTest {
         EnterpriseArchive ear = TestUtils.createBasicEAR();
 
         JavaArchive ejbJar = ShrinkWrap.create(JavaArchive.class, "ejb.jar")
-                .addClasses(TransactionBean.class, RollbackMDB.class, RollbackBean.class);
+                .addClasses(TransactionBean.class, RollbackMDB.class, RollbackBean.class, RollbackException.class);
         ear.addAsModule(ejbJar);
 
         JavaArchive libJar = ShrinkWrap.create(JavaArchive.class, "lib.jar")

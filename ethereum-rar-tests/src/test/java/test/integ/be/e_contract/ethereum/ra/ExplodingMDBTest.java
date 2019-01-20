@@ -41,7 +41,8 @@ public class ExplodingMDBTest {
         EnterpriseArchive ear = TestUtils.createBasicEAR();
 
         JavaArchive ejbJar = ShrinkWrap.create(JavaArchive.class, "ejb.jar")
-                .addClasses(TransactionBean.class, ExplodingMDB.class, EthereumMDB.class, StateBean.class);
+                .addClasses(TransactionBean.class, ExplodingMDB.class,
+                        EthereumMDB.class, StateBean.class, RollbackException.class);
         ear.addAsModule(ejbJar);
 
         JavaArchive libJar = ShrinkWrap.create(JavaArchive.class, "lib.jar")

@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018-2019 e-Contract.be BVBA.
+ * Copyright (C) 2019 e-Contract.be BVBA.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -24,28 +24,25 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.fail;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-/**
- * Integration test for EthereumMessageListener.
- *
- * @author Frank Cornelis
- */
 @RunWith(Arquillian.class)
-public class EthereumMessageListenerTest {
+public class RollbackTest {
 
     @Deployment
     public static EnterpriseArchive createDeployment() throws Exception {
         EnterpriseArchive ear = TestUtils.createBasicEAR();
 
         JavaArchive ejbJar = ShrinkWrap.create(JavaArchive.class, "ejb.jar")
-                .addClasses(TransactionBean.class, EthereumMDB.class, StateBean.class, RollbackException.class);
+                .addClasses(TransactionBean.class, EthereumMDB.class,
+                        StateBean.class, RollbackException.class);
         ear.addAsModule(ejbJar);
 
         JavaArchive libJar = ShrinkWrap.create(JavaArchive.class, "lib.jar")
-                .addClasses(EthereumMessageListenerTest.class)
+                .addClasses(RollbackTest.class)
                 .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
         ear.addAsLibraries(libJar);
 
@@ -60,10 +57,15 @@ public class EthereumMessageListenerTest {
 
     @Test
     public void testTransaction() throws Exception {
-        this.transactionBean.performSingleTransaction();
-        // give the client node a bit time
-        Thread.sleep(1000);
-        assertTrue(this.stateBean.hasBlocks());
-        assertTrue(this.stateBean.hasPendingTransactions());
+        try {
+            this.transactionBean.rollback();
+            fail();
+        } catch (RollbackException e) {
+            // expected
+            // give the client node a bit time
+            Thread.sleep(1000 * 5);
+            String transactionHash = e.getTransactionHash();
+            assertFalse(this.stateBean.hasPendingTransaction(transactionHash));
+        }
     }
 }
