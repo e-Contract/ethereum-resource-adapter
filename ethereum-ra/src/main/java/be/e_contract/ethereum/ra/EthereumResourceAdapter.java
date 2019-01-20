@@ -45,12 +45,14 @@ import org.slf4j.LoggerFactory;
         reauthenticationSupport = false,
         transactionSupport = TransactionSupport.TransactionSupportLevel.XATransaction,
         displayName = "Ethereum Resource Adapter",
-        vendorName = "e-Contract.be BVBA")
+        vendorName = "e-Contract.be BVBA",
+        description = "JCA Resource Adapter to connect to Ethereum blockchain networks.")
 public class EthereumResourceAdapter implements ResourceAdapter, Serializable, Referenceable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EthereumResourceAdapter.class);
 
-    @ConfigProperty(defaultValue = "http://localhost:8545")
+    @ConfigProperty(defaultValue = "http://localhost:8545", type = String.class,
+            description = "The location of the client node.")
     @NotNull
     private String nodeLocation;
 

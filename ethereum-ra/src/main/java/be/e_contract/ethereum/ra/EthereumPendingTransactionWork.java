@@ -18,9 +18,11 @@
 package be.e_contract.ethereum.ra;
 
 import be.e_contract.ethereum.ra.api.EthereumMessageListener;
+import java.lang.reflect.Method;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
+import javax.resource.spi.endpoint.MessageEndpoint;
 import javax.resource.spi.work.Work;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +32,16 @@ import org.web3j.protocol.core.methods.response.EthLog;
 public class EthereumPendingTransactionWork implements Work {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EthereumPendingTransactionWork.class);
+
+    private static final Method PENDING_TRANSACTION_METHOD;
+
+    static {
+        try {
+            PENDING_TRANSACTION_METHOD = EthereumMessageListener.class.getMethod("pendingTransaction", String.class, Date.class);
+        } catch (NoSuchMethodException | SecurityException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
 
     private final EthereumWork ethereumWork;
 
@@ -84,12 +96,22 @@ public class EthereumPendingTransactionWork implements Work {
                         if (!deliverPending) {
                             continue;
                         }
+                        Boolean omitSyncing = ethereumActivationSpec.isOmitSyncing();
+                        if (null != omitSyncing && omitSyncing) {
+                            boolean syncing = web3j.ethSyncing().send().isSyncing();
+                            if (syncing) {
+                                continue;
+                            }
+                        }
                         EthereumMessageListener ethereumMessageListener = ethereumActivationSpec.getEthereumMessageListener();
+                        MessageEndpoint messageEndpoint = (MessageEndpoint) ethereumMessageListener;
+                        messageEndpoint.beforeDelivery(PENDING_TRANSACTION_METHOD);
                         try {
                             ethereumMessageListener.pendingTransaction(transactionHash, timestamp);
                         } catch (Exception e) {
                             LOGGER.error("error invoking pendingTransaction: " + e.getMessage(), e);
                         }
+                        messageEndpoint.afterDelivery();
                     }
                 }
             }

@@ -35,16 +35,16 @@ public class EthereumActivationSpec implements ActivationSpec, Serializable {
 
     private transient EthereumResourceAdapter resourceAdapter;
 
-    @ConfigProperty
+    @ConfigProperty(type = String.class, description = "The location of the client node.")
     private String nodeLocation;
 
-    @ConfigProperty(type = Boolean.class)
+    @ConfigProperty(type = Boolean.class, description = "Set to true to receive pending transactions.")
     private Boolean deliverPending;
 
-    @ConfigProperty(type = Boolean.class)
+    @ConfigProperty(type = Boolean.class, description = "Set to true to receive blocks.")
     private Boolean deliverBlock;
 
-    @ConfigProperty(type = Boolean.class)
+    @ConfigProperty(type = Boolean.class, description = "Set to true to omit delivery while node is syncing.")
     private Boolean omitSyncing;
 
     private EthereumMessageListener ethereumMessageListener;
@@ -95,7 +95,19 @@ public class EthereumActivationSpec implements ActivationSpec, Serializable {
     @Override
     public void validate() throws InvalidPropertyException {
         LOGGER.debug("validate");
-        if (null == this.deliverPending && null == this.deliverBlock) {
+        boolean deliverPending;
+        if (null == this.deliverPending) {
+            deliverPending = false;
+        } else {
+            deliverPending = this.deliverPending;
+        }
+        boolean deliverBlock;
+        if (null == this.deliverBlock) {
+            deliverBlock = false;
+        } else {
+            deliverBlock = this.deliverBlock;
+        }
+        if (!deliverPending && !deliverBlock) {
             // nothing to do here...
             throw new InvalidPropertyException();
         }
