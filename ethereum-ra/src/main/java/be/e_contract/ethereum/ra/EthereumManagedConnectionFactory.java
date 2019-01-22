@@ -105,7 +105,11 @@ public class EthereumManagedConnectionFactory implements ManagedConnectionFactor
         LOGGER.debug("connection request info: {}", cxRequestInfo);
         Iterator iterator = connectionSet.iterator();
         while (iterator.hasNext()) {
-            EthereumManagedConnection ethereumManagedConnection = (EthereumManagedConnection) iterator.next();
+            Object connection = iterator.next();
+            if (!(connection instanceof EthereumManagedConnection)) {
+                continue;
+            }
+            EthereumManagedConnection ethereumManagedConnection = (EthereumManagedConnection) connection;
             if (ethereumManagedConnection.match(cxRequestInfo)) {
                 LOGGER.debug("returning: {}", ethereumManagedConnection);
                 return ethereumManagedConnection;

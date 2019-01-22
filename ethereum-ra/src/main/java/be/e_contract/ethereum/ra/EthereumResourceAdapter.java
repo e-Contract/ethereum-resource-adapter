@@ -104,6 +104,14 @@ public class EthereumResourceAdapter implements ResourceAdapter, Serializable, R
         LOGGER.debug("message endpoint factory: {}", endpointFactory);
         LOGGER.debug("activation spec: {}", spec);
 
+        if (!equals(spec.getResourceAdapter())) {
+            throw new ResourceException("Activation spec not initialized with this resource adapter");
+        }
+
+        if (!(spec instanceof EthereumActivationSpec)) {
+            throw new ResourceException("Unsupported activation spec type: {}", spec.getClass().getName());
+        }
+
         boolean supportTransactedDelivery = false;
         for (Method method : EthereumMessageListener.class.getMethods()) {
             boolean transactedDelivery;
