@@ -257,6 +257,8 @@ public class EthereumManagedConnection implements ManagedConnection {
             String nodeLocation = this.resourceAdapter.getNodeLocation();
             connectionRequestInfo = new EthereumConnectionRequestInfo(nodeLocation);
         }
+        LOGGER.debug("this connection request info: {}", this.ethereumConnectionRequestInfo);
+        LOGGER.debug("match connection request info: {}", connectionRequestInfo);
         return this.ethereumConnectionRequestInfo.equals(connectionRequestInfo);
     }
 
