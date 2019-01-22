@@ -23,7 +23,7 @@ contract DemoContract {
     int value;
     address owner;
 
-    constructor() {
+    constructor() public {
         owner = msg.sender;
     }
 
