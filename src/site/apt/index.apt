@@ -16,9 +16,9 @@ Ethereum JCA Resource Adapter Project
 
  Tested Ethereum client nodes:
 
- * go-ethereum 1.8.21
+ * go-ethereum 1.8.22
 
- * parity 2.2.7
+ * parity 2.2.10
 
  []
 
