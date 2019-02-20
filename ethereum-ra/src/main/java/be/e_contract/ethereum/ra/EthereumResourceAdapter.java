@@ -60,13 +60,16 @@ public class EthereumResourceAdapter implements ResourceAdapter, Serializable, R
 
     private Reference reference;
 
-    private final Map<String, EthereumWork> nodeLocationEthereumWork;
+    private final Map<String, EthereumBlockWork> nodeLocationEthereumBlockWork;
+
+    private final Map<String, EthereumPendingTransactionWork> nodeLocationEthereumPendingTransactionWork;
 
     private final Map<String, BigInteger> nonces;
 
     public EthereumResourceAdapter() {
         LOGGER.debug("constructor");
-        this.nodeLocationEthereumWork = new HashMap<>();
+        this.nodeLocationEthereumBlockWork = new HashMap<>();
+        this.nodeLocationEthereumPendingTransactionWork = new HashMap<>();
         this.nonces = new HashMap<>();
     }
 
@@ -92,10 +95,14 @@ public class EthereumResourceAdapter implements ResourceAdapter, Serializable, R
     @Override
     public void stop() {
         LOGGER.info("Stopping Ethereum JCA Resource Adapter");
-        for (EthereumWork ethereumWork : this.nodeLocationEthereumWork.values()) {
+        for (EthereumBlockWork ethereumWork : this.nodeLocationEthereumBlockWork.values()) {
             ethereumWork.shutdown();
         }
-        this.nodeLocationEthereumWork.clear();
+        this.nodeLocationEthereumBlockWork.clear();
+        for (EthereumPendingTransactionWork ethereumWork : this.nodeLocationEthereumPendingTransactionWork.values()) {
+            ethereumWork.shutdown();
+        }
+        this.nodeLocationEthereumPendingTransactionWork.clear();
     }
 
     @Override
@@ -139,16 +146,31 @@ public class EthereumResourceAdapter implements ResourceAdapter, Serializable, R
         String nodeLocation = ethereumActivationSpec.getNodeLocation();
         LOGGER.debug("node location: {}", nodeLocation);
 
-        synchronized (this.nodeLocationEthereumWork) {
-            // if not synchronized, we might end up with multiple workers for the same node
-            EthereumWork ethereumWork = this.nodeLocationEthereumWork.get(nodeLocation);
-            if (null == ethereumWork) {
-                WorkManager workManager = this.bootstrapContext.getWorkManager();
-                ethereumWork = new EthereumWork(nodeLocation, workManager);
-                this.nodeLocationEthereumWork.put(nodeLocation, ethereumWork);
-                workManager.scheduleWork(ethereumWork);
+        if (null != ethereumActivationSpec.isDeliverBlock() && ethereumActivationSpec.isDeliverBlock()) {
+            synchronized (this.nodeLocationEthereumBlockWork) {
+                // if not synchronized, we might end up with multiple workers for the same node
+                EthereumBlockWork ethereumWork = this.nodeLocationEthereumBlockWork.get(nodeLocation);
+                if (null == ethereumWork) {
+                    WorkManager workManager = this.bootstrapContext.getWorkManager();
+                    ethereumWork = new EthereumBlockWork(nodeLocation);
+                    this.nodeLocationEthereumBlockWork.put(nodeLocation, ethereumWork);
+                    workManager.scheduleWork(ethereumWork, WorkManager.INDEFINITE, null, new EthereumWorkListener(workManager));
+                }
+                ethereumWork.addEthereumActivationSpec(ethereumActivationSpec);
             }
-            ethereumWork.addEthereumActivationSpec(ethereumActivationSpec);
+        }
+        if (null != ethereumActivationSpec.isDeliverPending() && ethereumActivationSpec.isDeliverPending()) {
+            synchronized (this.nodeLocationEthereumPendingTransactionWork) {
+                // if not synchronized, we might end up with multiple workers for the same node
+                EthereumPendingTransactionWork ethereumWork = this.nodeLocationEthereumPendingTransactionWork.get(nodeLocation);
+                if (null == ethereumWork) {
+                    WorkManager workManager = this.bootstrapContext.getWorkManager();
+                    ethereumWork = new EthereumPendingTransactionWork(nodeLocation);
+                    this.nodeLocationEthereumPendingTransactionWork.put(nodeLocation, ethereumWork);
+                    workManager.scheduleWork(ethereumWork, WorkManager.INDEFINITE, null, new EthereumWorkListener(workManager));
+                }
+                ethereumWork.addEthereumActivationSpec(ethereumActivationSpec);
+            }
         }
     }
 
@@ -157,14 +179,24 @@ public class EthereumResourceAdapter implements ResourceAdapter, Serializable, R
         LOGGER.debug("endpointDeactivation");
         EthereumActivationSpec ethereumActivationSpec = (EthereumActivationSpec) spec;
         String nodeLocation = ethereumActivationSpec.getNodeLocation();
-        synchronized (this.nodeLocationEthereumWork) {
-            EthereumWork ethereumWork = this.nodeLocationEthereumWork.get(nodeLocation);
+        synchronized (this.nodeLocationEthereumBlockWork) {
+            EthereumBlockWork ethereumWork = this.nodeLocationEthereumBlockWork.get(nodeLocation);
             if (null == ethereumWork) {
                 return;
             }
             if (ethereumWork.removeEthereumActivationSpec(ethereumActivationSpec)) {
                 ethereumWork.shutdown();
-                this.nodeLocationEthereumWork.remove(nodeLocation);
+                this.nodeLocationEthereumBlockWork.remove(nodeLocation);
+            }
+        }
+        synchronized (this.nodeLocationEthereumPendingTransactionWork) {
+            EthereumPendingTransactionWork ethereumWork = this.nodeLocationEthereumPendingTransactionWork.get(nodeLocation);
+            if (null == ethereumWork) {
+                return;
+            }
+            if (ethereumWork.removeEthereumActivationSpec(ethereumActivationSpec)) {
+                ethereumWork.shutdown();
+                this.nodeLocationEthereumPendingTransactionWork.remove(nodeLocation);
             }
         }
     }

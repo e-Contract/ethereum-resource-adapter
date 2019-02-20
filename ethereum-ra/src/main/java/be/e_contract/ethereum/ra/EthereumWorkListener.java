@@ -18,7 +18,6 @@
 package be.e_contract.ethereum.ra;
 
 import be.e_contract.ethereum.ra.api.EthereumMessageListener;
-import javax.resource.spi.work.Work;
 import javax.resource.spi.work.WorkEvent;
 import javax.resource.spi.work.WorkException;
 import javax.resource.spi.work.WorkListener;
@@ -30,15 +29,12 @@ public class EthereumWorkListener implements WorkListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EthereumWorkListener.class);
 
-    private final Work work;
-
-    private final EthereumWork ethereumWork;
-
     private boolean disconnected;
 
-    public EthereumWorkListener(Work work, EthereumWork ethereumWork) {
-        this.work = work;
-        this.ethereumWork = ethereumWork;
+    private final WorkManager workManager;
+
+    public EthereumWorkListener(WorkManager workManager) {
+        this.workManager = workManager;
     }
 
     @Override
@@ -52,11 +48,12 @@ public class EthereumWorkListener implements WorkListener {
     }
 
     @Override
-    public void workStarted(WorkEvent e) {
+    public void workStarted(WorkEvent workEvent) {
         LOGGER.debug("workStarted");
         if (this.disconnected) {
             this.disconnected = false;
-            for (EthereumActivationSpec ethereumActivationSpec : this.ethereumWork.getEthereumActivationSpecs()) {
+            EthereumWork ethereumWork = (EthereumWork) workEvent.getWork();
+            for (EthereumActivationSpec ethereumActivationSpec : ethereumWork.getEthereumActivationSpecs()) {
                 try {
                     EthereumMessageListener messageListener = ethereumActivationSpec.getEthereumMessageListener();
                     messageListener.connectionStatus(!this.disconnected);
@@ -75,14 +72,15 @@ public class EthereumWorkListener implements WorkListener {
         LOGGER.debug("has work exception: {}", workEvent.getException() != null);
         LOGGER.debug("work exception: {}", workEvent.getException());
         LOGGER.debug("event type: {}", workEvent.getType());
-        boolean shutdown = this.ethereumWork.isShutdown();
+        EthereumWork ethereumWork = (EthereumWork) workEvent.getWork();
+        boolean shutdown = ethereumWork.isShutdown();
         if (shutdown) {
             return;
         }
-        LOGGER.warn("disconnected from Ethereum node: {}", this.ethereumWork.getNodeLocation());
+        LOGGER.warn("disconnected from Ethereum node: {}", ethereumWork.getNodeLocation());
         // else we try to reconnect
         this.disconnected = true;
-        for (EthereumActivationSpec ethereumActivationSpec : this.ethereumWork.getEthereumActivationSpecs()) {
+        for (EthereumActivationSpec ethereumActivationSpec : ethereumWork.getEthereumActivationSpecs()) {
             try {
                 EthereumMessageListener messageListener = ethereumActivationSpec.getEthereumMessageListener();
                 messageListener.connectionStatus(!this.disconnected);
@@ -94,16 +92,15 @@ public class EthereumWorkListener implements WorkListener {
         try {
             Thread.sleep(5000);
         } catch (InterruptedException e) {
-            shutdown = this.ethereumWork.isShutdown();
+            shutdown = ethereumWork.isShutdown();
             if (shutdown) {
                 return;
             }
             LOGGER.error("sleep error: " + e.getMessage(), e);
         }
-        LOGGER.warn("trying to reconnect to Ethereum node: {}", this.ethereumWork.getNodeLocation());
-        WorkManager workManager = this.ethereumWork.getWorkManager();
+        LOGGER.warn("trying to reconnect to Ethereum node: {}", ethereumWork.getNodeLocation());
         try {
-            workManager.scheduleWork(this.work, WorkManager.INDEFINITE, null, this);
+            this.workManager.scheduleWork(ethereumWork, WorkManager.INDEFINITE, null, this);
         } catch (WorkException ex) {
             LOGGER.debug("work error: {}", ex.getMessage(), ex);
         }

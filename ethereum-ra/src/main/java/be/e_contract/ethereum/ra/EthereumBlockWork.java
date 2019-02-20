@@ -23,13 +23,12 @@ import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 import javax.resource.spi.endpoint.MessageEndpoint;
-import javax.resource.spi.work.Work;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.EthLog;
 
-public class EthereumBlockWork implements Work {
+public class EthereumBlockWork extends EthereumWork {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EthereumBlockWork.class);
 
@@ -43,17 +42,8 @@ public class EthereumBlockWork implements Work {
         }
     }
 
-    private final EthereumWork ethereumWork;
-
-    private boolean shutdown;
-
-    public EthereumBlockWork(EthereumWork ethereumWork) {
-        this.ethereumWork = ethereumWork;
-    }
-
-    @Override
-    public void release() {
-        LOGGER.debug("release");
+    public EthereumBlockWork(String nodeLocation) {
+        super(nodeLocation);
     }
 
     @Override
@@ -67,10 +57,9 @@ public class EthereumBlockWork implements Work {
     }
 
     public void _run() throws Exception {
-        String nodeLocation = this.ethereumWork.getNodeLocation();
-        Web3j web3j = Web3jFactory.createWeb3j(nodeLocation);
+        Web3j web3j = Web3jFactory.createWeb3j(this.getNodeLocation());
         BigInteger filterId = web3j.ethNewBlockFilter().send().getFilterId();
-        while (!this.shutdown) {
+        while (!this.isShutdown()) {
             List<EthLog.LogResult> logResultList
                     = web3j.ethGetFilterChanges(filterId).send().getResult();
             Date timestamp = new Date();
@@ -78,7 +67,7 @@ public class EthereumBlockWork implements Work {
                 try {
                     Thread.sleep(50);
                 } catch (InterruptedException e) {
-                    if (!this.shutdown) {
+                    if (!this.isShutdown()) {
                         LOGGER.error("sleep error: " + e.getMessage(), e);
                     }
                 }
@@ -88,9 +77,7 @@ public class EthereumBlockWork implements Work {
                 if (logResult instanceof EthLog.Hash) {
                     EthLog.Hash hash = (EthLog.Hash) logResult;
                     String blockHash = hash.get();
-                    List<EthereumActivationSpec> ethereumActivationSpecs
-                            = this.ethereumWork.getEthereumActivationSpecs();
-                    for (EthereumActivationSpec ethereumActivationSpec : ethereumActivationSpecs) {
+                    for (EthereumActivationSpec ethereumActivationSpec : this.getEthereumActivationSpecs()) {
                         Boolean deliverBlock = ethereumActivationSpec.isDeliverBlock();
                         if (null == deliverBlock) {
                             continue;
@@ -121,10 +108,5 @@ public class EthereumBlockWork implements Work {
         }
         // avoid NoClassDefFoundError here
         //web3j.ethUninstallFilter(filterId);
-    }
-
-    public void shutdown() {
-        LOGGER.debug("shutdown");
-        this.shutdown = true;
     }
 }

@@ -23,13 +23,12 @@ import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 import javax.resource.spi.endpoint.MessageEndpoint;
-import javax.resource.spi.work.Work;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.EthLog;
 
-public class EthereumPendingTransactionWork implements Work {
+public class EthereumPendingTransactionWork extends EthereumWork {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EthereumPendingTransactionWork.class);
 
@@ -43,17 +42,8 @@ public class EthereumPendingTransactionWork implements Work {
         }
     }
 
-    private final EthereumWork ethereumWork;
-
-    private boolean shutdown;
-
-    public EthereumPendingTransactionWork(EthereumWork ethereumWork) {
-        this.ethereumWork = ethereumWork;
-    }
-
-    @Override
-    public void release() {
-        LOGGER.debug("release");
+    public EthereumPendingTransactionWork(String nodeLocation) {
+        super(nodeLocation);
     }
 
     @Override
@@ -67,17 +57,16 @@ public class EthereumPendingTransactionWork implements Work {
     }
 
     public void _run() throws Exception {
-        String nodeLocation = this.ethereumWork.getNodeLocation();
-        Web3j web3j = Web3jFactory.createWeb3j(nodeLocation);
+        Web3j web3j = Web3jFactory.createWeb3j(this.getNodeLocation());
         BigInteger filterId = web3j.ethNewPendingTransactionFilter().send().getFilterId();
-        while (!this.shutdown) {
+        while (!this.isShutdown()) {
             List<EthLog.LogResult> logResultList = web3j.ethGetFilterChanges(filterId).send().getResult();
             Date timestamp = new Date();
             if (logResultList.isEmpty()) {
                 try {
                     Thread.sleep(50);
                 } catch (InterruptedException e) {
-                    if (!this.shutdown) {
+                    if (!this.isShutdown()) {
                         LOGGER.error("sleep error: " + e.getMessage(), e);
                     }
                 }
@@ -87,8 +76,7 @@ public class EthereumPendingTransactionWork implements Work {
                 if (logResult instanceof EthLog.Hash) {
                     EthLog.Hash hash = (EthLog.Hash) logResult;
                     String transactionHash = hash.get();
-                    List<EthereumActivationSpec> ethereumActivationSpecs = this.ethereumWork.getEthereumActivationSpecs();
-                    for (EthereumActivationSpec ethereumActivationSpec : ethereumActivationSpecs) {
+                    for (EthereumActivationSpec ethereumActivationSpec : this.getEthereumActivationSpecs()) {
                         Boolean deliverPending = ethereumActivationSpec.isDeliverPending();
                         if (null == deliverPending) {
                             continue;
@@ -118,10 +106,5 @@ public class EthereumPendingTransactionWork implements Work {
         }
         // avoid NoClassDefFoundError here
         //web3j.ethUninstallFilter(filterId);
-    }
-
-    public void shutdown() {
-        LOGGER.debug("shutdown");
-        this.shutdown = true;
     }
 }

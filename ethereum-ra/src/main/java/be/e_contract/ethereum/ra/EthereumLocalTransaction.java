@@ -28,11 +28,8 @@ public class EthereumLocalTransaction implements LocalTransaction {
 
     private final EthereumTransactionCommit ethereumTransactionCommit;
 
-    private final EthereumManagedConnection ethereumManagedConnection;
-
     public EthereumLocalTransaction(EthereumManagedConnection ethereumManagedConnection) {
-        this.ethereumManagedConnection = ethereumManagedConnection;
-        this.ethereumTransactionCommit = new EthereumTransactionCommit(this.ethereumManagedConnection);
+        this.ethereumTransactionCommit = new EthereumTransactionCommit(ethereumManagedConnection);
     }
 
     @Override
