@@ -48,6 +48,8 @@ public class EthereumBlockWork extends EthereumWork {
 
     private static final Method BLOCK_METHOD;
 
+    private boolean error;
+
     static {
         try {
             BLOCK_METHOD = EthereumMessageListener.class.getMethod("block", String.class, Date.class);
@@ -76,6 +78,7 @@ public class EthereumBlockWork extends EthereumWork {
     }
 
     public void _runWebSocket(String nodeLocation) throws Exception {
+        this.error = false;
         Map<String, String> headers = new HashMap<>();
         headers.put("Origin", "http://localhost");
         WebSocketClient webSocketClient = new WebSocketClient(new URI(nodeLocation), headers);
@@ -118,8 +121,11 @@ public class EthereumBlockWork extends EthereumWork {
                 }
                 messageEndpoint.afterDelivery();
             }
+        }, error -> {
+            LOGGER.error("web socket error: " + error.getMessage(), error);
+            this.error = true;
         });
-        while (!this.isShutdown()) {
+        while (!this.isShutdown() && !this.error) {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {

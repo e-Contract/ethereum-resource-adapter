@@ -19,7 +19,6 @@ package be.e_contract.ethereum.ra;
 
 import be.e_contract.ethereum.ra.api.EthereumMessageListener;
 import io.reactivex.Flowable;
-import io.reactivex.disposables.Disposable;
 import java.lang.reflect.Method;
 import java.math.BigInteger;
 import java.net.URI;
@@ -46,6 +45,8 @@ public class EthereumPendingTransactionWork extends EthereumWork {
     private static final Logger LOGGER = LoggerFactory.getLogger(EthereumPendingTransactionWork.class);
 
     private static final Method PENDING_TRANSACTION_METHOD;
+
+    private boolean error;
 
     static {
         try {
@@ -74,6 +75,7 @@ public class EthereumPendingTransactionWork extends EthereumWork {
     }
 
     public void _runWebSocket(String nodeLocation) throws Exception {
+        this.error = false;
         Map<String, String> headers = new HashMap<>();
         headers.put("Origin", "http://localhost");
         WebSocketClient webSocketClient = new WebSocketClient(new URI(nodeLocation), headers);
@@ -115,8 +117,11 @@ public class EthereumPendingTransactionWork extends EthereumWork {
                 }
                 messageEndpoint.afterDelivery();
             }
+        }, error -> {
+            LOGGER.error("web socket error: " + error.getMessage(), error);
+            this.error = true;
         });
-        while (!this.isShutdown()) {
+        while (!this.isShutdown() && !this.error) {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
