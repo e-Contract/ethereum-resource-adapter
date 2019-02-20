@@ -19,7 +19,6 @@ package be.e_contract.ethereum.ra;
 
 import be.e_contract.ethereum.ra.api.EthereumMessageListener;
 import io.reactivex.Flowable;
-import io.reactivex.disposables.Disposable;
 import java.lang.reflect.Method;
 import java.math.BigInteger;
 import java.net.URI;

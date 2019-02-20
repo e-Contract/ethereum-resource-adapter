@@ -71,6 +71,7 @@ try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumC
 
 +--
 @MessageDriven(activationConfig = {
+    @ActivationConfigProperty(propertyName = "nodeLocation", propertyValue = "ws://127.0.0.1:8546"),
     @ActivationConfigProperty(propertyName = "deliverPending", propertyValue = "true"),
     @ActivationConfigProperty(propertyName = "deliverBlock", propertyValue = "true"),
     @ActivationConfigProperty(propertyName = "omitSyncing", propertyValue = "true")
@@ -96,6 +97,9 @@ public class EthereumMDB implements EthereumMessageListener {
 
  The resource adapter will automatically attempt to reconnect when a client node goes down for a while.
  Hence your client node can go down for maintenance without the need to restart your Java EE application server.
+
+ Notice that the message listener supports web sockets besides plain HTTP connections.
+ It is advised to use web sockets instead of plain HTTP connections to reduce the stress on the Ethereum client node.
 
 
 ** Gas Price Oracle
