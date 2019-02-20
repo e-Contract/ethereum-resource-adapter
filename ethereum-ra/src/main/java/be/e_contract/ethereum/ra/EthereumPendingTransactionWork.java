@@ -91,7 +91,7 @@ public class EthereumPendingTransactionWork extends EthereumWork {
                 PendingTransactionNotification.class
         );
 
-        Disposable disposable = events.subscribe(event -> {
+        events.subscribe(event -> {
             Date timestamp = new Date();
             NotificationParams<String> params = event.getParams();
             String transactionHash = params.getResult();
@@ -116,6 +116,15 @@ public class EthereumPendingTransactionWork extends EthereumWork {
                 messageEndpoint.afterDelivery();
             }
         });
+        while (!this.isShutdown()) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                if (!this.isShutdown()) {
+                    LOGGER.error("sleep error: " + e.getMessage(), e);
+                }
+            }
+        }
     }
 
     public void _run(String nodeLocation) throws Exception {

@@ -62,7 +62,7 @@ public class WebSocketTest {
     public void testTransaction() throws Exception {
         this.transactionBean.performSingleTransaction();
         // give the client node a bit time
-        Thread.sleep(1000);
+        Thread.sleep(1000 * 5);
         assertTrue(this.stateBean.hasBlocks());
         assertTrue(this.stateBean.hasPendingTransactions());
     }

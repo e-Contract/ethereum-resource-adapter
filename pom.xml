@@ -155,6 +155,7 @@
         <log4j.version>2.11.1</log4j.version>
         <web3j.version>4.1.1</web3j.version>
         <ethereum-node-location>http://127.0.0.1:8545</ethereum-node-location>
+        <ethereum-node-web-socket-location>ws://127.0.0.1:8546</ethereum-node-web-socket-location>
     </properties>
     <scm>
         <connection>scm:git:e-contract.be:git/ethereum-resource-adapter.git</connection>
