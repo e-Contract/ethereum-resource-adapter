@@ -23,7 +23,6 @@ import java.lang.reflect.Method;
 import java.math.BigInteger;
 import java.net.URI;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -83,7 +82,7 @@ public class EthereumPendingTransactionWork extends EthereumWork {
         webSocketService.connect();
         Request<?, EthSubscribe> subscribeRequest = new Request<>(
                 "eth_subscribe",
-                Arrays.asList("newPendingTransactions", Collections.emptyMap()),
+                Arrays.asList("newPendingTransactions"),
                 webSocketService,
                 EthSubscribe.class);
 

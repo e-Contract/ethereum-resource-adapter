@@ -24,7 +24,7 @@ geth --dev --rpc --rpcapi personal,eth,net,web3 --dev.period 0 --ws
  Start a <<<parity>>> Ethereum client node in development mode via:
 
 +--
-parity --config dev --base-path dev --jsonrpc-apis=personal,eth,net,web3
+parity --config dev --base-path dev --jsonrpc-apis=personal,eth,net,web3 --ws-origins=http://localhost
 +--
 
  Please notice that <<<parity>>> leaves behind a <<<dev>>> directory.
