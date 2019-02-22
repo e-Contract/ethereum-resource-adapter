@@ -35,7 +35,6 @@ import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.Request;
 import org.web3j.protocol.core.methods.response.EthLog;
 import org.web3j.protocol.core.methods.response.EthSubscribe;
-import org.web3j.protocol.core.methods.response.EthSyncing;
 import org.web3j.protocol.websocket.WebSocketClient;
 import org.web3j.protocol.websocket.WebSocketService;
 import org.web3j.protocol.websocket.events.NewHead;
@@ -111,18 +110,7 @@ public class EthereumBlockWork extends EthereumWork {
                 }
                 Boolean omitSyncing = ethereumActivationSpec.isOmitSyncing();
                 if (null != omitSyncing && omitSyncing) {
-                    Request<?, EthSyncing> ethSyncingRequest = new Request<>(
-                            "eth_syncing",
-                            Collections.<String>emptyList(),
-                            webSocketService,
-                            EthSyncing.class);
-                    EthSyncing ethSyncing = webSocketService.send(
-                            ethSyncingRequest,
-                            EthSyncing.class);
-                    boolean syncing = ethSyncing.isSyncing();
-                    if (syncing) {
-                        continue;
-                    }
+                    LOGGER.warn("omitSyncing not supported for web socket connections");
                 }
                 EthereumMessageListener ethereumMessageListener
                         = ethereumActivationSpec.getEthereumMessageListener();
