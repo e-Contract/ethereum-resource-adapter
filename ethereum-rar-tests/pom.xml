@@ -4,7 +4,7 @@
     <parent>
         <groupId>be.e-contract</groupId>
         <artifactId>ethereum-resource-adapter</artifactId>
-        <version>1.2.2</version>
+        <version>1.2.3-SNAPSHOT</version>
     </parent>
     <name>Ethereum Resource Adapter Integration Tests</name>
     <groupId>be.e-contract.ethereum-resource-adapter</groupId>
@@ -119,41 +119,41 @@
         <dependency>
             <groupId>be.e-contract.ethereum-resource-adapter</groupId>
             <artifactId>ethereum-rar</artifactId>
-            <version>1.2.2</version>
+            <version>1.2.3-SNAPSHOT</version>
             <type>rar</type>
         </dependency>
         <dependency>
             <groupId>be.e-contract.ethereum-resource-adapter</groupId>
             <artifactId>ethereum-ra-api</artifactId>
-            <version>1.2.2</version>
+            <version>1.2.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>be.e-contract.ethereum-resource-adapter</groupId>
             <artifactId>ethereum-ra-oracle</artifactId>
-            <version>1.2.2</version>
+            <version>1.2.3-SNAPSHOT</version>
             <type>ejb</type>
         </dependency>
         <dependency>
             <groupId>be.e-contract.ethereum-resource-adapter</groupId>
             <artifactId>ethereum-ra-oracle-node</artifactId>
-            <version>1.2.2</version>
+            <version>1.2.3-SNAPSHOT</version>
             <type>ejb</type>
         </dependency>
         <dependency>
             <groupId>be.e-contract.ethereum-resource-adapter</groupId>
             <artifactId>ethereum-ra-oracle-default</artifactId>
-            <version>1.2.2</version>
+            <version>1.2.3-SNAPSHOT</version>
             <type>ejb</type>
         </dependency>
         <dependency>
             <groupId>be.e-contract.ethereum-resource-adapter</groupId>
             <artifactId>ethereum-ra-oracle-api</artifactId>
-            <version>1.2.2</version>
+            <version>1.2.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>be.e-contract.ethereum-resource-adapter</groupId>
             <artifactId>ethereum-ra-oracle-spi</artifactId>
-            <version>1.2.2</version>
+            <version>1.2.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.jboss.spec</groupId>
