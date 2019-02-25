@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018 e-Contract.be BVBA.
+ * Copyright (C) 2018-2019 e-Contract.be BVBA.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -18,17 +18,20 @@
 package be.e_contract.ethereum.rar.demo.model;
 
 import be.e_contract.ethereum.ra.api.EthereumMessageListener;
+import be.e_contract.ethereum.utils.EthereumTransactionManager;
 import java.util.Date;
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.EJB;
 import javax.ejb.MessageDriven;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @MessageDriven(activationConfig = {
-    @ActivationConfigProperty(propertyName = "deliverPending", propertyValue = "true"),
+    @ActivationConfigProperty(propertyName = "deliverPending", propertyValue = "true")
+    ,
     @ActivationConfigProperty(propertyName = "deliverBlock", propertyValue = "true")
 })
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
@@ -38,6 +41,9 @@ public class EthereumMDB implements EthereumMessageListener {
 
     @EJB
     private EthereumBean ethereumBean;
+
+    @Inject
+    private EthereumTransactionManager ethereumTransactionManager;
 
     public EthereumMDB() {
         LOGGER.debug("constructor");
@@ -52,6 +58,7 @@ public class EthereumMDB implements EthereumMessageListener {
     public void block(String blockHash, Date timestamp) throws Exception {
         LOGGER.debug("block hash: {}", blockHash);
         this.ethereumBean.getGasPrice(null, false);
+        this.ethereumTransactionManager.block(blockHash);
     }
 
     @Override

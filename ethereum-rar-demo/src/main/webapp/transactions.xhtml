@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:eth="urn:be:e-contract:ethereum:jsf">
+
+    <f:view>
+        <h:head>
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <meta http-equiv="Content-Script-Type" content="text/javascript" />
+            <meta http-equiv="Content-Style-Type" content="text/css" />
+            <meta http-equiv="Expires" content="-1" />
+            <meta http-equiv="Cache-Control"
+                  content="no-cache, no-store, max-age=0, must-revalidate" />
+            <meta http-equiv="Pragma" content="no-cache" />
+            <title>Ethereum Resource Adapter Demo Web Application</title>
+        </h:head>
+
+        <h:body>
+            <h1>Transactions</h1>
+            <h:messages errorStyle="color:red;" infoStyle="color:blue;"/>
+            <pre>
+            <h:outputText value="#{ethereumDemoTransactionController.result}" escape="false"/>
+            </pre>
+            <h:form>
+                <h:panelGrid columns="3">
+                    <h:outputText value="Transaction hash:"/>
+                    <h:inputText id="transactionHash" value="#{ethereumDemoTransactionController.transactionHash}" size="70" required="true">
+                        <eth:transactionHashValidator/>
+                    </h:inputText>
+                    <h:message for="transactionHash" errorStyle="color:red;"/>
+                </h:panelGrid>
+                <h:panelGrid columns="2">
+                    <h:commandButton value="Monitor Transaction" action="#{ethereumDemoTransactionController.add}"/>
+                    <h:commandButton value="Back" action="/index" immediate="true"/>
+                    <h:commandButton value="Refresh" action="/transactions" immediate="refresh"/>
+                </h:panelGrid>
+            </h:form>
+        </h:body>
+    </f:view>
+
+</html>
