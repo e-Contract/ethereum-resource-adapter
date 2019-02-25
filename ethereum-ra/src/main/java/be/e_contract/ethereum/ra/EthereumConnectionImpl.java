@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.methods.response.EthBlock;
+import org.web3j.protocol.core.methods.response.EthGetTransactionReceipt;
 import org.web3j.protocol.core.methods.response.Transaction;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.tx.Contract;
@@ -325,6 +326,16 @@ public class EthereumConnectionImpl implements EthereumConnection {
     public String getClientVersion() throws ResourceException {
         try {
             return this.ethereumManagedConnection.getClientVersion();
+        } catch (Exception ex) {
+            LOGGER.error("error: " + ex.getMessage(), ex);
+            throw new ResourceException(ex);
+        }
+    }
+
+    @Override
+    public EthGetTransactionReceipt getTransactionRecipient(String transactionHash) throws ResourceException {
+        try {
+            return this.ethereumManagedConnection.getTransactionRecipient(transactionHash);
         } catch (Exception ex) {
             LOGGER.error("error: " + ex.getMessage(), ex);
             throw new ResourceException(ex);

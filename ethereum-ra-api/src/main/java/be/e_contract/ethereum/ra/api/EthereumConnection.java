@@ -24,6 +24,7 @@ import javax.resource.cci.Connection;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.methods.response.EthBlock;
+import org.web3j.protocol.core.methods.response.EthGetTransactionReceipt;
 import org.web3j.protocol.core.methods.response.Transaction;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.tx.Contract;
@@ -262,4 +263,13 @@ public interface EthereumConnection extends Connection, AutoCloseable {
      * @throws ResourceException
      */
     String getClientVersion() throws ResourceException;
+
+    /**
+     * Gives back the web3 transaction recipient.
+     *
+     * @param transactionHash
+     * @return
+     * @throws javax.resource.ResourceException
+     */
+    EthGetTransactionReceipt getTransactionRecipient(String transactionHash) throws ResourceException;
 }
