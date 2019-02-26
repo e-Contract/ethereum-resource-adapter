@@ -70,8 +70,12 @@ public class EthereumTransactionManager {
      * transaction.
      *
      * @param transactionHash
+     * @throws javax.resource.ResourceException
      */
     public void monitorTransaction(String transactionHash) throws ResourceException {
+        if (this.transactions.containsKey(transactionHash)) {
+            return;
+        }
         if (null == this.latestBlockNumber) {
             try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
                 this.latestBlockNumber = ethereumConnection.getBlockNumber();
@@ -114,7 +118,7 @@ public class EthereumTransactionManager {
                 EthGetTransactionReceipt ethGetTransactionReceipt = ethereumConnection.getTransactionRecipient(transactionHash);
                 Optional<TransactionReceipt> transactionReceiptOptional = ethGetTransactionReceipt.getTransactionReceipt();
                 if (!transactionReceiptOptional.isPresent()) {
-                    LOGGER.debug("no transaction recipient present");
+                    LOGGER.debug("no transaction receipt present");
                     LOGGER.debug("transaction probably still pending but not in pending block: {}", transactionHash);
                     if (this.latestBlockNumber.compareTo(expirationBlockNumber) > 0) {
                         publicationEvents.add(new EthereumPublicationEvent(transactionHash, EthereumFinalState.DISAPPEARED));

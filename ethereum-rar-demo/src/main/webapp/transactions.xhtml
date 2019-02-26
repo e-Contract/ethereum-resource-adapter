@@ -30,10 +30,10 @@
                     </h:inputText>
                     <h:message for="transactionHash" errorStyle="color:red;"/>
                 </h:panelGrid>
-                <h:panelGrid columns="2">
+                <h:panelGrid columns="3">
                     <h:commandButton value="Monitor Transaction" action="#{ethereumDemoTransactionController.add}"/>
+                    <h:commandButton value="Refresh" action="/transactions" immediate="true"/>
                     <h:commandButton value="Back" action="/index" immediate="true"/>
-                    <h:commandButton value="Refresh" action="/transactions" immediate="refresh"/>
                 </h:panelGrid>
             </h:form>
         </h:body>

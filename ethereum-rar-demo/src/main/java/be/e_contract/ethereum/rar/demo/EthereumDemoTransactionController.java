@@ -64,6 +64,7 @@ public class EthereumDemoTransactionController {
         } catch (ResourceException ex) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "error: " + this.transactionHash, null));
         }
+        this.result += "monitoring transaction " + this.transactionHash + "\n";
         this.transactionHash = null;
         return "/transactions";
     }
