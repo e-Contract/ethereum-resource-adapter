@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018 e-Contract.be BVBA.
+ * Copyright (C) 2018-2019 e-Contract.be BVBA.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -37,14 +37,7 @@ public class Web3jFactory {
     private static final Logger LOGGER = LoggerFactory.getLogger(Web3jFactory.class);
 
     public static Admin createWeb3j(String nodeLocation) throws IOException {
-        Web3jService service;
-        if (nodeLocation.startsWith("http")) {
-            service = new HttpService(nodeLocation);
-        } else {
-            // https://github.com/web3j/web3j/pull/245
-            LOGGER.warn("web3j IPC is not really stable");
-            service = new UnixIpcService(nodeLocation);
-        }
+        Web3jService service = getWeb3jService(nodeLocation);
         Admin web3j = Admin.build(service, 50, Async.defaultExecutorService());
         NetPeerCount netPeerCount = web3j.netPeerCount().send();
         if (netPeerCount.hasError()) {
@@ -75,5 +68,15 @@ public class Web3jFactory {
             }
         }
         return web3j;
+    }
+
+    public static Web3jService getWeb3jService(String nodeLocation) {
+        if (nodeLocation.startsWith("http")) {
+            return new HttpService(nodeLocation);
+        } else {
+            // https://github.com/web3j/web3j/pull/245
+            LOGGER.warn("web3j IPC is not really stable");
+            return new UnixIpcService(nodeLocation);
+        }
     }
 }

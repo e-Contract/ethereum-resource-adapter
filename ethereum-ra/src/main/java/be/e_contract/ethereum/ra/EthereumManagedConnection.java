@@ -25,6 +25,7 @@ import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -49,10 +50,12 @@ import org.web3j.crypto.SignedRawTransaction;
 import org.web3j.crypto.TransactionDecoder;
 import org.web3j.crypto.TransactionEncoder;
 import org.web3j.protocol.Web3j;
+import org.web3j.protocol.Web3jService;
 import org.web3j.protocol.admin.Admin;
 import org.web3j.protocol.admin.methods.response.PersonalUnlockAccount;
 import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.DefaultBlockParameterName;
+import org.web3j.protocol.core.Request;
 import org.web3j.protocol.core.Response;
 import org.web3j.protocol.core.methods.response.EthBlock;
 import org.web3j.protocol.core.methods.response.EthGetTransactionReceipt;
@@ -81,6 +84,8 @@ public class EthereumManagedConnection implements ManagedConnection {
 
     private Admin web3;
 
+    private Web3jService service;
+
     private EthereumLocalTransaction ethereumLocalTransaction;
 
     private PrintWriter logWriter;
@@ -104,6 +109,15 @@ public class EthereumManagedConnection implements ManagedConnection {
         String location = this.ethereumConnectionRequestInfo.getNodeLocation();
         this.web3 = Web3jFactory.createWeb3j(location);
         return this.web3;
+    }
+
+    public Web3jService getWeb3jService() {
+        if (null != this.service) {
+            return service;
+        }
+        String location = this.ethereumConnectionRequestInfo.getNodeLocation();
+        this.service = Web3jFactory.getWeb3jService(location);
+        return this.service;
     }
 
     @Override
@@ -400,6 +414,30 @@ public class EthereumManagedConnection implements ManagedConnection {
         return transactionCount;
     }
 
+    private BigInteger getParityNextNonce(Web3jService service, String address) throws Exception {
+        Web3j web3j = getWeb3j();
+        String clientVersion = web3j.web3ClientVersion().send().getWeb3ClientVersion();
+        LOGGER.debug("client version: {}", clientVersion);
+        if (null == clientVersion) {
+            return null;
+        }
+        if (!clientVersion.startsWith("Parity")) {
+            return null;
+        }
+        Request<?, ParityNextNonce> request = new Request<>(
+                "parity_nextNonce",
+                Arrays.asList(address),
+                service,
+                ParityNextNonce.class);
+        ParityNextNonce parityNextNonce = request.send();
+        if (parityNextNonce.hasError()) {
+            LOGGER.warn("parity next nonce error: {}", parityNextNonce.getError().getMessage());
+            return null;
+        }
+        BigInteger nextNonce = request.send().getNextNonce();
+        return nextNonce;
+    }
+
     public BigInteger getNextNonce(String address) throws Exception {
         Map<String, BigInteger> nonces = this.resourceAdapter.getNonces();
         synchronized (nonces) {
@@ -408,8 +446,12 @@ public class EthereumManagedConnection implements ManagedConnection {
                 nonces.put(address, nonce.add(BigInteger.ONE));
                 return nonce;
             }
-            Web3j web3j = getWeb3j();
-            nonce = web3j.ethGetTransactionCount(address, DefaultBlockParameterName.PENDING).send().getTransactionCount();
+            Web3jService web3jService = getWeb3jService();
+            nonce = getParityNextNonce(web3jService, address);
+            if (null == nonce) {
+                Web3j web3j = getWeb3j();
+                nonce = web3j.ethGetTransactionCount(address, DefaultBlockParameterName.PENDING).send().getTransactionCount();
+            }
             nonces.put(address, nonce.add(BigInteger.ONE));
             return nonce;
         }
