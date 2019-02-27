@@ -115,7 +115,7 @@ public class EthereumTransactionManager {
                     LOGGER.debug("transaction still pending: {}", transactionHash);
                     continue;
                 }
-                EthGetTransactionReceipt ethGetTransactionReceipt = ethereumConnection.getTransactionRecipient(transactionHash);
+                EthGetTransactionReceipt ethGetTransactionReceipt = ethereumConnection.getTransactionReceipt(transactionHash);
                 Optional<TransactionReceipt> transactionReceiptOptional = ethGetTransactionReceipt.getTransactionReceipt();
                 if (!transactionReceiptOptional.isPresent()) {
                     LOGGER.debug("no transaction receipt present");

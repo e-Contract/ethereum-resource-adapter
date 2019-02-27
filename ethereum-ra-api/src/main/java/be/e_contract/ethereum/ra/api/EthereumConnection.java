@@ -265,11 +265,11 @@ public interface EthereumConnection extends Connection, AutoCloseable {
     String getClientVersion() throws ResourceException;
 
     /**
-     * Gives back the web3 transaction recipient.
+     * Gives back the web3 transaction receipt.
      *
      * @param transactionHash
      * @return
      * @throws javax.resource.ResourceException
      */
-    EthGetTransactionReceipt getTransactionRecipient(String transactionHash) throws ResourceException;
+    EthGetTransactionReceipt getTransactionReceipt(String transactionHash) throws ResourceException;
 }

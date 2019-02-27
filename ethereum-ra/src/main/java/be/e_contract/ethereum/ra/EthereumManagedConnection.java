@@ -414,7 +414,7 @@ public class EthereumManagedConnection implements ManagedConnection {
         return transactionCount;
     }
 
-    private BigInteger getParityNextNonce(Web3jService service, String address) throws Exception {
+    private BigInteger getParityNextNonce(String address) throws Exception {
         Web3j web3j = getWeb3j();
         String clientVersion = web3j.web3ClientVersion().send().getWeb3ClientVersion();
         LOGGER.debug("client version: {}", clientVersion);
@@ -424,10 +424,11 @@ public class EthereumManagedConnection implements ManagedConnection {
         if (!clientVersion.startsWith("Parity")) {
             return null;
         }
+        Web3jService web3jService = getWeb3jService();
         Request<?, ParityNextNonce> request = new Request<>(
                 "parity_nextNonce",
                 Arrays.asList(address),
-                service,
+                web3jService,
                 ParityNextNonce.class);
         ParityNextNonce parityNextNonce = request.send();
         if (parityNextNonce.hasError()) {
@@ -446,8 +447,7 @@ public class EthereumManagedConnection implements ManagedConnection {
                 nonces.put(address, nonce.add(BigInteger.ONE));
                 return nonce;
             }
-            Web3jService web3jService = getWeb3jService();
-            nonce = getParityNextNonce(web3jService, address);
+            nonce = getParityNextNonce(address);
             if (null == nonce) {
                 Web3j web3j = getWeb3j();
                 nonce = web3j.ethGetTransactionCount(address, DefaultBlockParameterName.PENDING).send().getTransactionCount();
@@ -617,7 +617,7 @@ public class EthereumManagedConnection implements ManagedConnection {
         return web3j.web3ClientVersion().send().getWeb3ClientVersion();
     }
 
-    public EthGetTransactionReceipt getTransactionRecipient(String transactionHash) throws Exception {
+    public EthGetTransactionReceipt getTransactionReceipt(String transactionHash) throws Exception {
         Web3j web3j = getWeb3j();
         return web3j.ethGetTransactionReceipt(transactionHash).send();
     }

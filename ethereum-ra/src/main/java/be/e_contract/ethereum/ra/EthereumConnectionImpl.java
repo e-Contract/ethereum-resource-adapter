@@ -333,9 +333,9 @@ public class EthereumConnectionImpl implements EthereumConnection {
     }
 
     @Override
-    public EthGetTransactionReceipt getTransactionRecipient(String transactionHash) throws ResourceException {
+    public EthGetTransactionReceipt getTransactionReceipt(String transactionHash) throws ResourceException {
         try {
-            return this.ethereumManagedConnection.getTransactionRecipient(transactionHash);
+            return this.ethereumManagedConnection.getTransactionReceipt(transactionHash);
         } catch (Exception ex) {
             LOGGER.error("error: " + ex.getMessage(), ex);
             throw new ResourceException(ex);
