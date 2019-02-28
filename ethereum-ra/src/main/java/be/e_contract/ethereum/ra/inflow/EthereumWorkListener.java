@@ -15,7 +15,7 @@
  * License along with this software; if not, see 
  * http://www.gnu.org/licenses/.
  */
-package be.e_contract.ethereum.ra;
+package be.e_contract.ethereum.ra.inflow;
 
 import be.e_contract.ethereum.ra.api.EthereumMessageListener;
 import javax.resource.spi.work.WorkEvent;

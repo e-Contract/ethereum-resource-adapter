@@ -15,8 +15,10 @@
  * License along with this software; if not, see 
  * http://www.gnu.org/licenses/.
  */
-package be.e_contract.ethereum.ra;
+package be.e_contract.ethereum.ra.tx;
 
+import be.e_contract.ethereum.ra.EthereumManagedConnection;
+import be.e_contract.ethereum.ra.EthereumResourceAdapter;
 import java.math.BigInteger;
 import java.security.SignatureException;
 import java.util.LinkedList;
@@ -170,7 +172,7 @@ public class EthereumTransactionCommit {
         this.prepared = false;
     }
 
-    void setTransactionTimeout(int seconds) {
+    public void setTransactionTimeout(int seconds) {
         this.transactionTimeout = seconds;
     }
 }

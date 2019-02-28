@@ -17,6 +17,8 @@
  */
 package be.e_contract.ethereum.ra;
 
+import be.e_contract.ethereum.ra.tx.EthereumCCILocalTransaction;
+import be.e_contract.ethereum.ra.tx.EthereumLocalTransaction;
 import be.e_contract.ethereum.ra.api.EthereumConnection;
 import be.e_contract.ethereum.ra.api.EthereumException;
 import be.e_contract.ethereum.ra.api.TransactionConfirmation;

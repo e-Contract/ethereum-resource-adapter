@@ -15,8 +15,9 @@
  * License along with this software; if not, see 
  * http://www.gnu.org/licenses/.
  */
-package be.e_contract.ethereum.ra;
+package be.e_contract.ethereum.ra.tx;
 
+import be.e_contract.ethereum.ra.EthereumManagedConnection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;

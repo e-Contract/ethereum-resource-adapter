@@ -17,6 +17,11 @@
  */
 package be.e_contract.ethereum.ra;
 
+import be.e_contract.ethereum.ra.inflow.EthereumDeliveryXAResource;
+import be.e_contract.ethereum.ra.inflow.EthereumWorkListener;
+import be.e_contract.ethereum.ra.inflow.EthereumPendingTransactionWork;
+import be.e_contract.ethereum.ra.inflow.EthereumBlockWork;
+import be.e_contract.ethereum.ra.inflow.EthereumActivationSpec;
 import be.e_contract.ethereum.ra.api.EthereumMessageListener;
 import java.io.Serializable;
 import java.lang.reflect.Method;

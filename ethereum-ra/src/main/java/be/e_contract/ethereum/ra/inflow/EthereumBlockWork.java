@@ -15,8 +15,9 @@
  * License along with this software; if not, see 
  * http://www.gnu.org/licenses/.
  */
-package be.e_contract.ethereum.ra;
+package be.e_contract.ethereum.ra.inflow;
 
+import be.e_contract.ethereum.ra.web3j.Web3jFactory;
 import be.e_contract.ethereum.ra.api.EthereumMessageListener;
 import io.reactivex.Flowable;
 import java.lang.reflect.Method;
@@ -36,31 +37,33 @@ import org.web3j.protocol.core.methods.response.EthLog;
 import org.web3j.protocol.core.methods.response.EthSubscribe;
 import org.web3j.protocol.websocket.WebSocketClient;
 import org.web3j.protocol.websocket.WebSocketService;
+import org.web3j.protocol.websocket.events.NewHead;
+import org.web3j.protocol.websocket.events.NewHeadsNotification;
 import org.web3j.protocol.websocket.events.NotificationParams;
-import org.web3j.protocol.websocket.events.PendingTransactionNotification;
 
-public class EthereumPendingTransactionWork extends EthereumWork {
+public class EthereumBlockWork extends EthereumWork {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(EthereumPendingTransactionWork.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EthereumBlockWork.class);
 
-    private static final Method PENDING_TRANSACTION_METHOD;
+    private static final Method BLOCK_METHOD;
 
     private boolean error;
 
     static {
         try {
-            PENDING_TRANSACTION_METHOD = EthereumMessageListener.class.getMethod("pendingTransaction", String.class, Date.class);
+            BLOCK_METHOD = EthereumMessageListener.class.getMethod("block", String.class, Date.class);
         } catch (NoSuchMethodException | SecurityException ex) {
             throw new RuntimeException(ex);
         }
     }
 
-    public EthereumPendingTransactionWork(String nodeLocation) {
+    public EthereumBlockWork(String nodeLocation) {
         super(nodeLocation);
     }
 
     @Override
     public void doWork() {
+        LOGGER.debug("run");
         try {
             String nodeLocation = this.getNodeLocation();
             if (nodeLocation.startsWith("ws:")) {
@@ -82,26 +85,27 @@ public class EthereumPendingTransactionWork extends EthereumWork {
         webSocketService.connect();
         Request<?, EthSubscribe> subscribeRequest = new Request<>(
                 "eth_subscribe",
-                Arrays.asList("newPendingTransactions"),
+                Arrays.asList("newHeads"),
                 webSocketService,
                 EthSubscribe.class);
 
-        Flowable<PendingTransactionNotification> events = webSocketService.subscribe(
+        Flowable<NewHeadsNotification> events = webSocketService.subscribe(
                 subscribeRequest,
                 "eth_unsubscribe",
-                PendingTransactionNotification.class
+                NewHeadsNotification.class
         );
 
         events.subscribe(event -> {
             Date timestamp = new Date();
-            NotificationParams<String> params = event.getParams();
-            String transactionHash = params.getResult();
+            NotificationParams<NewHead> params = event.getParams();
+            NewHead newHead = params.getResult();
+            String blockHash = newHead.getHash();
             for (EthereumActivationSpec ethereumActivationSpec : this.getEthereumActivationSpecs()) {
-                Boolean deliverPending = ethereumActivationSpec.isDeliverPending();
-                if (null == deliverPending) {
+                Boolean deliverBlock = ethereumActivationSpec.isDeliverBlock();
+                if (null == deliverBlock) {
                     continue;
                 }
-                if (!deliverPending) {
+                if (!deliverBlock) {
                     continue;
                 }
                 Boolean omitSyncing = ethereumActivationSpec.isOmitSyncing();
@@ -111,9 +115,9 @@ public class EthereumPendingTransactionWork extends EthereumWork {
                 EthereumMessageListener ethereumMessageListener
                         = ethereumActivationSpec.getEthereumMessageListener();
                 MessageEndpoint messageEndpoint = (MessageEndpoint) ethereumMessageListener;
-                messageEndpoint.beforeDelivery(PENDING_TRANSACTION_METHOD);
+                messageEndpoint.beforeDelivery(BLOCK_METHOD);
                 try {
-                    ethereumMessageListener.pendingTransaction(transactionHash, timestamp);
+                    ethereumMessageListener.block(blockHash, timestamp);
                 } catch (Exception e) {
                     LOGGER.error("error invoking block: " + e.getMessage(), e);
                 }
@@ -136,9 +140,10 @@ public class EthereumPendingTransactionWork extends EthereumWork {
 
     public void _run(String nodeLocation) throws Exception {
         Web3j web3j = Web3jFactory.createWeb3j(nodeLocation);
-        BigInteger filterId = web3j.ethNewPendingTransactionFilter().send().getFilterId();
+        BigInteger filterId = web3j.ethNewBlockFilter().send().getFilterId();
         while (!this.isShutdown()) {
-            List<EthLog.LogResult> logResultList = web3j.ethGetFilterChanges(filterId).send().getResult();
+            List<EthLog.LogResult> logResultList
+                    = web3j.ethGetFilterChanges(filterId).send().getResult();
             Date timestamp = new Date();
             if (logResultList.isEmpty()) {
                 try {
@@ -153,13 +158,13 @@ public class EthereumPendingTransactionWork extends EthereumWork {
             for (EthLog.LogResult logResult : logResultList) {
                 if (logResult instanceof EthLog.Hash) {
                     EthLog.Hash hash = (EthLog.Hash) logResult;
-                    String transactionHash = hash.get();
+                    String blockHash = hash.get();
                     for (EthereumActivationSpec ethereumActivationSpec : this.getEthereumActivationSpecs()) {
-                        Boolean deliverPending = ethereumActivationSpec.isDeliverPending();
-                        if (null == deliverPending) {
+                        Boolean deliverBlock = ethereumActivationSpec.isDeliverBlock();
+                        if (null == deliverBlock) {
                             continue;
                         }
-                        if (!deliverPending) {
+                        if (!deliverBlock) {
                             continue;
                         }
                         Boolean omitSyncing = ethereumActivationSpec.isOmitSyncing();
@@ -169,13 +174,14 @@ public class EthereumPendingTransactionWork extends EthereumWork {
                                 continue;
                             }
                         }
-                        EthereumMessageListener ethereumMessageListener = ethereumActivationSpec.getEthereumMessageListener();
+                        EthereumMessageListener ethereumMessageListener
+                                = ethereumActivationSpec.getEthereumMessageListener();
                         MessageEndpoint messageEndpoint = (MessageEndpoint) ethereumMessageListener;
-                        messageEndpoint.beforeDelivery(PENDING_TRANSACTION_METHOD);
+                        messageEndpoint.beforeDelivery(BLOCK_METHOD);
                         try {
-                            ethereumMessageListener.pendingTransaction(transactionHash, timestamp);
+                            ethereumMessageListener.block(blockHash, timestamp);
                         } catch (Exception e) {
-                            LOGGER.error("error invoking pendingTransaction: " + e.getMessage(), e);
+                            LOGGER.error("error invoking block: " + e.getMessage(), e);
                         }
                         messageEndpoint.afterDelivery();
                     }

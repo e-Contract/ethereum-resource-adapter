@@ -15,7 +15,7 @@
  * License along with this software; if not, see 
  * http://www.gnu.org/licenses/.
  */
-package be.e_contract.ethereum.ra;
+package be.e_contract.ethereum.ra.web3j;
 
 import java.io.IOException;
 import java.math.BigInteger;

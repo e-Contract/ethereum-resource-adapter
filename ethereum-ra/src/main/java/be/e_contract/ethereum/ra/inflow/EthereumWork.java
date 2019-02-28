@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018 e-Contract.be BVBA.
+ * Copyright (C) 2018-2019 e-Contract.be BVBA.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -15,7 +15,7 @@
  * License along with this software; if not, see 
  * http://www.gnu.org/licenses/.
  */
-package be.e_contract.ethereum.ra;
+package be.e_contract.ethereum.ra.inflow;
 
 import be.e_contract.ethereum.ra.api.EthereumMessageListener;
 import java.util.LinkedList;

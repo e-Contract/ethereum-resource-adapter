@@ -17,6 +17,12 @@
  */
 package be.e_contract.ethereum.ra;
 
+import be.e_contract.ethereum.ra.tx.EthereumLocalTransaction;
+import be.e_contract.ethereum.ra.tx.EthereumTransactionCommit;
+import be.e_contract.ethereum.ra.tx.EthereumXAResource;
+import be.e_contract.ethereum.ra.web3j.EthereumTransactionManager;
+import be.e_contract.ethereum.ra.web3j.ParityNextNonce;
+import be.e_contract.ethereum.ra.web3j.Web3jFactory;
 import be.e_contract.ethereum.ra.api.EthereumConnection;
 import be.e_contract.ethereum.ra.api.EthereumException;
 import be.e_contract.ethereum.ra.api.TransactionConfirmation;

@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018-2019 e-Contract.be BVBA.
+ * Copyright (C) 2018 e-Contract.be BVBA.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -15,45 +15,38 @@
  * License along with this software; if not, see 
  * http://www.gnu.org/licenses/.
  */
-package be.e_contract.ethereum.ra;
+package be.e_contract.ethereum.ra.tx;
 
 import javax.resource.ResourceException;
-import javax.resource.spi.LocalTransaction;
+import javax.resource.cci.LocalTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class EthereumLocalTransaction implements LocalTransaction {
+public class EthereumCCILocalTransaction implements LocalTransaction {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(EthereumLocalTransaction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EthereumCCILocalTransaction.class);
 
-    private final EthereumTransactionCommit ethereumTransactionCommit;
+    private final EthereumLocalTransaction ethereumLocalTransaction;
 
-    public EthereumLocalTransaction(EthereumManagedConnection ethereumManagedConnection) {
-        this.ethereumTransactionCommit = new EthereumTransactionCommit(ethereumManagedConnection);
+    public EthereumCCILocalTransaction(EthereumLocalTransaction ethereumLocalTransaction) {
+        this.ethereumLocalTransaction = ethereumLocalTransaction;
     }
 
     @Override
     public void begin() throws ResourceException {
         LOGGER.debug("begin");
-        this.ethereumTransactionCommit.clear();
+        this.ethereumLocalTransaction.begin();
     }
 
     @Override
     public void commit() throws ResourceException {
         LOGGER.debug("commit");
-        this.ethereumTransactionCommit.commit();
+        this.ethereumLocalTransaction.commit();
     }
 
     @Override
     public void rollback() throws ResourceException {
         LOGGER.debug("rollback");
-        LOGGER.debug("number of raw transactions in queue: {}",
-                this.ethereumTransactionCommit.getTransactionCount());
-        this.ethereumTransactionCommit.rollback();
-    }
-
-    public void scheduleRawTransaction(String rawTransaction) throws ResourceException {
-        LOGGER.debug("schedule raw transaction: {}", rawTransaction);
-        this.ethereumTransactionCommit.addRawTransaction(rawTransaction);
+        this.ethereumLocalTransaction.rollback();
     }
 }

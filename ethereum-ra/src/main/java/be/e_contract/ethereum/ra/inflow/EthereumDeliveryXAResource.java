@@ -15,7 +15,7 @@
  * License along with this software; if not, see 
  * http://www.gnu.org/licenses/.
  */
-package be.e_contract.ethereum.ra;
+package be.e_contract.ethereum.ra.inflow;
 
 import javax.transaction.xa.XAException;
 import javax.transaction.xa.XAResource;
