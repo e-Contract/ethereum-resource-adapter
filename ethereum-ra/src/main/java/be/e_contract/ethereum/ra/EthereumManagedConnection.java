@@ -80,7 +80,7 @@ public class EthereumManagedConnection implements ManagedConnection {
 
     private final EthereumConnectionRequestInfo ethereumConnectionRequestInfo;
 
-    private EthereumConnectionImpl ethereumConnection;
+    private final Set<EthereumConnectionImpl> ethereumConnections;
 
     private Admin web3;
 
@@ -94,12 +94,16 @@ public class EthereumManagedConnection implements ManagedConnection {
 
     private final EthereumResourceAdapter resourceAdapter;
 
+    private boolean destroyed;
+
     public EthereumManagedConnection(EthereumConnectionRequestInfo ethereumConnectionRequestInfo,
             EthereumResourceAdapter resourceAdapter) {
         LOGGER.debug("constructor");
         this.listeners = new HashSet<>();
         this.ethereumConnectionRequestInfo = ethereumConnectionRequestInfo;
         this.resourceAdapter = resourceAdapter;
+        this.ethereumConnections = new HashSet<>();
+        this.destroyed = false;
     }
 
     public Admin getWeb3j() throws Exception {
@@ -120,19 +124,35 @@ public class EthereumManagedConnection implements ManagedConnection {
         return this.service;
     }
 
+    private void checkIfDestroyed() throws ResourceException {
+        if (this.destroyed) {
+            throw new ResourceException("Managed connection has been destroyed");
+        }
+    }
+
     @Override
     public Object getConnection(Subject subject, ConnectionRequestInfo cxRequestInfo) throws ResourceException {
         LOGGER.debug("getConnection");
-        this.ethereumConnection = new EthereumConnectionImpl(this);
-        return this.ethereumConnection;
+        if (null == cxRequestInfo) {
+            LOGGER.error("ConnectionRequestInfo is null");
+        }
+        checkIfDestroyed();
+        EthereumConnectionImpl ethereumConnection = new EthereumConnectionImpl(this);
+        this.ethereumConnections.add(ethereumConnection);
+        return ethereumConnection;
     }
 
     @Override
     public void destroy() throws ResourceException {
-        LOGGER.debug("destroy: {}", this.ethereumConnectionRequestInfo);
-        if (null != this.ethereumConnection) {
-            this.ethereumConnection.invalidate();
+        if (this.destroyed) {
+            LOGGER.warn("already destroyed");
+            return;
         }
+        LOGGER.debug("destroy: {}", this.ethereumConnectionRequestInfo);
+        for (EthereumConnectionImpl ethereumConnection : this.ethereumConnections) {
+            ethereumConnection.invalidate();
+        }
+        this.ethereumConnections.clear();
         this.listeners.clear();
         if (null != this.web3) {
             this.web3.shutdown();
@@ -147,17 +167,23 @@ public class EthereumManagedConnection implements ManagedConnection {
 
     @Override
     public void cleanup() throws ResourceException {
+        checkIfDestroyed();
         LOGGER.debug("cleanup: {}", this.ethereumConnectionRequestInfo);
-        if (null != this.ethereumConnection) {
-            this.ethereumConnection.invalidate();
+        for (EthereumConnectionImpl ethereumConnection : this.ethereumConnections) {
+            ethereumConnection.invalidate();
         }
+        this.ethereumConnections.clear();
     }
 
     @Override
     public void associateConnection(Object connection) throws ResourceException {
         LOGGER.debug("associateConnection");
+        checkIfDestroyed();
+        if (!(connection instanceof EthereumConnectionImpl)) {
+            throw new ResourceException("invalid connection type");
+        }
         EthereumConnectionImpl ethereumConnection = (EthereumConnectionImpl) connection;
-        ethereumConnection.setManagedConnection(this);
+        ethereumConnection.associateConnection(this);
     }
 
     @Override
@@ -620,5 +646,13 @@ public class EthereumManagedConnection implements ManagedConnection {
     public EthGetTransactionReceipt getTransactionReceipt(String transactionHash) throws Exception {
         Web3j web3j = getWeb3j();
         return web3j.ethGetTransactionReceipt(transactionHash).send();
+    }
+
+    void removeConnection(EthereumConnectionImpl ethereumConnection) {
+        this.ethereumConnections.remove(ethereumConnection);
+    }
+
+    void addConnection(EthereumConnectionImpl ethereumConnection) {
+        this.ethereumConnections.add(ethereumConnection);
     }
 }
