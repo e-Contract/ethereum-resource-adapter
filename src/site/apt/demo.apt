@@ -11,7 +11,7 @@ geth --dev --rpc --rpcapi personal,eth,net --dev.period 0 --ws
  Start WildFly via:
 
 +--
-cd wildfly-15.0.1.Final/bin
+cd wildfly-16.0.0.Final/bin
 ./standalone.sh --server-config=standalone-full.xml
 +--
 
@@ -26,7 +26,7 @@ mvn wildfly:deploy
  The demo web application is now available at:
  {{http://localhost:8080/ethereum-demo/}}
 
- If you want debug logging, add to <<<standalone/configuration/standalone-full.xml>>> under <<<subsystem xmlns="urn:jboss:domain:logging:4.0">>> the following configuration:
+ If you want debug logging, add to <<<standalone/configuration/standalone-full.xml>>> under <<<subsystem xmlns="urn:jboss:domain:logging:6.0">>> the following configuration:
 
 +--
 <periodic-rotating-file-handler name="ETHEREUM" autoflush="true">

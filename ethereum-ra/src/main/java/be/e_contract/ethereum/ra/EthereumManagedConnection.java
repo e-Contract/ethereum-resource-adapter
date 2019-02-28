@@ -140,7 +140,7 @@ public class EthereumManagedConnection implements ManagedConnection {
     public Object getConnection(Subject subject, ConnectionRequestInfo cxRequestInfo) throws ResourceException {
         LOGGER.debug("getConnection");
         if (null == cxRequestInfo) {
-            LOGGER.error("ConnectionRequestInfo is null");
+            LOGGER.debug("ConnectionRequestInfo is null");
         }
         checkIfDestroyed();
         EthereumConnectionImpl ethereumConnection = new EthereumConnectionImpl(this);
