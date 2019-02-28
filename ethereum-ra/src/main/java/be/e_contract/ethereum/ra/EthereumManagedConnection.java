@@ -124,7 +124,7 @@ public class EthereumManagedConnection implements ManagedConnection {
         return this.service;
     }
 
-    private void checkIfDestroyed() throws ResourceException {
+    public void checkIfDestroyed() throws ResourceException {
         if (this.destroyed) {
             throw new ResourceException("Managed connection has been destroyed");
         }
@@ -148,6 +148,7 @@ public class EthereumManagedConnection implements ManagedConnection {
             LOGGER.warn("already destroyed");
             return;
         }
+        this.destroyed = true;
         LOGGER.debug("destroy: {}", this.ethereumConnectionRequestInfo);
         for (EthereumConnectionImpl ethereumConnection : this.ethereumConnections) {
             ethereumConnection.invalidate();
@@ -223,7 +224,8 @@ public class EthereumManagedConnection implements ManagedConnection {
     @Override
     public ManagedConnectionMetaData getMetaData() throws ResourceException {
         LOGGER.debug("getMetadata");
-        return new EthereumManagedConnectionMetaData();
+        checkIfDestroyed();
+        return new EthereumManagedConnectionMetaData(this);
     }
 
     @Override

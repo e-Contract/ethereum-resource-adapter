@@ -46,17 +46,21 @@ public class EthereumConnectionImpl implements EthereumConnection {
 
     private EthereumManagedConnection ethereumManagedConnection;
 
-    private boolean valid;
-
     public EthereumConnectionImpl(EthereumManagedConnection ethereumManagedConnection) {
         LOGGER.debug("constructor");
         this.ethereumManagedConnection = ethereumManagedConnection;
-        this.valid = true;
+    }
+
+    public void checkIfClosed() throws ResourceException {
+        if (null == this.ethereumManagedConnection) {
+            throw new ResourceException("Connection is closed or invalid");
+        }
     }
 
     @Override
     public BigInteger getGasPrice() throws ResourceException {
         LOGGER.debug("getGasPrice");
+        checkIfClosed();
         BigInteger gasPrice = this.ethereumManagedConnection.getGasPrice();
         LOGGER.debug("gas price: {}", gasPrice);
         return gasPrice;
@@ -65,12 +69,13 @@ public class EthereumConnectionImpl implements EthereumConnection {
     @Override
     public Interaction createInteraction() throws ResourceException {
         LOGGER.debug("createInteraction");
-        throw new NotSupportedException();
+        throw new NotSupportedException("Interaction not supported");
     }
 
     @Override
     public LocalTransaction getLocalTransaction() throws ResourceException {
         LOGGER.debug("getLocalTransaction");
+        checkIfClosed();
         EthereumLocalTransaction ethereumLocalTransaction
                 = (EthereumLocalTransaction) this.ethereumManagedConnection.getLocalTransaction();
         LocalTransaction localTransaction = new EthereumCCILocalTransaction(ethereumLocalTransaction);
@@ -80,17 +85,14 @@ public class EthereumConnectionImpl implements EthereumConnection {
     @Override
     public ConnectionMetaData getMetaData() throws ResourceException {
         LOGGER.debug("getMetaData");
-        if (this.valid) {
-            return new EthereumConnectionMetaData();
-        } else {
-            throw new ResourceException();
-        }
+        checkIfClosed();
+        return new EthereumConnectionMetaData();
     }
 
     @Override
     public ResultSetInfo getResultSetInfo() throws ResourceException {
         LOGGER.debug("getResultSetInfo");
-        throw new NotSupportedException();
+        throw new NotSupportedException("ResultSetInfo not supported");
     }
 
     @Override
@@ -106,9 +108,7 @@ public class EthereumConnectionImpl implements EthereumConnection {
 
     void associateConnection(EthereumManagedConnection ethereumManagedConnection) throws ResourceException {
         LOGGER.debug("associateConnection");
-        if (null == this.ethereumManagedConnection) {
-            throw new ResourceException("Connection is closed or invalid");
-        }
+        checkIfClosed();
         this.ethereumManagedConnection.removeConnection(this);
         ethereumManagedConnection.addConnection(this);
         this.ethereumManagedConnection = ethereumManagedConnection;
@@ -116,22 +116,24 @@ public class EthereumConnectionImpl implements EthereumConnection {
 
     public void invalidate() {
         LOGGER.debug("invalidate");
-        this.valid = false;
         this.ethereumManagedConnection = null;
     }
 
     @Override
     public BigInteger getBlockNumber() throws ResourceException {
+        checkIfClosed();
         return this.ethereumManagedConnection.getBlockNumber();
     }
 
     @Override
     public String sendRawTransaction(String rawTransaction) throws ResourceException, EthereumException {
+        checkIfClosed();
         return this.ethereumManagedConnection.sendRawTransaction(rawTransaction);
     }
 
     @Override
     public TransactionConfirmation getTransactionConfirmation(String transactionHash) throws ResourceException {
+        checkIfClosed();
         try {
             return this.ethereumManagedConnection.getTransactionConfirmation(transactionHash);
         } catch (Exception ex) {
@@ -142,6 +144,7 @@ public class EthereumConnectionImpl implements EthereumConnection {
 
     @Override
     public Transaction findTransaction(String transactionHash) throws ResourceException {
+        checkIfClosed();
         try {
             return this.ethereumManagedConnection.findTransaction(transactionHash);
         } catch (Exception ex) {
@@ -152,6 +155,7 @@ public class EthereumConnectionImpl implements EthereumConnection {
 
     @Override
     public EthBlock.Block getBlock(String blockHash, boolean returnFullTransactionObjects) throws ResourceException {
+        checkIfClosed();
         try {
             return this.ethereumManagedConnection.getBlock(blockHash, returnFullTransactionObjects);
         } catch (Exception ex) {
@@ -162,6 +166,7 @@ public class EthereumConnectionImpl implements EthereumConnection {
 
     @Override
     public BigInteger getBalance(String address) throws ResourceException {
+        checkIfClosed();
         try {
             return this.ethereumManagedConnection.getBalance(address);
         } catch (Exception ex) {
@@ -172,6 +177,7 @@ public class EthereumConnectionImpl implements EthereumConnection {
 
     @Override
     public BigInteger getTransactionCount(String address) throws ResourceException {
+        checkIfClosed();
         try {
             return this.ethereumManagedConnection.getTransactionCount(address);
         } catch (Exception ex) {
@@ -182,6 +188,7 @@ public class EthereumConnectionImpl implements EthereumConnection {
 
     @Override
     public List<String> getAccounts() throws ResourceException {
+        checkIfClosed();
         try {
             return this.ethereumManagedConnection.getAccounts();
         } catch (Exception ex) {
@@ -192,6 +199,7 @@ public class EthereumConnectionImpl implements EthereumConnection {
 
     @Override
     public String newAccount(String password) throws ResourceException {
+        checkIfClosed();
         try {
             return this.ethereumManagedConnection.newAccount(password);
         } catch (Exception ex) {
@@ -202,6 +210,7 @@ public class EthereumConnectionImpl implements EthereumConnection {
 
     @Override
     public boolean unlockAccount(String account, String password) throws ResourceException, EthereumException {
+        checkIfClosed();
         try {
             return this.ethereumManagedConnection.unlockAccount(account, password);
         } catch (EthereumException ex) {
@@ -216,6 +225,7 @@ public class EthereumConnectionImpl implements EthereumConnection {
     @Override
     public String sendAccountTransaction(String account, String to, BigInteger value,
             BigInteger gasPrice, BigInteger nonce) throws ResourceException, EthereumException {
+        checkIfClosed();
         try {
             return this.ethereumManagedConnection.sendAccountTransaction(account, to, value, gasPrice, nonce);
         } catch (EthereumException ex) {
@@ -230,6 +240,7 @@ public class EthereumConnectionImpl implements EthereumConnection {
     @Override
     public TransactionReceipt deploy(Class<? extends Contract> contractClass, ContractGasProvider contractGasProvider,
             Credentials credentials, Long chainId) throws ResourceException, EthereumException {
+        checkIfClosed();
         try {
             return this.ethereumManagedConnection.deploy(contractClass, contractGasProvider, credentials, chainId);
         } catch (EthereumException ex) {
@@ -244,6 +255,7 @@ public class EthereumConnectionImpl implements EthereumConnection {
     @Override
     public <T extends Contract> T load(Class<T> contractClass, String contractAddress,
             Credentials credentials, Long chainId, ContractGasProvider contractGasProvider) throws ResourceException {
+        checkIfClosed();
         try {
             return this.ethereumManagedConnection.load(contractClass, contractAddress, credentials,
                     chainId, contractGasProvider);
@@ -255,6 +267,7 @@ public class EthereumConnectionImpl implements EthereumConnection {
 
     @Override
     public Long getChainId() throws ResourceException, EthereumException {
+        checkIfClosed();
         try {
             return this.ethereumManagedConnection.getChainId();
         } catch (EthereumException ex) {
@@ -269,6 +282,7 @@ public class EthereumConnectionImpl implements EthereumConnection {
     @Override
     public String sendTransaction(Credentials credentials, String to, BigInteger value,
             BigInteger gasPrice, Long chainId) throws ResourceException, EthereumException {
+        checkIfClosed();
         try {
             return this.ethereumManagedConnection.sendTransaction(credentials, to, value, gasPrice, chainId);
         } catch (EthereumException ex) {
@@ -282,6 +296,7 @@ public class EthereumConnectionImpl implements EthereumConnection {
 
     @Override
     public EthBlock.Block getBlock(DefaultBlockParameter defaultBlockParameter, boolean returnFullTransactionObjects) throws ResourceException {
+        checkIfClosed();
         try {
             return this.ethereumManagedConnection.getBlock(defaultBlockParameter, returnFullTransactionObjects);
         } catch (Exception ex) {
@@ -292,6 +307,7 @@ public class EthereumConnectionImpl implements EthereumConnection {
 
     @Override
     public String getNetVersion() throws ResourceException {
+        checkIfClosed();
         try {
             return this.ethereumManagedConnection.getNetVersion();
         } catch (Exception ex) {
@@ -302,6 +318,7 @@ public class EthereumConnectionImpl implements EthereumConnection {
 
     @Override
     public BigInteger getPeerCount() throws ResourceException {
+        checkIfClosed();
         try {
             return this.ethereumManagedConnection.getPeerCount();
         } catch (Exception ex) {
@@ -312,6 +329,7 @@ public class EthereumConnectionImpl implements EthereumConnection {
 
     @Override
     public String getProtocolVersion() throws ResourceException {
+        checkIfClosed();
         try {
             return this.ethereumManagedConnection.getProtocolVersion();
         } catch (Exception ex) {
@@ -322,6 +340,7 @@ public class EthereumConnectionImpl implements EthereumConnection {
 
     @Override
     public boolean isSyncing() throws ResourceException {
+        checkIfClosed();
         try {
             return this.ethereumManagedConnection.isSyncing();
         } catch (Exception ex) {
@@ -332,6 +351,7 @@ public class EthereumConnectionImpl implements EthereumConnection {
 
     @Override
     public String getClientVersion() throws ResourceException {
+        checkIfClosed();
         try {
             return this.ethereumManagedConnection.getClientVersion();
         } catch (Exception ex) {
@@ -342,6 +362,7 @@ public class EthereumConnectionImpl implements EthereumConnection {
 
     @Override
     public EthGetTransactionReceipt getTransactionReceipt(String transactionHash) throws ResourceException {
+        checkIfClosed();
         try {
             return this.ethereumManagedConnection.getTransactionReceipt(transactionHash);
         } catch (Exception ex) {

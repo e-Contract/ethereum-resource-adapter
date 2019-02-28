@@ -28,13 +28,17 @@ public class EthereumManagedConnectionMetaData implements ManagedConnectionMetaD
 
     public static final String EIS_PRODUCT_NAME = "Ethereum";
 
-    public EthereumManagedConnectionMetaData() {
+    private final EthereumManagedConnection ethereumManagedConnection;
+
+    public EthereumManagedConnectionMetaData(EthereumManagedConnection ethereumManagedConnection) {
         LOGGER.debug("constructor");
+        this.ethereumManagedConnection = ethereumManagedConnection;
     }
 
     @Override
     public String getEISProductName() throws ResourceException {
         LOGGER.debug("getEISProductName");
+        this.ethereumManagedConnection.checkIfDestroyed();
         return EIS_PRODUCT_NAME;
     }
 
@@ -47,12 +51,13 @@ public class EthereumManagedConnectionMetaData implements ManagedConnectionMetaD
     @Override
     public int getMaxConnections() throws ResourceException {
         LOGGER.debug("getMaxConnections");
-        return 0;
+        return 16;
     }
 
     @Override
     public String getUserName() throws ResourceException {
         LOGGER.debug("getUserName");
+        this.ethereumManagedConnection.checkIfDestroyed();
         throw new ResourceException();
     }
 }

@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018 e-Contract.be BVBA.
+ * Copyright (C) 2018-2019 e-Contract.be BVBA.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -48,10 +48,10 @@ public class EthereumConnectionFactoryImpl implements EthereumConnectionFactory 
     }
 
     public EthereumConnectionFactoryImpl(ManagedConnectionFactory managedConnectionFactory,
-            ConnectionManager cxManager) {
+            ConnectionManager connectionManager) {
         LOGGER.debug("constructor");
         this.managedConnectionFactory = managedConnectionFactory;
-        this.connectionManager = cxManager;
+        this.connectionManager = connectionManager;
     }
 
     @Override
@@ -87,7 +87,7 @@ public class EthereumConnectionFactoryImpl implements EthereumConnectionFactory 
 
     @Override
     public RecordFactory getRecordFactory() throws ResourceException {
-        throw new NotSupportedException();
+        throw new NotSupportedException("RecordFactory not supported");
     }
 
     @Override
