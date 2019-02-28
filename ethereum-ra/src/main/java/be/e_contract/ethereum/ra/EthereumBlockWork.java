@@ -61,7 +61,7 @@ public class EthereumBlockWork extends EthereumWork {
     }
 
     @Override
-    public void run() {
+    public void doWork() {
         LOGGER.debug("run");
         try {
             String nodeLocation = this.getNodeLocation();

@@ -98,6 +98,9 @@ public class EthereumWorkListener implements WorkListener {
             }
             LOGGER.error("sleep error: " + e.getMessage(), e);
         }
+        if (ethereumWork.isShutdown()) {
+            return;
+        }
         LOGGER.warn("trying to reconnect to Ethereum node: {}", ethereumWork.getNodeLocation());
         try {
             this.workManager.scheduleWork(ethereumWork, WorkManager.INDEFINITE, null, this);

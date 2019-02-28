@@ -17,13 +17,21 @@
  */
 package be.e_contract.ethereum.ra;
 
+import be.e_contract.ethereum.ra.api.EthereumMessageListener;
 import java.util.LinkedList;
 import java.util.List;
+import javax.resource.ResourceException;
+import javax.resource.spi.ResourceAdapter;
+import javax.resource.spi.ResourceAdapterAssociation;
+import javax.resource.spi.endpoint.MessageEndpoint;
+import javax.resource.spi.work.HintsContext;
 import javax.resource.spi.work.Work;
+import javax.resource.spi.work.WorkContext;
+import javax.resource.spi.work.WorkContextProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class EthereumWork implements Work {
+public abstract class EthereumWork implements Work, WorkContextProvider, ResourceAdapterAssociation {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EthereumWork.class);
 
@@ -32,6 +40,8 @@ public abstract class EthereumWork implements Work {
     private boolean shutdown;
 
     private final List<EthereumActivationSpec> ethereumActivationSpecs;
+
+    private ResourceAdapter resourceAdapter;
 
     public EthereumWork(String nodeLocation) {
         this.nodeLocation = nodeLocation;
@@ -50,6 +60,40 @@ public abstract class EthereumWork implements Work {
     @Override
     public void release() {
         LOGGER.debug("release");
+        for (EthereumActivationSpec ethereumActivationSpec : this.ethereumActivationSpecs) {
+            EthereumMessageListener ethereumMessageListener = ethereumActivationSpec.getEthereumMessageListener();
+            MessageEndpoint messageEndpoint = (MessageEndpoint) ethereumMessageListener;
+            messageEndpoint.release();
+        }
+    }
+
+    @Override
+    public void run() {
+        doWork();
+    }
+
+    protected abstract void doWork();
+
+    @Override
+    public List<WorkContext> getWorkContexts() {
+        List<WorkContext> workContexts = new LinkedList<>();
+        HintsContext hintsContext = new HintsContext();
+        hintsContext.setName(getClass().getCanonicalName());
+        hintsContext.setDescription("Node location: " + this.nodeLocation);
+        hintsContext.setHint(HintsContext.NAME_HINT, getClass().getCanonicalName());
+        hintsContext.setHint(HintsContext.LONGRUNNING_HINT, Boolean.TRUE);
+        workContexts.add(hintsContext);
+        return workContexts;
+    }
+
+    @Override
+    public ResourceAdapter getResourceAdapter() {
+        return this.resourceAdapter;
+    }
+
+    @Override
+    public void setResourceAdapter(ResourceAdapter resourceAdapter) throws ResourceException {
+        this.resourceAdapter = resourceAdapter;
     }
 
     public void shutdown() {

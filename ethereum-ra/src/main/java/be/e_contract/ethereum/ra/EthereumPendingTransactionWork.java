@@ -60,7 +60,7 @@ public class EthereumPendingTransactionWork extends EthereumWork {
     }
 
     @Override
-    public void run() {
+    public void doWork() {
         try {
             String nodeLocation = this.getNodeLocation();
             if (nodeLocation.startsWith("ws:")) {
