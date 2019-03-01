@@ -49,20 +49,60 @@ public class EthereumTransactionManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EthereumTransactionManager.class);
 
+    public static final int DEFAULT_EXPIRATION_BLOCK_COUNT = 60 * 60 / 12; // about 1 hour
+
+    public static final int DEFAULT_CONFIRMATION_BLOCK_COUNT = 12;
+
     @Resource(mappedName = "java:/EthereumConnectionFactory")
     private EthereumConnectionFactory ethereumConnectionFactory;
 
     @Inject
     private Event<EthereumPublicationEvent> ethereumPublicationEvent;
 
-    // transaction hash -> expiration block number;
-    private Map<String, BigInteger> transactions;
+    private static class TransactionInfo {
+
+        private final BigInteger expirationBlockNumber;
+        private final int confirmationBlockCount;
+
+        public TransactionInfo(int confirmationBlockCount, BigInteger expirationBlockNumber) {
+            this.confirmationBlockCount = confirmationBlockCount;
+            this.expirationBlockNumber = expirationBlockNumber;
+        }
+
+        public BigInteger getExpirationBlockNumber() {
+            return this.expirationBlockNumber;
+        }
+
+        public int getConfirmationBlockCount() {
+            return this.confirmationBlockCount;
+        }
+    }
+
+    // key: transaction hash
+    private Map<String, TransactionInfo> transactions;
 
     private BigInteger latestBlockNumber;
+
+    private int defaultExpirationBlockCount;
+
+    private int defaultConfirmationBlockCount;
 
     @PostConstruct
     public void postConstruct() {
         this.transactions = new ConcurrentHashMap<>();
+        this.defaultConfirmationBlockCount = DEFAULT_CONFIRMATION_BLOCK_COUNT;
+        this.defaultExpirationBlockCount = DEFAULT_EXPIRATION_BLOCK_COUNT;
+    }
+
+    /**
+     * Sets the default transaction policy.
+     *
+     * @param defaultConfirmationBlockCount
+     * @param defaultExpirationBlockCount
+     */
+    public void setPolicy(int defaultConfirmationBlockCount, int defaultExpirationBlockCount) {
+        this.defaultConfirmationBlockCount = defaultConfirmationBlockCount;
+        this.defaultExpirationBlockCount = defaultExpirationBlockCount;
     }
 
     /**
@@ -73,17 +113,32 @@ public class EthereumTransactionManager {
      * @throws javax.resource.ResourceException
      */
     public void monitorTransaction(String transactionHash) throws ResourceException {
+        monitorTransaction(transactionHash, this.defaultConfirmationBlockCount, this.defaultExpirationBlockCount);
+    }
+
+    /**
+     * Request the transaction manager to look for confirmation on the given
+     * transaction.
+     *
+     * @param transactionHash
+     * @param confirmationBlockCount number of block to wait for transaction
+     * confirmation.
+     * @param expirationBlockCount number of blocks to wait for marking
+     * transaction as lost.
+     * @throws javax.resource.ResourceException
+     */
+    public void monitorTransaction(String transactionHash, int confirmationBlockCount, int expirationBlockCount) throws ResourceException {
         if (this.transactions.containsKey(transactionHash)) {
             return;
         }
         if (null == this.latestBlockNumber) {
-            try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+            try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
                 this.latestBlockNumber = ethereumConnection.getBlockNumber();
             }
         }
-        long expirationDelta = 60 * 60 / 12; // about 1 hour
-        BigInteger expirationBlockNumber = this.latestBlockNumber.add(BigInteger.valueOf(expirationDelta));
-        this.transactions.put(transactionHash, expirationBlockNumber);
+        BigInteger expirationBlockNumber = this.latestBlockNumber.add(BigInteger.valueOf(expirationBlockCount));
+        TransactionInfo transactionInfo = new TransactionInfo(confirmationBlockCount, expirationBlockNumber);
+        this.transactions.put(transactionHash, transactionInfo);
     }
 
     private boolean isPending(String transactionHash, EthBlock.Block pendingBlock) {
@@ -105,12 +160,13 @@ public class EthereumTransactionManager {
      */
     public void block(String blockHash) throws ResourceException {
         List<EthereumPublicationEvent> publicationEvents = new LinkedList<>();
-        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+        try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
             this.latestBlockNumber = ethereumConnection.getBlock(blockHash, false).getNumber();
             EthBlock.Block pendingBlock = ethereumConnection.getBlock(DefaultBlockParameterName.PENDING, true);
-            for (Map.Entry<String, BigInteger> transactionEntry : this.transactions.entrySet()) {
+            for (Map.Entry<String, TransactionInfo> transactionEntry : this.transactions.entrySet()) {
                 String transactionHash = transactionEntry.getKey();
-                BigInteger expirationBlockNumber = transactionEntry.getValue();
+                TransactionInfo transactionInfo = transactionEntry.getValue();
+                BigInteger expirationBlockNumber = transactionInfo.getExpirationBlockNumber();
                 if (isPending(transactionHash, pendingBlock)) {
                     LOGGER.debug("transaction still pending: {}", transactionHash);
                     continue;
@@ -133,7 +189,7 @@ public class EthereumTransactionManager {
                 }
                 BigInteger transactionBlockNumber = transactionReceipt.getBlockNumber();
                 long confirmingBlocks = this.latestBlockNumber.subtract(transactionBlockNumber).add(BigInteger.ONE).longValueExact();
-                if (confirmingBlocks < 12) {
+                if (confirmingBlocks < transactionInfo.getConfirmationBlockCount()) {
                     LOGGER.debug("transaction {} confirming blocks {}", transactionHash, confirmingBlocks);
                     continue;
                 }
