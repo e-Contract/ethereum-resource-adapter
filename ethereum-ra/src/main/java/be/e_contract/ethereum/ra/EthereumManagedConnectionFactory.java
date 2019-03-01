@@ -99,7 +99,16 @@ public class EthereumManagedConnectionFactory implements ManagedConnectionFactor
         } else {
             ethereumConnectionRequestInfo = new EthereumConnectionRequestInfo(this.nodeLocation);
         }
-        return new EthereumManagedConnection(ethereumConnectionRequestInfo, this.resourceAdapter);
+        EthereumManagedConnection ethereumManagedConnection = new EthereumManagedConnection(ethereumConnectionRequestInfo, this.resourceAdapter);
+        try {
+            ethereumManagedConnection.getClientVersion();
+        } catch (Exception ex) {
+            LOGGER.error("connection error?: " + ex.getMessage(), ex);
+            // checking the connection here allows the application server to do an allocation retry
+            // see also: ironjacamar.xml
+            throw new ResourceException("connection error: " + ex.getMessage());
+        }
+        return ethereumManagedConnection;
     }
 
     @Override
