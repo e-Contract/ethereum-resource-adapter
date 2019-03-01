@@ -50,7 +50,7 @@ Ethereum JCA Resource Adapter Project
 @Resource(name = "EthereumConnectionFactory")
 private EthereumConnectionFactory ethereumConnectionFactory;
 
-try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
     ethereumConnection.sendRawTransaction(rawTransaction);
 }
 +--

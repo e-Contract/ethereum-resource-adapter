@@ -51,7 +51,7 @@ public class EthereumManagedConnectionMetaData implements ManagedConnectionMetaD
     @Override
     public int getMaxConnections() throws ResourceException {
         LOGGER.debug("getMaxConnections");
-        return 16;
+        return Integer.MAX_VALUE;
     }
 
     @Override

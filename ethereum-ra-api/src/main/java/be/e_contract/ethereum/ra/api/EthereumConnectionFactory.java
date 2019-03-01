@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018 e-Contract.be BVBA.
+ * Copyright (C) 2018-2019 e-Contract.be BVBA.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -17,7 +17,9 @@
  */
 package be.e_contract.ethereum.ra.api;
 
+import javax.resource.ResourceException;
 import javax.resource.cci.ConnectionFactory;
+import javax.resource.cci.ConnectionSpec;
 
 /**
  * Factory for Ethereum connections. The connections are Java EE JTA transaction
@@ -29,4 +31,9 @@ import javax.resource.cci.ConnectionFactory;
  */
 public interface EthereumConnectionFactory extends ConnectionFactory {
 
+    @Override
+    EthereumConnection getConnection(ConnectionSpec properties) throws ResourceException;
+
+    @Override
+    EthereumConnection getConnection() throws ResourceException;
 }

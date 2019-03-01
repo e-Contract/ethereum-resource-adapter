@@ -61,7 +61,7 @@ public class EthereumConnectionFactoryImpl implements EthereumConnectionFactory 
 
     @Override
     public EthereumConnection getConnection(ConnectionSpec connectionSpec) throws ResourceException {
-        LOGGER.debug("getConnection");
+        LOGGER.debug("getConnection: {}", connectionSpec);
         EthereumConnectionRequestInfo ethereumConnectionRequestInfo;
         if (null != connectionSpec) {
             EthereumConnectionSpec ethereumConnectionSpec = (EthereumConnectionSpec) connectionSpec;
@@ -92,6 +92,7 @@ public class EthereumConnectionFactoryImpl implements EthereumConnectionFactory 
 
     @Override
     public ResourceAdapterMetaData getMetaData() throws ResourceException {
+        LOGGER.debug("getMetadata");
         return new EthereumResourceAdapterMetaData();
     }
 }

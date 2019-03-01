@@ -48,7 +48,7 @@ public class ContractBean {
 
     public void performTransaction() throws Exception {
         Security.addProvider(new BouncyCastleProvider());
-        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+        try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
             List<String> accounts = ethereumConnection.getAccounts();
             String account = accounts.get(0);
             String password = "";
@@ -130,7 +130,7 @@ public class ContractBean {
 
     public void testUnknownContract() throws Exception {
         Security.addProvider(new BouncyCastleProvider());
-        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+        try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
             List<String> accounts = ethereumConnection.getAccounts();
             String account = accounts.get(0);
             String password = "";

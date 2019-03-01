@@ -241,6 +241,9 @@ public class EthereumResourceAdapter implements ResourceAdapter, Serializable, R
 
     @Override
     public Reference getReference() throws NamingException {
+        if (null == this.reference) {
+            throw new NamingException("reference has not been set");
+        }
         return this.reference;
     }
 }

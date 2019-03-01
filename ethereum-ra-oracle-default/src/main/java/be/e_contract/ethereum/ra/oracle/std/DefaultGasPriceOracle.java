@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018 e-Contract.be BVBA.
+ * Copyright (C) 2018-2019 e-Contract.be BVBA.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -78,7 +78,7 @@ public class DefaultGasPriceOracle implements GasPriceOracleSpi {
     @Override
     public BigInteger getGasPrice(Integer maxDuration) {
         BigInteger gasPrice;
-        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+        try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
             gasPrice = ethereumConnection.getGasPrice();
         } catch (ResourceException ex) {
             LOGGER.error("JCA error: " + ex.getMessage(), ex);
@@ -114,7 +114,7 @@ public class DefaultGasPriceOracle implements GasPriceOracleSpi {
         String transactionHash = pendingTransactionEvent.getTransactionHash();
         DateTime timestamp = new DateTime(pendingTransactionEvent.getTimestamp());
         Transaction transaction;
-        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+        try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
             transaction = ethereumConnection.findTransaction(transactionHash);
         } catch (ResourceException ex) {
             LOGGER.error("JCA error: " + ex.getMessage(), ex);
@@ -134,7 +134,7 @@ public class DefaultGasPriceOracle implements GasPriceOracleSpi {
         String blockHash = latestBlockEvent.getBlockHash();
         EthBlock.Block block;
         BigInteger nodeGasPrice;
-        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+        try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
             block = ethereumConnection.getBlock(blockHash, true);
             nodeGasPrice = ethereumConnection.getGasPrice();
         } catch (ResourceException ex) {

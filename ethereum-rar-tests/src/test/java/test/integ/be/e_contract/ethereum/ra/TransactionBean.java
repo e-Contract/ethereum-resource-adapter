@@ -45,7 +45,7 @@ public class TransactionBean {
 
     public void performTransaction() throws Exception {
         Security.addProvider(new BouncyCastleProvider());
-        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+        try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
             List<String> accounts = ethereumConnection.getAccounts();
             String account = accounts.get(0);
             String password = "";
@@ -97,7 +97,7 @@ public class TransactionBean {
 
     public void performSingleTransaction() throws Exception {
         Security.addProvider(new BouncyCastleProvider());
-        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+        try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
             List<String> accounts = ethereumConnection.getAccounts();
             String account = accounts.get(0);
             String password = "";
@@ -127,7 +127,7 @@ public class TransactionBean {
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void rollback() throws Exception {
         Security.addProvider(new BouncyCastleProvider());
-        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+        try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
             List<String> accounts = ethereumConnection.getAccounts();
             String account = accounts.get(0);
             String password = "";

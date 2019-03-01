@@ -58,7 +58,7 @@ public class EthereumBean {
         } else {
             ethereumConnectionSpec = new EthereumConnectionSpec(nodeLocation);
         }
-        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection(ethereumConnectionSpec)) {
+        try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection(ethereumConnectionSpec)) {
             if (rollback) {
                 throw new RollbackException();
             }
@@ -71,7 +71,7 @@ public class EthereumBean {
 
     public String sendRawTransaction(String rawTransaction, boolean rollback) throws RollbackException, EthereumException {
         String transactionHash;
-        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+        try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
             transactionHash = ethereumConnection.sendRawTransaction(rawTransaction);
         } catch (ResourceException ex) {
             LOGGER.error("JCA error: " + ex.getMessage(), ex);
@@ -85,7 +85,7 @@ public class EthereumBean {
 
     public String sendRawTransactionLocalTransaction(String rawTransaction, boolean rollback) throws RollbackException, EthereumException {
         String transactionHash;
-        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+        try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
             LocalTransaction localTransaction = ethereumConnection.getLocalTransaction();
             localTransaction.begin();
             transactionHash = ethereumConnection.sendRawTransaction(rawTransaction);
@@ -102,7 +102,7 @@ public class EthereumBean {
     }
 
     public TransactionConfirmation getTransactionConfirmation(String transactionHash) {
-        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+        try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
             return ethereumConnection.getTransactionConfirmation(transactionHash);
         } catch (ResourceException ex) {
             LOGGER.error("JCA error: " + ex.getMessage(), ex);
@@ -111,7 +111,7 @@ public class EthereumBean {
     }
 
     public List<String> getAccounts() {
-        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+        try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
             return ethereumConnection.getAccounts();
         } catch (ResourceException ex) {
             LOGGER.error("JCA error: " + ex.getMessage(), ex);
@@ -120,7 +120,7 @@ public class EthereumBean {
     }
 
     public String newAccount(String password) {
-        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+        try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
             return ethereumConnection.newAccount(password);
         } catch (ResourceException ex) {
             LOGGER.error("JCA error: " + ex.getMessage(), ex);
@@ -129,7 +129,7 @@ public class EthereumBean {
     }
 
     public BigInteger getBalance(String account) {
-        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+        try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
             return ethereumConnection.getBalance(account);
         } catch (ResourceException ex) {
             LOGGER.error("JCA error: " + ex.getMessage(), ex);
@@ -138,7 +138,7 @@ public class EthereumBean {
     }
 
     public void unlockAccount(String account, String password) throws EthereumException {
-        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+        try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
             ethereumConnection.unlockAccount(account, password);
         } catch (ResourceException ex) {
             LOGGER.error("JCA error: " + ex.getMessage(), ex);
@@ -146,7 +146,7 @@ public class EthereumBean {
     }
 
     public String sendAccountTransaction(String account, String to, BigInteger value, BigInteger gasPrice, BigInteger nonce) throws EthereumException {
-        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+        try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
             return ethereumConnection.sendAccountTransaction(account, to, value, gasPrice, nonce);
         } catch (ResourceException ex) {
             LOGGER.error("JCA error: " + ex.getMessage(), ex);
@@ -155,7 +155,7 @@ public class EthereumBean {
     }
 
     public BigInteger getNonce(String address) {
-        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+        try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
             return ethereumConnection.getTransactionCount(address);
         } catch (ResourceException ex) {
             LOGGER.error("JCA error: " + ex.getMessage(), ex);
@@ -164,7 +164,7 @@ public class EthereumBean {
     }
 
     public TransactionReceipt deployDemoContract(Credentials credentials) throws EthereumException {
-        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+        try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
             Long chainId = ethereumConnection.getChainId();
             LOGGER.debug("chain id: {}", chainId);
             Long _chainId;
@@ -185,7 +185,7 @@ public class EthereumBean {
     }
 
     public String invokeContract(String contractAddress, Credentials credentials, BigInteger value, boolean rollback) throws Exception {
-        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+        try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
             Long chainId = ethereumConnection.getChainId();
             LOGGER.debug("chain id: {}", chainId);
             Long _chainId;
@@ -213,7 +213,7 @@ public class EthereumBean {
     }
 
     public BigInteger readContract(String contractAddress, Credentials credentials) throws Exception {
-        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+        try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
             Long chainId = ethereumConnection.getChainId();
             LOGGER.debug("chain id: {}", chainId);
             Long _chainId;
@@ -237,31 +237,31 @@ public class EthereumBean {
     }
 
     public String getClientVersion() throws Exception {
-        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+        try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
             return ethereumConnection.getClientVersion();
         }
     }
 
     public String getNetVersion() throws Exception {
-        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+        try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
             return ethereumConnection.getNetVersion();
         }
     }
 
     public String getProtocolVersion() throws Exception {
-        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+        try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
             return ethereumConnection.getProtocolVersion();
         }
     }
 
     public BigInteger getPeerCount() throws Exception {
-        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+        try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
             return ethereumConnection.getPeerCount();
         }
     }
 
     public boolean isSyncing() throws Exception {
-        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+        try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
             return ethereumConnection.isSyncing();
         }
     }

@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018 e-Contract.be BVBA.
+ * Copyright (C) 2018-2019 e-Contract.be BVBA.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -50,7 +50,7 @@ public class EthereumDemoServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         PrintWriter output = resp.getWriter();
         try {
-            try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+            try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
                 BigInteger gasPrice = ethereumConnection.getGasPrice();
                 output.println("Gas Price: " + gasPrice);
             }

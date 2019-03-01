@@ -102,9 +102,11 @@ public class EthereumManagedConnection implements ManagedConnection {
 
     private boolean destroyed;
 
+    private EthereumManagedConnectionMetaData metadata;
+
     public EthereumManagedConnection(EthereumConnectionRequestInfo ethereumConnectionRequestInfo,
             EthereumResourceAdapter resourceAdapter) {
-        LOGGER.debug("constructor");
+        LOGGER.debug("constructor: {}", ethereumConnectionRequestInfo.getNodeLocation());
         this.listeners = new HashSet<>();
         this.ethereumConnectionRequestInfo = ethereumConnectionRequestInfo;
         this.resourceAdapter = resourceAdapter;
@@ -121,7 +123,7 @@ public class EthereumManagedConnection implements ManagedConnection {
         return this.web3;
     }
 
-    public Web3jService getWeb3jService() {
+    Web3jService getWeb3jService() {
         if (null != this.service) {
             return service;
         }
@@ -130,7 +132,7 @@ public class EthereumManagedConnection implements ManagedConnection {
         return this.service;
     }
 
-    public void checkIfDestroyed() throws ResourceException {
+    void checkIfDestroyed() throws ResourceException {
         if (this.destroyed) {
             throw new ResourceException("Managed connection has been destroyed");
         }
@@ -138,7 +140,7 @@ public class EthereumManagedConnection implements ManagedConnection {
 
     @Override
     public Object getConnection(Subject subject, ConnectionRequestInfo cxRequestInfo) throws ResourceException {
-        LOGGER.debug("getConnection");
+        LOGGER.debug("getConnection: {}", cxRequestInfo);
         if (null == cxRequestInfo) {
             LOGGER.debug("ConnectionRequestInfo is null");
         }
@@ -195,13 +197,13 @@ public class EthereumManagedConnection implements ManagedConnection {
 
     @Override
     public void addConnectionEventListener(ConnectionEventListener listener) {
-        LOGGER.debug("addConnectionEventListener");
+        LOGGER.debug("addConnectionEventListener: {}", listener);
         this.listeners.add(listener);
     }
 
     @Override
     public void removeConnectionEventListener(ConnectionEventListener listener) {
-        LOGGER.debug("removeConnectionEventListener");
+        LOGGER.debug("removeConnectionEventListener: {}", listener);
         this.listeners.remove(listener);
     }
 
@@ -231,7 +233,10 @@ public class EthereumManagedConnection implements ManagedConnection {
     public ManagedConnectionMetaData getMetaData() throws ResourceException {
         LOGGER.debug("getMetadata");
         checkIfDestroyed();
-        return new EthereumManagedConnectionMetaData(this);
+        if (null == this.metadata) {
+            this.metadata = new EthereumManagedConnectionMetaData(this);
+        }
+        return this.metadata;
     }
 
     @Override
@@ -246,7 +251,7 @@ public class EthereumManagedConnection implements ManagedConnection {
         return this.logWriter;
     }
 
-    public void fireConnectionEvent(EthereumConnection connection, int eventId, Exception exception) {
+    void fireConnectionEvent(EthereumConnection connection, int eventId, Exception exception) {
         ConnectionEvent event;
         if (exception == null) {
             event = new ConnectionEvent(this, eventId);
@@ -261,6 +266,7 @@ public class EthereumManagedConnection implements ManagedConnection {
                     break;
 
                 case ConnectionEvent.CONNECTION_ERROR_OCCURRED:
+                    LOGGER.warn("connection error occurred: {}", connection);
                     listener.connectionErrorOccurred(event);
                     break;
 
@@ -279,7 +285,7 @@ public class EthereumManagedConnection implements ManagedConnection {
         }
     }
 
-    public BigInteger getGasPrice() throws ResourceException {
+    BigInteger getGasPrice() throws ResourceException {
         Web3j web3j;
         try {
             web3j = getWeb3j();
@@ -297,7 +303,7 @@ public class EthereumManagedConnection implements ManagedConnection {
         return gasPrice;
     }
 
-    public boolean match(ConnectionRequestInfo connectionRequestInfo) {
+    boolean match(ConnectionRequestInfo connectionRequestInfo) {
         if (null == this.ethereumConnectionRequestInfo && null == connectionRequestInfo) {
             return true;
         }
@@ -310,7 +316,7 @@ public class EthereumManagedConnection implements ManagedConnection {
         return this.ethereumConnectionRequestInfo.equals(connectionRequestInfo);
     }
 
-    public BigInteger getBlockNumber() throws ResourceException {
+    BigInteger getBlockNumber() throws ResourceException {
         Web3j web3j;
         try {
             web3j = getWeb3j();
@@ -375,7 +381,7 @@ public class EthereumManagedConnection implements ManagedConnection {
         return transactionHash;
     }
 
-    public TransactionConfirmation getTransactionConfirmation(String transactionHash) throws Exception {
+    TransactionConfirmation getTransactionConfirmation(String transactionHash) throws Exception {
         Web3j web3j = getWeb3j();
 
         TransactionConfirmation transactionConfirmation = new TransactionConfirmation(transactionHash);
@@ -421,7 +427,7 @@ public class EthereumManagedConnection implements ManagedConnection {
         return transactionConfirmation;
     }
 
-    public Transaction findTransaction(String transactionHash) throws Exception {
+    Transaction findTransaction(String transactionHash) throws Exception {
         Web3j web3j = getWeb3j();
         Optional<Transaction> transactionOptional = web3j.ethGetTransactionByHash(transactionHash).send().getTransaction();
         if (!transactionOptional.isPresent()) {
@@ -430,25 +436,25 @@ public class EthereumManagedConnection implements ManagedConnection {
         return transactionOptional.get();
     }
 
-    public EthBlock.Block getBlock(String blockHash, boolean returnFullTransactionObjects) throws Exception {
+    EthBlock.Block getBlock(String blockHash, boolean returnFullTransactionObjects) throws Exception {
         Web3j web3j = getWeb3j();
         EthBlock.Block block = web3j.ethGetBlockByHash(blockHash, returnFullTransactionObjects).send().getBlock();
         return block;
     }
 
-    public BigInteger getBalance(String address) throws Exception {
+    BigInteger getBalance(String address) throws Exception {
         Web3j web3j = getWeb3j();
         BigInteger balance = web3j.ethGetBalance(address, DefaultBlockParameterName.LATEST).send().getBalance();
         return balance;
     }
 
-    public BigInteger getTransactionCount(String address) throws Exception {
+    BigInteger getTransactionCount(String address) throws Exception {
         Web3j web3j = getWeb3j();
         BigInteger transactionCount = web3j.ethGetTransactionCount(address, DefaultBlockParameterName.LATEST).send().getTransactionCount();
         return transactionCount;
     }
 
-    private BigInteger getParityNextNonce(String address) throws Exception {
+    BigInteger getParityNextNonce(String address) throws Exception {
         Web3j web3j = getWeb3j();
         String clientVersion = web3j.web3ClientVersion().send().getWeb3ClientVersion();
         LOGGER.debug("client version: {}", clientVersion);
@@ -491,17 +497,17 @@ public class EthereumManagedConnection implements ManagedConnection {
         }
     }
 
-    public List<String> getAccounts() throws Exception {
+    List<String> getAccounts() throws Exception {
         Admin admin = getWeb3j();
         return admin.ethAccounts().send().getAccounts();
     }
 
-    public String newAccount(String password) throws Exception {
+    String newAccount(String password) throws Exception {
         Admin admin = getWeb3j();
         return admin.personalNewAccount(password).send().getAccountId();
     }
 
-    public boolean unlockAccount(String account, String password) throws Exception {
+    boolean unlockAccount(String account, String password) throws Exception {
         Admin admin = getWeb3j();
         PersonalUnlockAccount personalUnlockAccount = admin.personalUnlockAccount(account, password).send();
         if (personalUnlockAccount.hasError()) {
@@ -512,7 +518,7 @@ public class EthereumManagedConnection implements ManagedConnection {
         return personalUnlockAccount.accountUnlocked();
     }
 
-    public String sendAccountTransaction(String account, String to, BigInteger value, BigInteger gasPrice, BigInteger nonce) throws Exception {
+    String sendAccountTransaction(String account, String to, BigInteger value, BigInteger gasPrice, BigInteger nonce) throws Exception {
         Web3j web3j = getWeb3j();
         BigInteger gasLimit = BigInteger.valueOf(21000);
         org.web3j.protocol.core.methods.request.Transaction transaction
@@ -526,7 +532,7 @@ public class EthereumManagedConnection implements ManagedConnection {
         return ethSendTransaction.getTransactionHash();
     }
 
-    public TransactionReceipt deploy(Class<? extends Contract> contractClass, ContractGasProvider contractGasProvider,
+    TransactionReceipt deploy(Class<? extends Contract> contractClass, ContractGasProvider contractGasProvider,
             Credentials credentials, Long chainId) throws Exception {
         Web3j web3j = getWeb3j();
         Field binaryField = contractClass.getDeclaredField("BINARY");
@@ -550,7 +556,7 @@ public class EthereumManagedConnection implements ManagedConnection {
         return contract.getTransactionReceipt().get();
     }
 
-    public <T extends Contract> T load(Class<T> contractClass, String contractAddress,
+    <T extends Contract> T load(Class<T> contractClass, String contractAddress,
             Credentials credentials, Long chainId, ContractGasProvider contractGasProvider) throws Exception {
         Method method = contractClass.getMethod("load", String.class, Web3j.class,
                 TransactionManager.class, ContractGasProvider.class);
@@ -569,7 +575,7 @@ public class EthereumManagedConnection implements ManagedConnection {
         return contract;
     }
 
-    public Long getChainId() throws Exception {
+    Long getChainId() throws Exception {
         Web3j web3j = getWeb3j();
         BigInteger blockNumber = web3j.ethBlockNumber().send().getBlockNumber();
         while (!blockNumber.equals(BigInteger.ZERO)) {
@@ -592,7 +598,7 @@ public class EthereumManagedConnection implements ManagedConnection {
         return this.resourceAdapter;
     }
 
-    public String sendTransaction(Credentials credentials, String to, BigInteger value, BigInteger gasPrice, Long chainId) throws Exception {
+    String sendTransaction(Credentials credentials, String to, BigInteger value, BigInteger gasPrice, Long chainId) throws Exception {
         BigInteger nonce = getNextNonce(credentials.getAddress());
         BigInteger gasLimit = BigInteger.valueOf(21000);
         RawTransaction rawTransaction = RawTransaction.createEtherTransaction(nonce, gasPrice, gasLimit, to, value);
@@ -620,38 +626,38 @@ public class EthereumManagedConnection implements ManagedConnection {
         return sendRawTransaction(hexValue);
     }
 
-    public EthBlock.Block getBlock(DefaultBlockParameter defaultBlockParameter, boolean returnFullTransactionObjects) throws Exception {
+    EthBlock.Block getBlock(DefaultBlockParameter defaultBlockParameter, boolean returnFullTransactionObjects) throws Exception {
         Web3j web3j = getWeb3j();
         EthBlock.Block block = web3j.ethGetBlockByNumber(defaultBlockParameter, returnFullTransactionObjects).send().getBlock();
         return block;
     }
 
-    public String getNetVersion() throws Exception {
+    String getNetVersion() throws Exception {
         Web3j web3j = getWeb3j();
         return web3j.netVersion().send().getNetVersion();
     }
 
-    public BigInteger getPeerCount() throws Exception {
+    BigInteger getPeerCount() throws Exception {
         Web3j web3j = getWeb3j();
         return web3j.netPeerCount().send().getQuantity();
     }
 
-    public String getProtocolVersion() throws Exception {
+    String getProtocolVersion() throws Exception {
         Web3j web3j = getWeb3j();
         return web3j.ethProtocolVersion().send().getProtocolVersion();
     }
 
-    public boolean isSyncing() throws Exception {
+    boolean isSyncing() throws Exception {
         Web3j web3j = getWeb3j();
         return web3j.ethSyncing().send().isSyncing();
     }
 
-    public String getClientVersion() throws Exception {
+    String getClientVersion() throws Exception {
         Web3j web3j = getWeb3j();
         return web3j.web3ClientVersion().send().getWeb3ClientVersion();
     }
 
-    public EthGetTransactionReceipt getTransactionReceipt(String transactionHash) throws Exception {
+    EthGetTransactionReceipt getTransactionReceipt(String transactionHash) throws Exception {
         Web3j web3j = getWeb3j();
         return web3j.ethGetTransactionReceipt(transactionHash).send();
     }
@@ -662,5 +668,10 @@ public class EthereumManagedConnection implements ManagedConnection {
 
     void addConnection(EthereumConnectionImpl ethereumConnection) {
         this.ethereumConnections.add(ethereumConnection);
+    }
+
+    @Override
+    public String toString() {
+        return "EthereumManagedConnection{" + "ethereumConnectionRequestInfo=" + this.ethereumConnectionRequestInfo + '}';
     }
 }

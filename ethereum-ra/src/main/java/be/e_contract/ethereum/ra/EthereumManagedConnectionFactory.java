@@ -23,6 +23,9 @@ import java.io.PrintWriter;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.Set;
+import javax.naming.NamingException;
+import javax.naming.Reference;
+import javax.resource.Referenceable;
 import javax.resource.ResourceException;
 import javax.resource.spi.ConfigProperty;
 import javax.resource.spi.ConnectionDefinition;
@@ -46,7 +49,7 @@ import org.slf4j.LoggerFactory;
             connection = EthereumConnection.class,
             connectionImpl = EthereumConnectionImpl.class)
 })
-public class EthereumManagedConnectionFactory implements ManagedConnectionFactory, ResourceAdapterAssociation, Serializable {
+public class EthereumManagedConnectionFactory implements ManagedConnectionFactory, ResourceAdapterAssociation, Serializable, Referenceable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EthereumManagedConnectionFactory.class);
 
@@ -54,7 +57,9 @@ public class EthereumManagedConnectionFactory implements ManagedConnectionFactor
 
     private EthereumResourceAdapter resourceAdapter;
 
-    @ConfigProperty
+    private Reference reference;
+
+    @ConfigProperty(type = String.class, description = "The location of the Ethereum client node.")
     private String nodeLocation;
 
     public EthereumManagedConnectionFactory() {
@@ -100,6 +105,9 @@ public class EthereumManagedConnectionFactory implements ManagedConnectionFactor
     @Override
     public ManagedConnection matchManagedConnections(Set connectionSet, Subject subject, ConnectionRequestInfo cxRequestInfo) throws ResourceException {
         LOGGER.debug("matchManagedConnections");
+        if (connectionSet == null) {
+            return null;
+        }
         LOGGER.debug("connection set size: {}", connectionSet.size());
         LOGGER.debug("subject: {}", subject);
         LOGGER.debug("connection request info: {}", cxRequestInfo);
@@ -107,6 +115,7 @@ public class EthereumManagedConnectionFactory implements ManagedConnectionFactor
         while (iterator.hasNext()) {
             Object connection = iterator.next();
             if (!(connection instanceof EthereumManagedConnection)) {
+                LOGGER.error("unexpected connection: {}", connection);
                 continue;
             }
             EthereumManagedConnection ethereumManagedConnection = (EthereumManagedConnection) connection;
@@ -141,6 +150,9 @@ public class EthereumManagedConnectionFactory implements ManagedConnectionFactor
     @Override
     public void setResourceAdapter(ResourceAdapter ra) throws ResourceException {
         LOGGER.debug("setResourceAdapter");
+        if (!(ra instanceof EthereumResourceAdapter)) {
+            throw new ResourceException("incorrect resource adapter type: " + ra);
+        }
         this.resourceAdapter = (EthereumResourceAdapter) ra;
     }
 
@@ -164,5 +176,18 @@ public class EthereumManagedConnectionFactory implements ManagedConnectionFactor
     @Override
     public int hashCode() {
         return new HashCodeBuilder().append(this.nodeLocation).toHashCode();
+    }
+
+    @Override
+    public void setReference(Reference reference) {
+        this.reference = reference;
+    }
+
+    @Override
+    public Reference getReference() throws NamingException {
+        if (null == this.reference) {
+            throw new NamingException("reference has not been set");
+        }
+        return this.reference;
     }
 }

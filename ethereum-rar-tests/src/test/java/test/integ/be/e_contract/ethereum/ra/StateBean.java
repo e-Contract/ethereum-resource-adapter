@@ -53,7 +53,7 @@ public class StateBean {
     }
 
     public boolean hasPendingTransactions() throws ResourceException {
-        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+        try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
             String clientVersion = ethereumConnection.getClientVersion();
             if (null != clientVersion && clientVersion.startsWith("Parity")) {
                 // Parity in dev mode does not yield pending transactions

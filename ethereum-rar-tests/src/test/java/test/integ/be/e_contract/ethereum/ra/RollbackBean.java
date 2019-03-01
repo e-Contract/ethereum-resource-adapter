@@ -37,7 +37,7 @@ public class RollbackBean {
 
     public void rollback() throws Exception {
         this.userTransaction.begin();
-        try (EthereumConnection ethereumConnection = (EthereumConnection) this.ethereumConnectionFactory.getConnection()) {
+        try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
             this.userTransaction.rollback();
         }
     }

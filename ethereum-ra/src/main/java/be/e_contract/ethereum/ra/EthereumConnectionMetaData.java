@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018 e-Contract.be BVBA.
+ * Copyright (C) 2018-2019 e-Contract.be BVBA.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -41,7 +41,7 @@ public class EthereumConnectionMetaData implements ConnectionMetaData {
 
     @Override
     public String getUserName() throws ResourceException {
-        LOGGER.debug("getEISProductName");
-        throw new UnsupportedOperationException();
+        LOGGER.debug("getUserName");
+        return "";
     }
 }
