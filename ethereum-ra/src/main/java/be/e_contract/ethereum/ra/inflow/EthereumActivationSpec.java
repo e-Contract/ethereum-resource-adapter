@@ -48,6 +48,9 @@ public class EthereumActivationSpec implements ActivationSpec, Serializable {
     @ConfigProperty(type = Boolean.class, description = "Set to true to omit delivery while node is syncing.")
     private Boolean omitSyncing;
 
+    @ConfigProperty(type = String.class, description = "The Origin to use in case of a web socket connection.")
+    private String wsOrigin;
+
     private EthereumMessageListener ethereumMessageListener;
 
     public EthereumActivationSpec() {
@@ -91,6 +94,14 @@ public class EthereumActivationSpec implements ActivationSpec, Serializable {
 
     public void setOmitSyncing(Boolean omitSyncing) {
         this.omitSyncing = omitSyncing;
+    }
+
+    public String getWsOrigin() {
+        return this.wsOrigin;
+    }
+
+    public void setWsOrigin(String wsOrigin) {
+        this.wsOrigin = wsOrigin;
     }
 
     @Override

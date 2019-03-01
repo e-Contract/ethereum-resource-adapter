@@ -72,6 +72,7 @@ try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getC
 +--
 @MessageDriven(activationConfig = {
     @ActivationConfigProperty(propertyName = "nodeLocation", propertyValue = "ws://127.0.0.1:8546"),
+    @ActivationConfigProperty(propertyName = "wsOrigin", propertyValue = "http://localhost"),
     @ActivationConfigProperty(propertyName = "deliverPending", propertyValue = "true"),
     @ActivationConfigProperty(propertyName = "deliverBlock", propertyValue = "true"),
     @ActivationConfigProperty(propertyName = "omitSyncing", propertyValue = "true")

@@ -37,14 +37,17 @@ public abstract class EthereumWork implements Work, WorkContextProvider, Resourc
 
     private final String nodeLocation;
 
+    private final String wsOrigin;
+
     private boolean shutdown;
 
     private final List<EthereumActivationSpec> ethereumActivationSpecs;
 
     private ResourceAdapter resourceAdapter;
 
-    public EthereumWork(String nodeLocation) {
+    public EthereumWork(String nodeLocation, String wsOrigin) {
         this.nodeLocation = nodeLocation;
+        this.wsOrigin = wsOrigin;
         this.ethereumActivationSpecs = new LinkedList<>();
     }
 
@@ -109,7 +112,14 @@ public abstract class EthereumWork implements Work, WorkContextProvider, Resourc
         return this.ethereumActivationSpecs;
     }
 
-    public String getNodeLocation() {
+    protected String getNodeLocation() {
         return this.nodeLocation;
+    }
+
+    protected String getWsOrigin() {
+        if (null == this.wsOrigin) {
+            return "http://localhost";
+        }
+        return this.wsOrigin;
     }
 }

@@ -150,6 +150,7 @@ public class EthereumResourceAdapter implements ResourceAdapter, Serializable, R
         ethereumActivationSpec.setEthereumMessageListener(ethereumMessageListener);
         String nodeLocation = ethereumActivationSpec.getNodeLocation();
         LOGGER.debug("node location: {}", nodeLocation);
+        String wsOrigin = ethereumActivationSpec.getWsOrigin();
 
         if (null != ethereumActivationSpec.isDeliverBlock() && ethereumActivationSpec.isDeliverBlock()) {
             synchronized (this.nodeLocationEthereumBlockWork) {
@@ -157,7 +158,7 @@ public class EthereumResourceAdapter implements ResourceAdapter, Serializable, R
                 EthereumBlockWork ethereumWork = this.nodeLocationEthereumBlockWork.get(nodeLocation);
                 if (null == ethereumWork) {
                     WorkManager workManager = this.bootstrapContext.getWorkManager();
-                    ethereumWork = new EthereumBlockWork(nodeLocation);
+                    ethereumWork = new EthereumBlockWork(nodeLocation, wsOrigin);
                     this.nodeLocationEthereumBlockWork.put(nodeLocation, ethereumWork);
                     workManager.scheduleWork(ethereumWork, WorkManager.INDEFINITE, null, new EthereumWorkListener(workManager));
                 }
@@ -170,7 +171,7 @@ public class EthereumResourceAdapter implements ResourceAdapter, Serializable, R
                 EthereumPendingTransactionWork ethereumWork = this.nodeLocationEthereumPendingTransactionWork.get(nodeLocation);
                 if (null == ethereumWork) {
                     WorkManager workManager = this.bootstrapContext.getWorkManager();
-                    ethereumWork = new EthereumPendingTransactionWork(nodeLocation);
+                    ethereumWork = new EthereumPendingTransactionWork(nodeLocation, wsOrigin);
                     this.nodeLocationEthereumPendingTransactionWork.put(nodeLocation, ethereumWork);
                     workManager.scheduleWork(ethereumWork, WorkManager.INDEFINITE, null, new EthereumWorkListener(workManager));
                 }

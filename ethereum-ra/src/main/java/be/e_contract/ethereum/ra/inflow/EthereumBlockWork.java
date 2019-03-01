@@ -57,8 +57,8 @@ public class EthereumBlockWork extends EthereumWork {
         }
     }
 
-    public EthereumBlockWork(String nodeLocation) {
-        super(nodeLocation);
+    public EthereumBlockWork(String nodeLocation, String wsOrigin) {
+        super(nodeLocation, wsOrigin);
     }
 
     @Override
@@ -79,7 +79,8 @@ public class EthereumBlockWork extends EthereumWork {
     public void _runWebSocket(String nodeLocation) throws Exception {
         this.error = false;
         Map<String, String> headers = new HashMap<>();
-        headers.put("Origin", "http://localhost");
+        String wsOrigin = this.getWsOrigin();
+        headers.put("Origin", wsOrigin);
         WebSocketClient webSocketClient = new WebSocketClient(new URI(nodeLocation), headers);
         WebSocketService webSocketService = new WebSocketService(webSocketClient, false);
         webSocketService.connect();
