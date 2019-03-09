@@ -102,6 +102,33 @@ public class EthereumMDB implements EthereumMessageListener {
  Notice that the message listener supports web sockets besides plain HTTP connections.
  It is advised to use web sockets instead of plain HTTP connections to reduce the stress on the Ethereum client node.
 
+** Transaction Monitoring
+
+ Given the nature of blockchain, you probably want to monitor the Ethereum transactions as they get mined (or not).
+ To ease this task, we provide an <<<EthereumTransactionManager>>> CDI bean.
+ Simply inject this CDI bean as follows:
+
++--
+import be.e_contract.ethereum.utils.EthereumTransactionManager;
+
+@Inject
+private EthereumTransactionManager ethereumTransactionManager;
++--
+
+ Instruct the <<<EthereumTransactionManager>>> to monitor an Ethereum transaction via:
+
++--
+String yourTransactionHash = "...";
+this.ethereumTransactionManager.monitorTransaction(yourTransactionHash);
++--
+
+ And observe the state of the Ethereum transaction via:
+
++--
+private void observeEthereumEvent(@Observes EthereumPublicationEvent event) {
+  // do something here, depending on the event outcome...
+}
++--
 
 ** Gas Price Oracle
 
