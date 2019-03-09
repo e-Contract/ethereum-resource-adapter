@@ -19,6 +19,7 @@ package be.e_contract.ethereum.utils;
 
 import be.e_contract.ethereum.ra.api.EthereumConnection;
 import be.e_contract.ethereum.ra.api.EthereumConnectionFactory;
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
@@ -63,10 +64,13 @@ public class EthereumTransactionManager {
 
         private final BigInteger expirationBlockNumber;
         private final int confirmationBlockCount;
+        private final Serializable info;
 
-        public TransactionInfo(int confirmationBlockCount, BigInteger expirationBlockNumber) {
+        public TransactionInfo(int confirmationBlockCount, BigInteger expirationBlockNumber,
+                Serializable info) {
             this.confirmationBlockCount = confirmationBlockCount;
             this.expirationBlockNumber = expirationBlockNumber;
+            this.info = info;
         }
 
         public BigInteger getExpirationBlockNumber() {
@@ -75,6 +79,10 @@ public class EthereumTransactionManager {
 
         public int getConfirmationBlockCount() {
             return this.confirmationBlockCount;
+        }
+
+        public Serializable getInfo() {
+            return this.info;
         }
     }
 
@@ -113,7 +121,20 @@ public class EthereumTransactionManager {
      * @throws javax.resource.ResourceException
      */
     public void monitorTransaction(String transactionHash) throws ResourceException {
-        monitorTransaction(transactionHash, this.defaultConfirmationBlockCount, this.defaultExpirationBlockCount);
+        monitorTransaction(transactionHash, null);
+    }
+
+    /**
+     * Request the transaction manager to look for confirmation on the given
+     * transaction.
+     *
+     * @param transactionHash
+     * @param info the optional application information to be delivered via the
+     * fired CDI event.
+     * @throws javax.resource.ResourceException
+     */
+    public void monitorTransaction(String transactionHash, Serializable info) throws ResourceException {
+        monitorTransaction(transactionHash, this.defaultConfirmationBlockCount, this.defaultExpirationBlockCount, info);
     }
 
     /**
@@ -128,6 +149,24 @@ public class EthereumTransactionManager {
      * @throws javax.resource.ResourceException
      */
     public void monitorTransaction(String transactionHash, int confirmationBlockCount, int expirationBlockCount) throws ResourceException {
+        monitorTransaction(transactionHash, confirmationBlockCount, expirationBlockCount, null);
+    }
+
+    /**
+     * Request the transaction manager to look for confirmation on the given
+     * transaction.
+     *
+     * @param transactionHash
+     * @param confirmationBlockCount number of block to wait for transaction
+     * confirmation.
+     * @param expirationBlockCount number of blocks to wait for marking
+     * transaction as lost.
+     * @param info the optional application information to be delivered via the
+     * fired CDI event.
+     * @throws javax.resource.ResourceException
+     */
+    public void monitorTransaction(String transactionHash, int confirmationBlockCount,
+            int expirationBlockCount, Serializable info) throws ResourceException {
         if (this.transactions.containsKey(transactionHash)) {
             return;
         }
@@ -137,7 +176,7 @@ public class EthereumTransactionManager {
             }
         }
         BigInteger expirationBlockNumber = this.latestBlockNumber.add(BigInteger.valueOf(expirationBlockCount));
-        TransactionInfo transactionInfo = new TransactionInfo(confirmationBlockCount, expirationBlockNumber);
+        TransactionInfo transactionInfo = new TransactionInfo(confirmationBlockCount, expirationBlockNumber, info);
         this.transactions.put(transactionHash, transactionInfo);
     }
 
@@ -177,14 +216,16 @@ public class EthereumTransactionManager {
                     LOGGER.debug("no transaction receipt present");
                     LOGGER.debug("transaction probably still pending but not in pending block: {}", transactionHash);
                     if (this.latestBlockNumber.compareTo(expirationBlockNumber) > 0) {
-                        publicationEvents.add(new EthereumPublicationEvent(transactionHash, EthereumFinalState.DISAPPEARED));
+                        publicationEvents.add(new EthereumPublicationEvent(transactionHash, EthereumFinalState.DISAPPEARED,
+                                transactionInfo.getInfo()));
                     }
                     continue;
                 }
                 TransactionReceipt transactionReceipt = transactionReceiptOptional.get();
                 if (!transactionReceipt.isStatusOK()) {
                     LOGGER.debug("Transaction has failed with status: " + transactionReceipt.getStatus());
-                    publicationEvents.add(new EthereumPublicationEvent(transactionHash, EthereumFinalState.FAILED));
+                    publicationEvents.add(new EthereumPublicationEvent(transactionHash, EthereumFinalState.FAILED,
+                            transactionInfo.getInfo()));
                     continue;
                 }
                 BigInteger transactionBlockNumber = transactionReceipt.getBlockNumber();
@@ -194,7 +235,8 @@ public class EthereumTransactionManager {
                     continue;
                 }
                 BigInteger publicationBlockNumber = transactionReceipt.getBlockNumber();
-                publicationEvents.add(new EthereumPublicationEvent(transactionHash, publicationBlockNumber));
+                publicationEvents.add(new EthereumPublicationEvent(transactionHash, publicationBlockNumber,
+                        transactionInfo.getInfo()));
             }
         }
         for (EthereumPublicationEvent publicationEvent : publicationEvents) {

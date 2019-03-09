@@ -17,6 +17,7 @@
  */
 package be.e_contract.ethereum.utils;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 
 public class EthereumPublicationEvent {
@@ -27,16 +28,22 @@ public class EthereumPublicationEvent {
 
     private final EthereumFinalState finalState;
 
-    public EthereumPublicationEvent(String transactionHash, BigInteger publicationBlockNumber) {
+    private final Serializable info;
+
+    public EthereumPublicationEvent(String transactionHash, BigInteger publicationBlockNumber,
+            Serializable info) {
         this.transactionHash = transactionHash;
         this.publicationBlockNumber = publicationBlockNumber;
         this.finalState = EthereumFinalState.SUCCEEDED;
+        this.info = info;
     }
 
-    public EthereumPublicationEvent(String transactionHash, EthereumFinalState finalState) {
+    public EthereumPublicationEvent(String transactionHash, EthereumFinalState finalState,
+            Serializable info) {
         this.transactionHash = transactionHash;
         this.publicationBlockNumber = null;
         this.finalState = finalState;
+        this.info = info;
     }
 
     public String getTransactionHash() {
@@ -49,5 +56,9 @@ public class EthereumPublicationEvent {
 
     public EthereumFinalState getFinalState() {
         return this.finalState;
+    }
+
+    public Serializable getInfo() {
+        return this.info;
     }
 }
