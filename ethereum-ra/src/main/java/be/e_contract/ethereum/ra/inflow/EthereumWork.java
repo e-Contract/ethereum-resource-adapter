@@ -20,6 +20,8 @@ package be.e_contract.ethereum.ra.inflow;
 import be.e_contract.ethereum.ra.api.EthereumMessageListener;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.logging.Level;
 import javax.resource.ResourceException;
 import javax.resource.spi.ResourceAdapter;
 import javax.resource.spi.ResourceAdapterAssociation;
@@ -40,6 +42,8 @@ public abstract class EthereumWork implements Work, WorkContextProvider, Resourc
     private final String wsOrigin;
 
     private boolean shutdown;
+
+    private CountDownLatch doneSignal;
 
     private final List<EthereumActivationSpec> ethereumActivationSpecs;
 
@@ -63,6 +67,7 @@ public abstract class EthereumWork implements Work, WorkContextProvider, Resourc
     @Override
     public void release() {
         LOGGER.debug("release");
+        // TODO: next is just plain wrong according to the JCA specs.
         for (EthereumActivationSpec ethereumActivationSpec : this.ethereumActivationSpecs) {
             EthereumMessageListener ethereumMessageListener = ethereumActivationSpec.getEthereumMessageListener();
             MessageEndpoint messageEndpoint = (MessageEndpoint) ethereumMessageListener;
@@ -72,10 +77,17 @@ public abstract class EthereumWork implements Work, WorkContextProvider, Resourc
 
     @Override
     public void run() {
-        doWork();
+        this.doneSignal = new CountDownLatch(1);
+        try {
+            doWork();
+        } catch (Exception e) {
+            LOGGER.error("work error: " + e.getMessage(), e);
+        } finally {
+            this.doneSignal.countDown();
+        }
     }
 
-    protected abstract void doWork();
+    protected abstract void doWork() throws Exception;
 
     @Override
     public List<WorkContext> getWorkContexts() {
@@ -102,6 +114,11 @@ public abstract class EthereumWork implements Work, WorkContextProvider, Resourc
     public void shutdown() {
         LOGGER.debug("shutdown");
         this.shutdown = true;
+        try {
+            this.doneSignal.await();
+        } catch (InterruptedException ex) {
+            LOGGER.error("done signal interrupted: " + ex.getMessage(), ex);
+        }
     }
 
     public boolean isShutdown() {

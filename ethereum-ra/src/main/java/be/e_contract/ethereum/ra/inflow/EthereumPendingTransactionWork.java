@@ -20,6 +20,7 @@ package be.e_contract.ethereum.ra.inflow;
 import be.e_contract.ethereum.ra.web3j.Web3jFactory;
 import be.e_contract.ethereum.ra.api.EthereumMessageListener;
 import io.reactivex.Flowable;
+import io.reactivex.disposables.Disposable;
 import java.lang.reflect.Method;
 import java.math.BigInteger;
 import java.net.URI;
@@ -94,7 +95,7 @@ public class EthereumPendingTransactionWork extends EthereumWork {
                 PendingTransactionNotification.class
         );
 
-        events.subscribe(event -> {
+        Disposable subscription = events.subscribe(event -> {
             Date timestamp = new Date();
             NotificationParams<String> params = event.getParams();
             String transactionHash = params.getResult();
@@ -133,6 +134,9 @@ public class EthereumPendingTransactionWork extends EthereumWork {
                     LOGGER.error("sleep error: " + e.getMessage(), e);
                 }
             }
+        }
+        if (this.isShutdown()) {
+            subscription.dispose();
         }
     }
 
@@ -184,7 +188,6 @@ public class EthereumPendingTransactionWork extends EthereumWork {
                 }
             }
         }
-        // avoid NoClassDefFoundError here
-        //web3j.ethUninstallFilter(filterId);
+        web3j.ethUninstallFilter(filterId).send();
     }
 }

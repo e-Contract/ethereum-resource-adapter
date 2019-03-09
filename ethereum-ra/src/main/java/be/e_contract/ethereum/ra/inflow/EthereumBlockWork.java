@@ -20,6 +20,7 @@ package be.e_contract.ethereum.ra.inflow;
 import be.e_contract.ethereum.ra.web3j.Web3jFactory;
 import be.e_contract.ethereum.ra.api.EthereumMessageListener;
 import io.reactivex.Flowable;
+import io.reactivex.disposables.Disposable;
 import java.lang.reflect.Method;
 import java.math.BigInteger;
 import java.net.URI;
@@ -96,7 +97,7 @@ public class EthereumBlockWork extends EthereumWork {
                 NewHeadsNotification.class
         );
 
-        events.subscribe(event -> {
+        Disposable subscription = events.subscribe(event -> {
             Date timestamp = new Date();
             NotificationParams<NewHead> params = event.getParams();
             NewHead newHead = params.getResult();
@@ -136,6 +137,9 @@ public class EthereumBlockWork extends EthereumWork {
                     LOGGER.error("sleep error: " + e.getMessage(), e);
                 }
             }
+        }
+        if (this.isShutdown()) {
+            subscription.dispose();
         }
     }
 
@@ -189,7 +193,6 @@ public class EthereumBlockWork extends EthereumWork {
                 }
             }
         }
-        // avoid NoClassDefFoundError here
-        //web3j.ethUninstallFilter(filterId);
+        web3j.ethUninstallFilter(filterId).send();
     }
 }
