@@ -10,9 +10,10 @@
         <menu name="Overview">
             <item name="Introduction" href="index.html"/>
             <item name="Usage" href="usage.html"/>
+            <item name="Util Library Usage" href="utils-usage.html"/>
             <item name="Gas Price Oracle Usage" href="oracle-usage.html"/>
             <item name="JSF Library Usage" href="jsf-usage.html"/>
-            <item name="License" href="license.html"/>
+            <item name="License" href="licenses.html"/>
         </menu>
         <menu name="API">
             <item name="JCA API" href="api.html"/>

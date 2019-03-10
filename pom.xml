@@ -284,6 +284,13 @@
                 <configuration>
                     <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
                 </configuration>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>licenses</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
             </plugin>
         </plugins>
     </reporting>

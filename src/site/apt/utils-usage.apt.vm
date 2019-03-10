@@ -1,0 +1,42 @@
+Ethereum Util Library Usage
+
+ Use the Ethereum Util Library within your WAR/EAR by including under <<<dependencies>>>:
+
++--
+<dependency>
+    <groupId>be.e-contract.ethereum-resource-adapter</groupId>
+    <artifactId>ethereum-utils</artifactId>
+    <version>${project.version}</version>
+</dependency>
++--
+
+ The <<<EthereumTransactionManager>>> needs to receive incoming blocks.
+ So from an <<<EthereumMessageListener>>> MDB you fire towards the <<<EthereumTransactionManager>>> as follows:
+
++--
+@MessageDriven(activationConfig = {
+    @ActivationConfigProperty(propertyName = "nodeLocation", propertyValue = "ws://127.0.0.1:8546"),
+    @ActivationConfigProperty(propertyName = "wsOrigin", propertyValue = "http://localhost"),
+    @ActivationConfigProperty(propertyName = "deliverBlock", propertyValue = "true")
+})
+public class EthereumMDB implements EthereumMessageListener {
+
+    @Inject
+    private EthereumTransactionManager ethereumTransactionManager;
+
+    @Override
+    public void pendingTransaction(String transactionHash, Date timestamp) throws Exception {
+        
+    }
+
+    @Override
+    public void block(String blockHash, Date timestamp) throws Exception {
+        this.ethereumTransactionManager.block(blockHash);
+    }
+
+    @Override
+    public void connectionStatus(boolean connected) throws Exception {
+        
+    }
+}
++--
