@@ -17,15 +17,12 @@
  */
 package be.e_contract.ethereum.ra.inflow;
 
-import be.e_contract.ethereum.ra.api.EthereumMessageListener;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
-import java.util.logging.Level;
 import javax.resource.ResourceException;
 import javax.resource.spi.ResourceAdapter;
 import javax.resource.spi.ResourceAdapterAssociation;
-import javax.resource.spi.endpoint.MessageEndpoint;
 import javax.resource.spi.work.HintsContext;
 import javax.resource.spi.work.Work;
 import javax.resource.spi.work.WorkContext;
@@ -67,12 +64,9 @@ public abstract class EthereumWork implements Work, WorkContextProvider, Resourc
     @Override
     public void release() {
         LOGGER.debug("release");
-        // TODO: next is just plain wrong according to the JCA specs.
-        for (EthereumActivationSpec ethereumActivationSpec : this.ethereumActivationSpecs) {
-            EthereumMessageListener ethereumMessageListener = ethereumActivationSpec.getEthereumMessageListener();
-            MessageEndpoint messageEndpoint = (MessageEndpoint) ethereumMessageListener;
-            messageEndpoint.release();
-        }
+        // nothing to do here
+        // especially do not release the message endpoints here or shutdown the work
+        // as the EthereumWorkListener needs to be able to reschedule this work later on
     }
 
     @Override
