@@ -19,10 +19,13 @@ package be.e_contract.ethereum.utils;
 
 import java.io.Serializable;
 import java.math.BigInteger;
+import org.web3j.protocol.core.methods.response.TransactionReceipt;
 
 public class EthereumPublicationEvent {
 
     private final String transactionHash;
+
+    private final TransactionReceipt transactionReceipt;
 
     private final BigInteger publicationBlockNumber;
 
@@ -30,9 +33,10 @@ public class EthereumPublicationEvent {
 
     private final Serializable info;
 
-    public EthereumPublicationEvent(String transactionHash, BigInteger publicationBlockNumber,
-            Serializable info) {
+    public EthereumPublicationEvent(String transactionHash, TransactionReceipt transactionReceipt,
+            BigInteger publicationBlockNumber, Serializable info) {
         this.transactionHash = transactionHash;
+        this.transactionReceipt = transactionReceipt;
         this.publicationBlockNumber = publicationBlockNumber;
         this.finalState = EthereumFinalState.SUCCEEDED;
         this.info = info;
@@ -41,6 +45,7 @@ public class EthereumPublicationEvent {
     public EthereumPublicationEvent(String transactionHash, EthereumFinalState finalState,
             Serializable info) {
         this.transactionHash = transactionHash;
+        this.transactionReceipt = null;
         this.publicationBlockNumber = null;
         this.finalState = finalState;
         this.info = info;
@@ -48,6 +53,10 @@ public class EthereumPublicationEvent {
 
     public String getTransactionHash() {
         return this.transactionHash;
+    }
+
+    public TransactionReceipt getTransactionReceipt() {
+        return this.transactionReceipt;
     }
 
     public BigInteger getPublicationBlockNumber() {

@@ -235,7 +235,7 @@ public class EthereumTransactionManager {
                     continue;
                 }
                 BigInteger publicationBlockNumber = transactionReceipt.getBlockNumber();
-                publicationEvents.add(new EthereumPublicationEvent(transactionHash, publicationBlockNumber,
+                publicationEvents.add(new EthereumPublicationEvent(transactionHash, transactionReceipt, publicationBlockNumber,
                         transactionInfo.getInfo()));
             }
         }
