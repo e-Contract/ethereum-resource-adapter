@@ -4,7 +4,7 @@
     <parent>
         <groupId>be.e-contract</groupId>
         <artifactId>ethereum-resource-adapter</artifactId>
-        <version>1.2.4-SNAPSHOT</version>
+        <version>1.2.4</version>
     </parent>
     <name>Ethereum Resource Adapter Util Library</name>
     <groupId>be.e-contract.ethereum-resource-adapter</groupId>
@@ -19,7 +19,7 @@
         <dependency>
             <groupId>be.e-contract.ethereum-resource-adapter</groupId>
             <artifactId>ethereum-ra-api</artifactId>
-            <version>1.2.4-SNAPSHOT</version>
+            <version>1.2.4</version>
         </dependency>
     </dependencies>
     
