@@ -47,6 +47,18 @@ public class EthereumTest {
         }
     }
 
+    @Test
+    public void testChainId() throws Exception {
+        Web3jService service = new HttpService();
+        Request<?, ChainIdResponse> request = new Request<>(
+                "eth_chainId",
+                null,
+                service,
+                ChainIdResponse.class);
+        ChainIdResponse response = request.send();
+        LOGGER.debug("chain id: {}", response.getChainId());
+    }
+
     private BigInteger getParityNextNonce(Web3jService service, String address) throws IOException {
         Request<?, ParityNextNonce> request = new Request<>(
                 "parity_nextNonce",
@@ -60,6 +72,13 @@ public class EthereumTest {
         }
         BigInteger nextNonce = request.send().getNextNonce();
         return nextNonce;
+    }
+
+    public static class ChainIdResponse extends Response<String> {
+
+        public BigInteger getChainId() {
+            return Numeric.decodeQuantity(getResult());
+        }
     }
 
     public static class ParityNextNonce extends Response<String> {

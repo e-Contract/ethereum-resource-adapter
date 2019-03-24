@@ -26,6 +26,7 @@ import be.e_contract.ethereum.ra.web3j.Web3jFactory;
 import be.e_contract.ethereum.ra.api.EthereumConnection;
 import be.e_contract.ethereum.ra.api.EthereumException;
 import be.e_contract.ethereum.ra.api.TransactionConfirmation;
+import be.e_contract.ethereum.ra.web3j.ChainIdResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
@@ -576,6 +577,17 @@ public class EthereumManagedConnection implements ManagedConnection {
     }
 
     Long getChainId() throws Exception {
+        Web3jService web3jService = getWeb3jService();
+        Request<?, ChainIdResponse> request = new Request<>(
+                "eth_chainId",
+                null,
+                web3jService,
+                ChainIdResponse.class);
+        ChainIdResponse response = request.send();
+        if (!response.hasError()) {
+            return response.getChainId().longValueExact();
+        }
+        // else we try to retrieve the chain id from transactions within the latest block
         Web3j web3j = getWeb3j();
         BigInteger blockNumber = web3j.ethBlockNumber().send().getBlockNumber();
         while (!blockNumber.equals(BigInteger.ZERO)) {
