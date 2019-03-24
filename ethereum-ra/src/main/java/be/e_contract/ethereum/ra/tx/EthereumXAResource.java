@@ -78,6 +78,10 @@ public class EthereumXAResource implements XAResource {
     @Override
     public void end(Xid xid, int flags) throws XAException {
         LOGGER.debug("end: {} - flags {}", xid, flags);
+        if (xid == null) {
+            LOGGER.error("null xid");
+            throw new XAException(XAException.XAER_INVAL);
+        }
         if (!this.currentXid.equals(xid)) {
             LOGGER.error("invalid xid: {}", xid);
             throw new XAException("invalid xid");
@@ -107,7 +111,8 @@ public class EthereumXAResource implements XAResource {
     public void forget(Xid xid) throws XAException {
         LOGGER.debug("forget: {}", xid);
         if (xid == null) {
-            return;
+            LOGGER.error("xid is null");
+            throw new XAException(XAException.XAER_INVAL);
         }
         if (xid.equals(this.currentXid)) {
             EthereumTransactionCommit ethereumTransactionCommit = getEthereumTransactionCommit(xid);
@@ -128,7 +133,7 @@ public class EthereumXAResource implements XAResource {
             return true;
         }
         if (xaRes instanceof EthereumXAResource) {
-            LOGGER.warn("Another EthereumXAResource was checked");
+            LOGGER.debug("Another EthereumXAResource was checked");
             return false;
         }
         return false;
@@ -137,6 +142,10 @@ public class EthereumXAResource implements XAResource {
     @Override
     public int prepare(Xid xid) throws XAException {
         LOGGER.debug("prepare: {}", xid);
+        if (null == xid) {
+            LOGGER.error("null xid");
+            throw new XAException(XAException.XAER_INVAL);
+        }
         EthereumTransactionCommit ethereumTransactionCommit = getEthereumTransactionCommit(xid);
         if (ethereumTransactionCommit.getTransactionCount() == 0) {
             return XA_RDONLY;
@@ -145,9 +154,16 @@ public class EthereumXAResource implements XAResource {
     }
 
     @Override
-    public Xid[] recover(int flag) throws XAException {
+    public Xid[] recover(int flags) throws XAException {
         LOGGER.debug("recover instance: {}", this);
-        LOGGER.debug("recover: {}", flag);
+        LOGGER.debug("recover flags: {}", flags);
+        if (((flags & TMSTARTRSCAN) == 0) && ((flags & TMENDRSCAN) == 0) && (flags != TMNOFLAGS)) {
+            LOGGER.warn("invalid recover flags: {}", flags);
+            throw new XAException(XAException.XAER_INVAL);
+        }
+        if ((flags & TMSTARTRSCAN) == 0) {
+            return new Xid[0];
+        }
         List<Xid> xids = new LinkedList<>();
         for (EthereumTransactionCommit ethereumTransactionCommit : this.xidRawTransactions.values()) {
             if (ethereumTransactionCommit.isPrepared()) {
@@ -161,6 +177,10 @@ public class EthereumXAResource implements XAResource {
     @Override
     public void rollback(Xid xid) throws XAException {
         LOGGER.debug("rollback: {}", xid);
+        if (null == xid) {
+            LOGGER.error("null xid");
+            throw new XAException(XAException.XAER_INVAL);
+        }
         if (!this.currentXid.equals(xid)) {
             LOGGER.error("invalid xid: {}", xid);
             throw new XAException("invalid xid");
@@ -191,6 +211,10 @@ public class EthereumXAResource implements XAResource {
     @Override
     public void start(Xid xid, int flags) throws XAException {
         LOGGER.debug("start: {} - flags {}", xid, flags);
+        if (null == xid) {
+            LOGGER.error("null xid");
+            throw new XAException(XAException.XAER_INVAL);
+        }
         if (isFlagSet(flags, TMNOFLAGS)) {
             if (this.xidRawTransactions.containsKey(xid)) {
                 throw new XAException("duplicate xid: " + xid);
