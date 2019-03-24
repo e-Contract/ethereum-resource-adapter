@@ -1,43 +1,41 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:eth="urn:be:e-contract:ethereum:jsf">
 
-    <f:view>
-        <h:head>
-            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-            <meta http-equiv="Content-Script-Type" content="text/javascript" />
-            <meta http-equiv="Content-Style-Type" content="text/css" />
-            <meta http-equiv="Expires" content="-1" />
-            <meta http-equiv="Cache-Control"
-                  content="no-cache, no-store, max-age=0, must-revalidate" />
-            <meta http-equiv="Pragma" content="no-cache" />
-            <title>Ethereum Resource Adapter Demo Web Application</title>
-        </h:head>
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta http-equiv="Content-Script-Type" content="text/javascript" />
+        <meta http-equiv="Content-Style-Type" content="text/css" />
+        <meta http-equiv="Expires" content="-1" />
+        <meta http-equiv="Cache-Control"
+              content="no-cache, no-store, max-age=0, must-revalidate" />
+        <meta http-equiv="Pragma" content="no-cache" />
+        <title>Ethereum Resource Adapter Demo Web Application</title>
+    </h:head>
 
-        <h:body>
-            <h1>Read contract</h1>
-            <h:form>
-                <h:panelGrid columns="3">
-                    <h:outputText value="From:"/>
-                    <h:inputText id="from" value="#{ethereumDemoKeysController.selectedAddress}" size="60" required="true">
-                        <eth:addressValidator/>
-                    </h:inputText>
-                    <h:message for="from" errorStyle="color:red;"/>
+    <h:body>
+        <h1>Read contract</h1>
+        <h:messages errorStyle="color:red;" infoStyle="color:blue;" globalOnly="true"/>
+        <h:form>
+            <h:panelGrid columns="3">
+                <h:outputText value="From:"/>
+                <h:inputText id="from" value="#{ethereumDemoKeysController.selectedAddress}" size="60" required="true">
+                    <eth:addressValidator/>
+                </h:inputText>
+                <h:message for="from" errorStyle="color:red;"/>
 
-                    <h:outputText value="Contract address:"/>
-                    <h:inputText id="contractAddress" value="#{ethereumDemoKeysController.contractAddress}" size="60" required="true">
-                        <eth:addressValidator/>
-                    </h:inputText>
-                    <h:message for="contractAddress" errorStyle="color:red;"/>
-                </h:panelGrid>
-                <h:panelGrid columns="2">
-                    <h:commandButton value="Invoke" action="#{ethereumDemoKeysController.readDemoContract}"/>
-                    <h:commandButton value="Back" action="/keys/read-contract-result" immediate="true"/>
-                </h:panelGrid>
-            </h:form>
-        </h:body>
-    </f:view>
+                <h:outputText value="Contract address:"/>
+                <h:inputText id="contractAddress" value="#{ethereumDemoKeysController.contractAddress}" size="60" required="true">
+                    <eth:addressValidator/>
+                </h:inputText>
+                <h:message for="contractAddress" errorStyle="color:red;"/>
+            </h:panelGrid>
+            <h:panelGrid columns="2">
+                <h:commandButton value="Invoke" action="#{ethereumDemoKeysController.readDemoContract}"/>
+                <h:commandButton value="Back" action="/keys/index" immediate="true"/>
+            </h:panelGrid>
+        </h:form>
+    </h:body>
 
 </html>

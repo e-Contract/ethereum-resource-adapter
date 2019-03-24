@@ -1,46 +1,43 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:eth="urn:be:e-contract:ethereum:jsf">
 
-    <f:view>
-        <h:head>
-            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-            <meta http-equiv="Content-Script-Type" content="text/javascript" />
-            <meta http-equiv="Content-Style-Type" content="text/css" />
-            <meta http-equiv="Expires" content="-1" />
-            <meta http-equiv="Cache-Control"
-                  content="no-cache, no-store, max-age=0, must-revalidate" />
-            <meta http-equiv="Pragma" content="no-cache" />
-            <title>Ethereum Resource Adapter Demo Web Application</title>
-        </h:head>
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta http-equiv="Content-Script-Type" content="text/javascript" />
+        <meta http-equiv="Content-Style-Type" content="text/css" />
+        <meta http-equiv="Expires" content="-1" />
+        <meta http-equiv="Cache-Control"
+              content="no-cache, no-store, max-age=0, must-revalidate" />
+        <meta http-equiv="Pragma" content="no-cache" />
+        <title>Ethereum Resource Adapter Demo Web Application</title>
+    </h:head>
 
-        <h:body>
-            <h1>Balance</h1>
-            <h:panelGrid columns="2">
-                <h:outputText value="Address"/>
-                <h:outputText value="#{ethereumDemoKeysController.selectedAddress}"/>
+    <h:body>
+        <h1>Balance</h1>
+        <h:panelGrid columns="2">
+            <h:outputText value="Address"/>
+            <h:outputText value="#{ethereumDemoKeysController.selectedAddress}"/>
 
-                <h:outputText value="Address (checksum)"/>
-                <h:outputText value="#{ethereumDemoKeysController.selectedAddress}">
-                    <eth:checksumAddress/>
-                </h:outputText>
+            <h:outputText value="Address (checksum)"/>
+            <h:outputText value="#{ethereumDemoKeysController.selectedAddress}">
+                <eth:checksumAddress/>
+            </h:outputText>
 
-                <h:outputText value="Balance"/>
-                <h:outputText value="#{ethereumDemoKeysController.selectedAddressBalance}"/>
+            <h:outputText value="Balance"/>
+            <h:outputText value="#{ethereumDemoKeysController.selectedAddressBalance}"/>
 
-                <h:outputText value="Balance (ether)"/>
-                <h:outputText value="#{ethereumDemoKeysController.selectedAddressBalance}">
-                    <eth:fromWei unit="ETHER"/>
-                </h:outputText>
+            <h:outputText value="Balance (ether)"/>
+            <h:outputText value="#{ethereumDemoKeysController.selectedAddressBalance}">
+                <eth:fromWei unit="ETHER"/>
+            </h:outputText>
+        </h:panelGrid>
+        <h:form>
+            <h:panelGrid columns="1">
+                <h:commandButton value="Back" action="/keys/index"/>
             </h:panelGrid>
-            <h:form>
-                <h:panelGrid columns="1">
-                    <h:commandButton value="Back" action="/keys/index"/>
-                </h:panelGrid>
-            </h:form>
-        </h:body>
-    </f:view>
+        </h:form>
+    </h:body>
 
 </html>

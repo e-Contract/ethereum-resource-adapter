@@ -3,41 +3,39 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html">
 
-    <f:view>
-        <h:head>
-            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-            <meta http-equiv="Content-Script-Type" content="text/javascript" />
-            <meta http-equiv="Content-Style-Type" content="text/css" />
-            <meta http-equiv="Expires" content="-1" />
-            <meta http-equiv="Cache-Control"
-                  content="no-cache, no-store, max-age=0, must-revalidate" />
-            <meta http-equiv="Pragma" content="no-cache" />
-            <title>Ethereum Resource Adapter Demo Web Application</title>
-        </h:head>
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta http-equiv="Content-Script-Type" content="text/javascript" />
+        <meta http-equiv="Content-Style-Type" content="text/css" />
+        <meta http-equiv="Expires" content="-1" />
+        <meta http-equiv="Cache-Control"
+              content="no-cache, no-store, max-age=0, must-revalidate" />
+        <meta http-equiv="Pragma" content="no-cache" />
+        <title>Ethereum Resource Adapter Demo Web Application</title>
+    </h:head>
 
-        <h:body>
-            <h1>Client Node Accounts</h1>
-            <h:form>
-                <h:messages errorStyle="color:red;" infoStyle="color:blue;"/>
-                <h:dataTable value="#{ethereumDemoAccountController.accounts}" var="account">
-                    <h:column>
-                        <f:facet name="header">
-                            Account
-                        </f:facet>
-                        <h:outputText value="#{account}"/>
-                    </h:column>
-                    <h:column>
-                        <h:commandButton value="Balance" action="#{ethereumDemoAccountController.getBalance(account)}"/>
-                        <h:commandButton value="Unlock" action="#{ethereumDemoAccountController.unlock(account)}"/>
-                        <h:commandButton value="Transaction" action="#{ethereumDemoAccountController.initTransaction(account)}"/>
-                    </h:column>
-                </h:dataTable>
-                <h:panelGrid columns="2">
-                    <h:commandButton value="New" action="#{ethereumDemoAccountController.newAccount}"/>
-                    <h:commandButton value="Back" action="/index"/>
-                </h:panelGrid>
-            </h:form>
-        </h:body>
-    </f:view>
+    <h:body>
+        <h1>Client Node Accounts</h1>
+        <h:form>
+            <h:messages errorStyle="color:red;" infoStyle="color:blue;" globalOnly="true"/>
+            <h:dataTable value="#{ethereumDemoAccountController.accounts}" var="account">
+                <h:column>
+                    <f:facet name="header">
+                        Account
+                    </f:facet>
+                    <h:outputText value="#{account}"/>
+                </h:column>
+                <h:column>
+                    <h:commandButton value="Balance" action="#{ethereumDemoAccountController.getBalance(account)}"/>
+                    <h:commandButton value="Unlock" action="#{ethereumDemoAccountController.unlock(account)}"/>
+                    <h:commandButton value="Transaction" action="#{ethereumDemoAccountController.initTransaction(account)}"/>
+                </h:column>
+            </h:dataTable>
+            <h:panelGrid columns="2">
+                <h:commandButton value="New" action="#{ethereumDemoAccountController.newAccount}"/>
+                <h:commandButton value="Back" action="/index"/>
+            </h:panelGrid>
+        </h:form>
+    </h:body>
 
 </html>
