@@ -61,8 +61,9 @@ public class Web3jFactory {
             Date timestampDate = new Date(timestamp.multiply(BigInteger.valueOf(1000)).longValue());
             DateTime timestampDateTime = new DateTime(timestampDate);
             DateTime now = new DateTime();
-            if (timestampDateTime.plusMinutes(1).isBefore(now)) {
-                LOGGER.warn("latest block is more than 1 minute old.");
+            // 1 minute is not enough for production
+            if (timestampDateTime.plusMinutes(2).isBefore(now)) {
+                LOGGER.warn("Latest block is more than 2 minutes old.");
                 LOGGER.warn("Node might be out-of-sync.");
                 LOGGER.warn("Results might be inaccurate.");
             }
