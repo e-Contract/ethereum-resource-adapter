@@ -4,7 +4,7 @@
     <parent>
         <groupId>be.e-contract</groupId>
         <artifactId>ethereum-resource-adapter</artifactId>
-        <version>1.2.5</version>
+        <version>1.2.6-SNAPSHOT</version>
     </parent>
     <name>Ethereum Resource Adapter Archive</name>
     <groupId>be.e-contract.ethereum-resource-adapter</groupId>
@@ -49,7 +49,7 @@
         <dependency>
             <groupId>be.e-contract.ethereum-resource-adapter</groupId>
             <artifactId>ethereum-ra</artifactId>
-            <version>1.2.5</version>
+            <version>1.2.6-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.jboss.spec</groupId>
