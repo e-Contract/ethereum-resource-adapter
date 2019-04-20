@@ -17,7 +17,23 @@
  */
 package be.e_contract.ethereum.utils;
 
+/**
+ * Representation of the final state of an Ethereum transaction.
+ *
+ * @author Frank Cornelis
+ */
 public enum EthereumFinalState {
 
-    SUCCEEDED, FAILED, DISAPPEARED
+    /**
+     * Marks that the Ethereum transaction succeeded.
+     */
+    SUCCEEDED,
+    /**
+     * Marks that the Ethereum transaction has failed.
+     */
+    FAILED,
+    /**
+     * Marks that the Ethereum transaction has magically disappeared.
+     */
+    DISAPPEARED
 }

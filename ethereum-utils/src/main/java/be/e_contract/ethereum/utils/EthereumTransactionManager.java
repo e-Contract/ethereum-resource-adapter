@@ -240,7 +240,11 @@ public class EthereumTransactionManager {
             }
         }
         for (EthereumPublicationEvent publicationEvent : publicationEvents) {
-            this.ethereumPublicationEvent.fire(publicationEvent);
+            try {
+                this.ethereumPublicationEvent.fire(publicationEvent);
+            } catch (Exception e) {
+                LOGGER.error("CDI event exception: " + e.getMessage(), e);
+            }
             this.transactions.remove(publicationEvent.getTransactionHash());
         }
     }
