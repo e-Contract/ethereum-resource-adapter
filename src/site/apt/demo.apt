@@ -5,7 +5,7 @@ Demo Web Application
  Start a <<<geth>>> Ethereum client node in development mode via:
 
 +--
-geth --dev --rpc --rpcapi personal,eth,net --dev.period 0 --ws
+geth --dev --rpc --rpcapi personal,eth,net,web3 --dev.period 0 --ws
 +--
 
  Start WildFly via:

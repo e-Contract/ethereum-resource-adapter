@@ -16,7 +16,7 @@ Integration Tests
  Start a <<<geth>>> Ethereum client node in development mode via:
 
 +--
-geth --dev --rpc --rpcapi personal,eth,net,web3 --dev.period 0 --ws
+geth --dev --rpc --rpcapi personal,eth,net,web3 --dev.period 0 --ws --allow-insecure-unlock
 +--
 
 ** parity
@@ -58,7 +58,7 @@ mvn clean install -Pintegration-tests-wildfly
  Start JBoss EAP via:
 
 +--
-cd jboss-eap-6.4.21/bin
+cd jboss-eap-6.4.22/bin
 ./standalone.sh --server-config=standalone-full.xml
 +--
 

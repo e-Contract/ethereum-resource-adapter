@@ -4,7 +4,7 @@ Ethereum JCA Resource Adapter Project
 
  Tested Java EE application servers:
 
- * JBoss EAP 6.4.21
+ * JBoss EAP 6.4.22
  
  * JBoss EAP 7.2.1
 
@@ -16,7 +16,7 @@ Ethereum JCA Resource Adapter Project
 
  Tested Ethereum client nodes:
 
- * go-ethereum 1.8.27
+ * go-ethereum 1.9.5
 
  * parity 2.4.5
 
