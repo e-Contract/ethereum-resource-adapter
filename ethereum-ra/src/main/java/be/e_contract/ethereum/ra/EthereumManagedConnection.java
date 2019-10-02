@@ -27,6 +27,7 @@ import be.e_contract.ethereum.ra.api.EthereumConnection;
 import be.e_contract.ethereum.ra.api.EthereumException;
 import be.e_contract.ethereum.ra.api.TransactionConfirmation;
 import be.e_contract.ethereum.ra.web3j.ChainIdResponse;
+import be.e_contract.ethereum.ra.web3j.EthereumTransactionReceiptProcessor;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
@@ -546,7 +547,8 @@ public class EthereumManagedConnection implements ManagedConnection {
         } else {
             _chainId = chainId.byteValue();
         }
-        TransactionManager transactionManager = new EthereumTransactionManager(this, credentials, _chainId);
+        EthereumTransactionReceiptProcessor ethereumTransactionReceiptProcessor = new EthereumTransactionReceiptProcessor();
+        TransactionManager transactionManager = new EthereumTransactionManager(this, credentials, _chainId, ethereumTransactionReceiptProcessor);
         Contract contract;
         try {
             contract = Contract.deployRemoteCall(contractClass, web3j, transactionManager, contractGasProvider, binary, "").send();
@@ -568,7 +570,8 @@ public class EthereumManagedConnection implements ManagedConnection {
         } else {
             _chainId = chainId.byteValue();
         }
-        TransactionManager transactionManager = new EthereumTransactionManager(this, credentials, _chainId);
+        EthereumTransactionReceiptProcessor ethereumTransactionReceiptProcessor = new EthereumTransactionReceiptProcessor();
+        TransactionManager transactionManager = new EthereumTransactionManager(this, credentials, _chainId, ethereumTransactionReceiptProcessor);
         T contract = (T) method.invoke(null, contractAddress, web3j, transactionManager, contractGasProvider);
         if (!contract.isValid()) {
             throw new EthereumException("contract is invalid: " + contractAddress);
