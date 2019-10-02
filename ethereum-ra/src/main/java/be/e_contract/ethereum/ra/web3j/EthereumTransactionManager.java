@@ -35,7 +35,7 @@ import org.web3j.protocol.core.methods.request.Transaction;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.exceptions.TransactionException;
-import org.web3j.tx.ChainId;
+import org.web3j.tx.ChainIdLong;
 import org.web3j.tx.TransactionManager;
 import org.web3j.utils.Numeric;
 
@@ -46,10 +46,10 @@ public class EthereumTransactionManager extends TransactionManager {
     private final EthereumManagedConnection ethereumManagedConnection;
     private final EthereumTransactionReceiptProcessor transactionReceiptProcessor;
     private final Credentials credentials;
-    private final byte chainId;
+    private final long chainId;
 
     public EthereumTransactionManager(EthereumManagedConnection ethereumManagedConnection,
-            Credentials credentials, byte chainId, EthereumTransactionReceiptProcessor ethereumTransactionReceiptProcessor) throws Exception {
+            Credentials credentials, long chainId, EthereumTransactionReceiptProcessor ethereumTransactionReceiptProcessor) throws Exception {
         super(ethereumTransactionReceiptProcessor, null);
         this.transactionReceiptProcessor = ethereumTransactionReceiptProcessor;
         this.ethereumManagedConnection = ethereumManagedConnection;
@@ -81,7 +81,7 @@ public class EthereumTransactionManager extends TransactionManager {
                 value,
                 data);
         byte[] signedMessage;
-        if (this.chainId != ChainId.NONE) {
+        if (this.chainId != ChainIdLong.NONE) {
             signedMessage = TransactionEncoder.signMessage(rawTransaction, this.chainId, this.credentials);
         } else {
             signedMessage = TransactionEncoder.signMessage(rawTransaction, this.credentials);
@@ -121,7 +121,7 @@ public class EthereumTransactionManager extends TransactionManager {
                 value,
                 data);
         byte[] signedMessage;
-        if (this.chainId != ChainId.NONE) {
+        if (this.chainId != ChainIdLong.NONE) {
             signedMessage = TransactionEncoder.signMessage(rawTransaction, this.chainId, this.credentials);
         } else {
             signedMessage = TransactionEncoder.signMessage(rawTransaction, this.credentials);

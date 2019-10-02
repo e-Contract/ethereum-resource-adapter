@@ -70,7 +70,7 @@ import org.web3j.protocol.core.methods.response.EthGetTransactionReceipt;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;
 import org.web3j.protocol.core.methods.response.Transaction;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
-import org.web3j.tx.ChainId;
+import org.web3j.tx.ChainIdLong;
 import org.web3j.tx.Contract;
 import org.web3j.tx.TransactionManager;
 import org.web3j.tx.gas.ContractGasProvider;
@@ -541,11 +541,11 @@ public class EthereumManagedConnection implements ManagedConnection {
         binaryField.setAccessible(true);
         String binary = (String) binaryField.get(null);
         binaryField.setAccessible(false);
-        byte _chainId;
+        long _chainId;
         if (null == chainId) {
-            _chainId = ChainId.NONE;
+            _chainId = ChainIdLong.NONE;
         } else {
-            _chainId = chainId.byteValue();
+            _chainId = chainId;
         }
         EthereumTransactionReceiptProcessor ethereumTransactionReceiptProcessor = new EthereumTransactionReceiptProcessor();
         TransactionManager transactionManager = new EthereumTransactionManager(this, credentials, _chainId, ethereumTransactionReceiptProcessor);
@@ -564,11 +564,11 @@ public class EthereumManagedConnection implements ManagedConnection {
         Method method = contractClass.getMethod("load", String.class, Web3j.class,
                 TransactionManager.class, ContractGasProvider.class);
         Web3j web3j = getWeb3j();
-        byte _chainId;
+        long _chainId;
         if (null == chainId) {
-            _chainId = ChainId.NONE;
+            _chainId = ChainIdLong.NONE;
         } else {
-            _chainId = chainId.byteValue();
+            _chainId = chainId;
         }
         EthereumTransactionReceiptProcessor ethereumTransactionReceiptProcessor = new EthereumTransactionReceiptProcessor();
         TransactionManager transactionManager = new EthereumTransactionManager(this, credentials, _chainId, ethereumTransactionReceiptProcessor);
@@ -617,22 +617,22 @@ public class EthereumManagedConnection implements ManagedConnection {
         BigInteger nonce = getNextNonce(credentials.getAddress());
         BigInteger gasLimit = BigInteger.valueOf(21000);
         RawTransaction rawTransaction = RawTransaction.createEtherTransaction(nonce, gasPrice, gasLimit, to, value);
-        byte _chainId;
+        long _chainId;
         if (null != chainId) {
             LOGGER.debug("Chain Id: {}", chainId);
             // https://github.com/web3j/web3j/issues/234
             if (chainId > 46) {
                 LOGGER.warn("web3j cannot sign with chainId > 46");
-                _chainId = ChainId.NONE;
+                _chainId = ChainIdLong.NONE;
             } else {
                 _chainId = chainId.byteValue();
             }
         } else {
-            _chainId = ChainId.NONE;
+            _chainId = ChainIdLong.NONE;
         }
 
         byte[] signedTransaction;
-        if (_chainId != ChainId.NONE) {
+        if (_chainId != ChainIdLong.NONE) {
             signedTransaction = TransactionEncoder.signMessage(rawTransaction, _chainId, credentials);
         } else {
             signedTransaction = TransactionEncoder.signMessage(rawTransaction, credentials);
