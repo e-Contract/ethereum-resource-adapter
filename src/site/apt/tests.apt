@@ -43,7 +43,7 @@ rm -rf dev
  Start WildFly via:
 
 +--
-cd wildfly-16.0.0.Final/bin
+cd wildfly-18.0.0.Final/bin
 ./standalone.sh --server-config=standalone-full.xml
 +--
 

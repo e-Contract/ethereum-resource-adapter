@@ -5,13 +5,13 @@ Demo Web Application
  Start a <<<geth>>> Ethereum client node in development mode via:
 
 +--
-geth --dev --rpc --rpcapi personal,eth,net,web3 --dev.period 0 --ws
+geth --dev --rpc --rpcapi personal,eth,net,web3 --dev.period 0 --ws --allow-insecure-unlock
 +--
 
  Start WildFly via:
 
 +--
-cd wildfly-16.0.0.Final/bin
+cd wildfly-18.0.0.Final/bin
 ./standalone.sh --server-config=standalone-full.xml
 +--
 
