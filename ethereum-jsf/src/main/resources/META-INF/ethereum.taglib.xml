@@ -4,46 +4,46 @@
                 xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facelettaglibrary_2_0.xsd"
                 version="2.0">
 
-    <namespace>urn:be:e-contract:ethereum:jsf</namespace>
-   
     <description>Ethereum JSF library</description>
+    
+    <namespace>urn:be:e-contract:ethereum:jsf</namespace>
 
     <tag>
+        <description>Verifies whether the value is an Ethereum address.</description>
         <tag-name>addressValidator</tag-name>
         <validator>
             <validator-id>be.e_contract.ethereum.jsf.AddressValidator</validator-id>
         </validator>
-        <description>Verifies whether the value is an Ethereum address.</description>
     </tag>
     
     <tag>
+        <description>Converts an Ethereum address to a checksum address.</description>
         <tag-name>checksumAddress</tag-name>
         <converter>
             <converter-id>be.e_contract.ethereum.jsf.ChecksumAddressConverter</converter-id>
         </converter>
-        <description>Converts an Ethereum address to a checksum address.</description>
     </tag>
     
     <tag>
+        <description>Converts from wei to another unit.</description>
         <tag-name>fromWei</tag-name>
         <converter>
             <converter-id>be.e_contract.ethereum.jsf.FromWeiConverter</converter-id>
         </converter>
-        <description>Converts from wei to another unit.</description>
         <attribute>
+            <description>The unit to which to convert.</description>
             <name>unit</name>
             <required>true</required>
-            <description>The unit to which to convert.</description>
             <type>org.web3j.utils.Convert.Unit</type>
         </attribute>
     </tag>
     
     <tag>
+        <description>Verifies whether the value is a transaction hash.</description>
         <tag-name>transactionHashValidator</tag-name>
         <validator>
             <validator-id>be.e_contract.ethereum.jsf.TransactionHashValidator</validator-id>
         </validator>
-        <description>Verifies whether the value is a transaction hash.</description>
     </tag>
 
 </facelet-taglib>
