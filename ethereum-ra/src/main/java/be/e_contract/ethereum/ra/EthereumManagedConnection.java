@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018-2019 e-Contract.be BVBA.
+ * Copyright (C) 2018-2020 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -26,7 +26,6 @@ import be.e_contract.ethereum.ra.web3j.Web3jFactory;
 import be.e_contract.ethereum.ra.api.EthereumConnection;
 import be.e_contract.ethereum.ra.api.EthereumException;
 import be.e_contract.ethereum.ra.api.TransactionConfirmation;
-import be.e_contract.ethereum.ra.web3j.ChainIdResponse;
 import be.e_contract.ethereum.ra.web3j.EthereumTransactionReceiptProcessor;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -66,6 +65,7 @@ import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.Request;
 import org.web3j.protocol.core.Response;
 import org.web3j.protocol.core.methods.response.EthBlock;
+import org.web3j.protocol.core.methods.response.EthChainId;
 import org.web3j.protocol.core.methods.response.EthGetTransactionReceipt;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;
 import org.web3j.protocol.core.methods.response.Transaction;
@@ -363,6 +363,8 @@ public class EthereumManagedConnection implements ManagedConnection {
         LOGGER.debug("to: {}", signedRawTransaction.getTo());
         LOGGER.debug("nonce: {}", signedRawTransaction.getNonce());
         LOGGER.debug("chain id: {}", signedRawTransaction.getChainId());
+        LOGGER.debug("gas limit: {} wei", signedRawTransaction.getGasLimit());
+        LOGGER.debug("gas price: {} wei", signedRawTransaction.getGasPrice());
         // we want to support JCA transactions here
         // important to check local transaction first because of CCI local transactions
         String transactionHash = Hash.sha3(rawTransaction);
@@ -549,9 +551,10 @@ public class EthereumManagedConnection implements ManagedConnection {
         }
         EthereumTransactionReceiptProcessor ethereumTransactionReceiptProcessor = new EthereumTransactionReceiptProcessor();
         TransactionManager transactionManager = new EthereumTransactionManager(this, credentials, _chainId, ethereumTransactionReceiptProcessor);
+        LimitedContractGasProvider limitedContractGasProvider = new LimitedContractGasProvider(contractGasProvider, web3j);
         Contract contract;
         try {
-            contract = Contract.deployRemoteCall(contractClass, web3j, transactionManager, contractGasProvider, binary, "").send();
+            contract = Contract.deployRemoteCall(contractClass, web3j, transactionManager, limitedContractGasProvider, binary, "").send();
         } catch (Exception ex) {
             LOGGER.debug("could not deploy contract: " + ex.getMessage(), ex);
             throw new EthereumException("could not deploy contract: " + ex.getMessage());
@@ -572,7 +575,8 @@ public class EthereumManagedConnection implements ManagedConnection {
         }
         EthereumTransactionReceiptProcessor ethereumTransactionReceiptProcessor = new EthereumTransactionReceiptProcessor();
         TransactionManager transactionManager = new EthereumTransactionManager(this, credentials, _chainId, ethereumTransactionReceiptProcessor);
-        T contract = (T) method.invoke(null, contractAddress, web3j, transactionManager, contractGasProvider);
+        LimitedContractGasProvider limitedContractGasProvider = new LimitedContractGasProvider(contractGasProvider, web3j);
+        T contract = (T) method.invoke(null, contractAddress, web3j, transactionManager, limitedContractGasProvider);
         if (!contract.isValid()) {
             throw new EthereumException("contract is invalid: " + contractAddress);
         }
@@ -580,18 +584,12 @@ public class EthereumManagedConnection implements ManagedConnection {
     }
 
     Long getChainId() throws Exception {
-        Web3jService web3jService = getWeb3jService();
-        Request<?, ChainIdResponse> request = new Request<>(
-                "eth_chainId",
-                null,
-                web3jService,
-                ChainIdResponse.class);
-        ChainIdResponse response = request.send();
-        if (!response.hasError()) {
-            return response.getChainId().longValueExact();
+        Web3j web3j = getWeb3j();
+        EthChainId ethChainId = web3j.ethChainId().send();
+        if (!ethChainId.hasError()) {
+            return ethChainId.getChainId().longValueExact();
         }
         // else we try to retrieve the chain id from transactions within the latest block
-        Web3j web3j = getWeb3j();
         BigInteger blockNumber = web3j.ethBlockNumber().send().getBlockNumber();
         while (!blockNumber.equals(BigInteger.ZERO)) {
             EthBlock.Block block = web3j.ethGetBlockByNumber(DefaultBlockParameter.valueOf(blockNumber), true).send().getBlock();

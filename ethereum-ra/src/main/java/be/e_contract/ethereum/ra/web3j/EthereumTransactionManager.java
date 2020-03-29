@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018-2019 e-Contract.be BVBA.
+ * Copyright (C) 2018-2020 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -32,6 +32,7 @@ import org.web3j.crypto.TransactionEncoder;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.methods.request.Transaction;
+import org.web3j.protocol.core.methods.response.EthGetCode;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.exceptions.TransactionException;
@@ -160,5 +161,17 @@ public class EthereumTransactionManager extends TransactionManager {
                 defaultBlockParameter)
                 .send()
                 .getValue();
+    }
+
+    @Override
+    public EthGetCode getCode(String contractAddress, DefaultBlockParameter defaultBlockParameter) throws IOException {
+        Web3j web3j;
+        try {
+            web3j = this.ethereumManagedConnection.getWeb3j();
+        } catch (Exception ex) {
+            LOGGER.error("web3j error: " + ex.getMessage(), ex);
+            throw new IOException("web3j error: " + ex.getMessage(), ex);
+        }
+        return web3j.ethGetCode(contractAddress, defaultBlockParameter).send();
     }
 }
