@@ -148,6 +148,52 @@ public class EthereumTransactionManager extends TransactionManager {
     }
 
     @Override
+    public EthSendTransaction sendTransactionEIP1559(BigInteger gasPremium,
+            BigInteger feeCap,
+            BigInteger gasLimit,
+            String to,
+            String data,
+            BigInteger value,
+            boolean constructor) throws IOException {
+        LOGGER.debug("sendTransaction");
+        LOGGER.debug("constructor: {}", constructor);
+        BigInteger nonce;
+        try {
+            nonce = this.ethereumManagedConnection.getNextNonce(this.credentials.getAddress());
+        } catch (Exception ex) {
+            throw new IOException("could not determince next nonce: " + ex.getMessage(), ex);
+        }
+        LOGGER.debug("nonce: {}", nonce);
+        RawTransaction rawTransaction
+                = RawTransaction.createTransaction(
+                        nonce, null, gasLimit, to, value, data, gasPremium, feeCap);
+        byte[] signedMessage;
+        if (this.chainId != ChainIdLong.NONE) {
+            signedMessage = TransactionEncoder.signMessage(rawTransaction, this.chainId, this.credentials);
+        } else {
+            signedMessage = TransactionEncoder.signMessage(rawTransaction, this.credentials);
+        }
+        String hexValue = Numeric.toHexString(signedMessage);
+        try {
+            this.ethereumManagedConnection.sendRawTransaction(hexValue);
+        } catch (ResourceException ex) {
+            LOGGER.error("error sending raw transaction: " + ex.getMessage(), ex);
+            throw new IOException(ex);
+        } catch (EthereumException ex) {
+            LOGGER.error("error sending raw transaction: " + ex.getMessage(), ex);
+            throw new IOException(ex);
+        }
+        String transactionHash = Hash.sha3(hexValue);
+        LOGGER.debug("transaction hash: {}", transactionHash);
+        String contractAddress = ContractUtils.generateContractAddress(this.credentials.getAddress(), nonce);
+        LOGGER.debug("contract address: {}", contractAddress);
+        this.transactionReceiptProcessor.registerContractAddress(transactionHash, contractAddress);
+        EthSendTransaction ethSendTransaction = new EthSendTransaction();
+        ethSendTransaction.setResult(transactionHash);
+        return ethSendTransaction;
+    }
+
+    @Override
     public String sendCall(String to, String data, DefaultBlockParameter defaultBlockParameter) throws IOException {
         Web3j web3j;
         try {
