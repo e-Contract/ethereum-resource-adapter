@@ -4,7 +4,7 @@
     <name>Ethereum JCA Resource Adapter Project</name>
     <groupId>be.e-contract</groupId>
     <artifactId>ethereum-resource-adapter</artifactId>
-    <version>1.2.7-SNAPSHOT</version>
+    <version>1.2.7</version>
     <packaging>pom</packaging>
     <inceptionYear>2018</inceptionYear>
     <organization>
@@ -159,7 +159,7 @@
     </properties>
     <scm>
         <connection>scm:git:e-contract.be:git/ethereum-resource-adapter.git</connection>
-        <tag>HEAD</tag>
+        <tag>ethereum-resource-adapter-1.2.7</tag>
     </scm>
     <distributionManagement>
         <downloadUrl>https://www.e-contract.be/maven2/be/e-contract/ethereum-resource-adapter/</downloadUrl>
