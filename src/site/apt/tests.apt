@@ -16,7 +16,7 @@ Integration Tests
  Start a <<<geth>>> Ethereum client node in development mode via:
 
 +--
-geth --dev --rpc --rpcapi personal,eth,net,web3 --dev.period 0 --ws --allow-insecure-unlock
+geth --dev --http --http.api personal,eth,net,web3 --dev.period 0 --ws --allow-insecure-unlock
 +--
 
 ** parity
@@ -43,7 +43,7 @@ rm -rf dev
  Start WildFly via:
 
 +--
-cd wildfly-19.0.0.Final/bin
+cd wildfly-19.1.0.Final/bin
 ./standalone.sh --server-config=standalone-full.xml
 +--
 
