@@ -43,7 +43,7 @@ rm -rf dev
  Start WildFly via:
 
 +--
-cd wildfly-19.1.0.Final/bin
+cd wildfly-21.0.0.Final/bin
 ./standalone.sh --server-config=standalone-full.xml
 +--
 
@@ -58,7 +58,7 @@ mvn clean install -Pintegration-tests-wildfly
  Start JBoss EAP via:
 
 +--
-cd jboss-eap-6.4.22/bin
+cd jboss-eap-6.4.23/bin
 ./standalone.sh --server-config=standalone-full.xml
 +--
 
@@ -73,7 +73,7 @@ mvn clean install -Pintegration-tests-jboss-eap
  Start JBoss EAP via:
 
 +--
-cd jboss-eap-7.2.7/bin
+cd jboss-eap-7.3.3/bin
 ./standalone.sh --server-config=standalone-full.xml
 +--
 
