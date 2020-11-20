@@ -18,7 +18,9 @@ Ethereum JCA Resource Adapter Project
 
  * go-ethereum 1.9.24
 
- * openethereum 3.1.0
+ * OpenEthereum 3.1.0
+
+ * Hyperledger Besu 20.10.1
 
  []
 

@@ -19,9 +19,9 @@ Integration Tests
 geth --dev --http --http.api personal,eth,net,web3 --dev.period 0 --ws --allow-insecure-unlock
 +--
 
-** openethereum
+** OpenEthereum
 
- Start a <<<openethereum>>> Ethereum client node in development mode via:
+ Start an <<<openethereum>>> Ethereum client node in development mode via:
 
 +--
 openethereum --config dev --base-path dev --jsonrpc-apis=personal,eth,net,web3,parity --ws-origins=http://localhost
