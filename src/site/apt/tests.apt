@@ -5,11 +5,11 @@ Integration Tests
 
 * Ethereum client node
 
- The integration tests can use either <<<geth>>> or <<<parity>>>.
+ The integration tests can use either <<<geth>>> or <<<openethereum>>>.
 
  Download <<<geth>>> from: {{https://geth.ethereum.org/}}
 
- Download <<<parity>>> from: {{https://www.parity.io/ethereum/}}
+ Download <<<openethereum>>> from: {{https://www.parity.io/ethereum/}}
 
 ** geth
 
@@ -19,15 +19,15 @@ Integration Tests
 geth --dev --http --http.api personal,eth,net,web3 --dev.period 0 --ws --allow-insecure-unlock
 +--
 
-** parity
+** openethereum
 
- Start a <<<parity>>> Ethereum client node in development mode via:
+ Start a <<<openethereum>>> Ethereum client node in development mode via:
 
 +--
-parity --config dev --base-path dev --jsonrpc-apis=personal,eth,net,web3 --ws-origins=http://localhost
+openethereum --config dev --base-path dev --jsonrpc-apis=personal,eth,net,web3,parity --ws-origins=http://localhost
 +--
 
- Please notice that <<<parity>>> leaves behind a <<<dev>>> directory.
+ Please notice that <<<openethereum>>> leaves behind a <<<dev>>> directory.
  So after running it, you might want to cleanup this directory:
 
 +--
