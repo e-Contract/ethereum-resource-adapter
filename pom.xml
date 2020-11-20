@@ -4,7 +4,7 @@
     <name>Ethereum JCA Resource Adapter Project</name>
     <groupId>be.e-contract</groupId>
     <artifactId>ethereum-resource-adapter</artifactId>
-    <version>1.2.9-SNAPSHOT</version>
+    <version>1.2.8-SNAPSHOT</version>
     <packaging>pom</packaging>
     <inceptionYear>2018</inceptionYear>
     <organization>

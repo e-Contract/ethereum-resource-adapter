@@ -4,7 +4,7 @@
     <parent>
         <groupId>be.e-contract</groupId>
         <artifactId>ethereum-resource-adapter</artifactId>
-        <version>1.2.9-SNAPSHOT</version>
+        <version>1.2.8-SNAPSHOT</version>
     </parent>
     <name>Ethereum Resource Adapter API</name>
     <groupId>be.e-contract.ethereum-resource-adapter</groupId>
