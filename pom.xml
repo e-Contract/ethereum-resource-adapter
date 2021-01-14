@@ -89,7 +89,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-ear-plugin</artifactId>
-                    <version>3.1.0</version>
+                    <version>3.2.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -145,14 +145,14 @@
             <extension>
                 <groupId>org.apache.maven.wagon</groupId>
                 <artifactId>wagon-ssh</artifactId>
-                <version>3.4.1</version>
+                <version>3.4.2</version>
             </extension>
         </extensions>
     </build>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <slf4j.version>1.7.30</slf4j.version>
-        <log4j.version>2.13.3</log4j.version>
+        <log4j.version>2.14.0</log4j.version>
         <web3j.version>4.8.1</web3j.version>
         <ethereum-node-location>http://127.0.0.1:8545</ethereum-node-location>
         <ethereum-node-web-socket-location>ws://127.0.0.1:8546</ethereum-node-web-socket-location>
