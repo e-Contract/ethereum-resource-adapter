@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018-2019 e-Contract.be BVBA.
+ * Copyright (C) 2018-2021 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -28,6 +28,8 @@ import be.e_contract.ethereum.ra.oracle.spi.PendingTransactionEvent;
 import static be.e_contract.ethereum.ra.oracle.std.Timing.MOVING_WINDOW_SIZE_MINUTES;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -40,7 +42,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.resource.ResourceException;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.web3j.protocol.core.methods.response.EthBlock;
@@ -112,7 +113,7 @@ public class DefaultGasPriceOracle implements GasPriceOracleSpi {
 
     private void observePendingTransaction(@Observes PendingTransactionEvent pendingTransactionEvent) {
         String transactionHash = pendingTransactionEvent.getTransactionHash();
-        DateTime timestamp = new DateTime(pendingTransactionEvent.getTimestamp());
+        LocalDateTime timestamp = pendingTransactionEvent.getTimestamp().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
         Transaction transaction;
         try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
             transaction = ethereumConnection.findTransaction(transactionHash);
@@ -175,11 +176,11 @@ public class DefaultGasPriceOracle implements GasPriceOracleSpi {
             }
             // we cannot use the block timestamp here, as it can happen before transaction received.
             // we use the time on which we actually received the block
-            DateTime blockReceived = new DateTime(latestBlockEvent.getTimestamp());
+            LocalDateTime blockReceived = latestBlockEvent.getTimestamp().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
             timing.addTiming(pendingTransaction.getCreated(), blockReceived);
         }
 
-        DateTime now = new DateTime();
+        LocalDateTime now = LocalDateTime.now();
         // moving window on gas prices
         synchronized (this.gasPrices) {
             List<Timing> cleanupTimings = new LinkedList<>();
@@ -203,7 +204,7 @@ public class DefaultGasPriceOracle implements GasPriceOracleSpi {
         int removedPendingTransactionsCount = 0;
         PendingTransaction pendingTransaction = this.agingPendingTransactions.peek();
         while (null != pendingTransaction) {
-            DateTime created = pendingTransaction.getCreated();
+            LocalDateTime created = pendingTransaction.getCreated().atZone(ZoneId.systemDefault()).toLocalDateTime();
             if (created.plusMinutes(MOVING_WINDOW_SIZE_MINUTES).isAfter(now)) {
                 break;
             }

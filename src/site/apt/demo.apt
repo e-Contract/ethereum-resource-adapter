@@ -11,7 +11,7 @@ geth --dev --http --http.api personal,eth,net,web3 --dev.period 0 --ws --allow-i
  Start WildFly via:
 
 +--
-cd wildfly-21.0.0.Final/bin
+cd wildfly-22.0.0.Final/bin
 ./standalone.sh --server-config=standalone-full.xml
 +--
 

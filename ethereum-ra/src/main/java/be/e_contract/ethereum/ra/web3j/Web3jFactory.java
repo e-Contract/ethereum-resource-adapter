@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018-2019 e-Contract.be BVBA.
+ * Copyright (C) 2018-2021 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -19,8 +19,9 @@ package be.e_contract.ethereum.ra.web3j;
 
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.Date;
-import org.joda.time.DateTime;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.web3j.protocol.Web3jService;
@@ -58,9 +59,9 @@ public class Web3jFactory {
             // not every node reports syncing status correctly, so also check latest block timestamp
             EthBlock.Block block = web3j.ethGetBlockByNumber(DefaultBlockParameterName.LATEST, false).send().getBlock();
             BigInteger timestamp = block.getTimestamp();
-            Date timestampDate = new Date(timestamp.multiply(BigInteger.valueOf(1000)).longValue());
-            DateTime timestampDateTime = new DateTime(timestampDate);
-            DateTime now = new DateTime();
+            Instant timestampInstant = Instant.ofEpochMilli(timestamp.multiply(BigInteger.valueOf(1000)).longValue());
+            LocalDateTime timestampDateTime = timestampInstant.atZone(ZoneId.systemDefault()).toLocalDateTime();
+            LocalDateTime now = LocalDateTime.now();
             // 1 minute is not enough for production
             if (timestampDateTime.plusMinutes(2).isBefore(now)) {
                 LOGGER.warn("Latest block is more than 2 minutes old.");

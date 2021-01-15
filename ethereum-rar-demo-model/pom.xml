@@ -126,10 +126,6 @@
             <artifactId>slf4j-api</artifactId>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
-        </dependency>
     </dependencies>
     
 </project>

@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018 e-Contract.be BVBA.
+ * Copyright (C) 2018-2021 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -18,47 +18,45 @@
 package be.e_contract.ethereum.ra.oracle.std;
 
 import java.math.BigInteger;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.PriorityQueue;
-import org.joda.time.DateTime;
-import org.joda.time.Duration;
-import org.joda.time.Interval;
 
 public class Timing {
 
     public static final int MOVING_WINDOW_SIZE_MINUTES = 5;
 
     private final BigInteger gasPrice;
-    private Duration totalTime;
+    private Duration totalDuration;
     private int count;
 
     private final PriorityQueue<TimingEntry> timingEntries;
 
     public Timing(BigInteger gasPrice) {
         this.gasPrice = gasPrice;
-        this.totalTime = new Duration(0);
+        this.totalDuration = Duration.ZERO;
         this.count = 0;
         this.timingEntries = new PriorityQueue<>();
     }
 
-    public synchronized void addTiming(DateTime transactionReceived, DateTime blockReceived) {
-        Interval interval = new Interval(transactionReceived, blockReceived);
-        Duration duration = interval.toDuration();
-        this.totalTime = this.totalTime.plus(duration);
+    public synchronized void addTiming(LocalDateTime transactionReceived, LocalDateTime blockReceived) {
+        Duration duration = Duration.between(transactionReceived, blockReceived);
+        this.totalDuration = this.totalDuration.plus(duration);
         this.count++;
         this.timingEntries.add(new TimingEntry(blockReceived, duration));
     }
 
-    public synchronized boolean cleanMovingWindow(DateTime now) {
+    public synchronized boolean cleanMovingWindow(LocalDateTime now) {
         TimingEntry timingEntry = this.timingEntries.peek();
         while (null != timingEntry) {
-            DateTime created = timingEntry.getCreated();
+            LocalDateTime created = timingEntry.getCreated();
             if (created.plusMinutes(MOVING_WINDOW_SIZE_MINUTES).isAfter(now)) {
                 break;
             }
             // remove old entry
             timingEntry = this.timingEntries.poll();
             this.count--;
-            this.totalTime = this.totalTime.minus(timingEntry.getDuration());
+            this.totalDuration = this.totalDuration.minus(timingEntry.getDuration());
             timingEntry = this.timingEntries.peek();
         }
         return this.count == 0;
@@ -73,7 +71,7 @@ public class Timing {
         if (this.count == 0) {
             return Long.MAX_VALUE;
         }
-        return this.totalTime.dividedBy(this.count).getStandardSeconds();
+        return this.totalDuration.dividedBy(this.count).getSeconds();
     }
 
     public int getCount() {

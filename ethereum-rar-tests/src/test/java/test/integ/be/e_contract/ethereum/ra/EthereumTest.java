@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2019 e-Contract.be BVBA.
+ * Copyright (C) 2019-2021 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -20,6 +20,7 @@ package test.integ.be.e_contract.ethereum.ra;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Arrays;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +28,7 @@ import org.web3j.protocol.Web3j;
 import org.web3j.protocol.Web3jService;
 import org.web3j.protocol.core.Request;
 import org.web3j.protocol.core.Response;
+import org.web3j.protocol.core.methods.response.TxPoolStatus;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.utils.Numeric;
 
@@ -45,6 +47,18 @@ public class EthereumTest {
             BigInteger nextNonce = getParityNextNonce(service, address);
             LOGGER.debug("next nonce: {}", nextNonce);
         }
+    }
+
+    @Test
+    @Ignore
+    public void testPoolStatus() throws Exception {
+        Web3jService service = new HttpService();
+        Web3j web3j = Web3j.build(service);
+        TxPoolStatus poolStatus = web3j.txPoolStatus().send();
+        Integer pending = poolStatus.getPending();
+        Integer queued = poolStatus.getQueued();
+        LOGGER.debug("pending transactions: {}", pending);
+        LOGGER.debug("queued transactions: {}", queued);
     }
 
     @Test

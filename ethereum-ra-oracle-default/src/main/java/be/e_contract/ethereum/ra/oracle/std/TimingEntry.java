@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018 e-Contract.be BVBA.
+ * Copyright (C) 2018-2021 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -17,20 +17,20 @@
  */
 package be.e_contract.ethereum.ra.oracle.std;
 
-import org.joda.time.DateTime;
-import org.joda.time.Duration;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 public class TimingEntry implements Comparable<TimingEntry> {
 
-    private final DateTime created;
+    private final LocalDateTime created;
     private final Duration duration;
 
-    public TimingEntry(DateTime created, Duration duration) {
+    public TimingEntry(LocalDateTime created, Duration duration) {
         this.created = created;
         this.duration = duration;
     }
 
-    public DateTime getCreated() {
+    public LocalDateTime getCreated() {
         return this.created;
     }
 
