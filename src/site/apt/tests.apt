@@ -73,7 +73,7 @@ mvn clean install -Pintegration-tests-jboss-eap
  Start JBoss EAP via:
 
 +--
-cd jboss-eap-7.3.3/bin
+cd jboss-eap-7.3.4/bin
 ./standalone.sh --server-config=standalone-full.xml
 +--
 
