@@ -6,7 +6,7 @@ Ethereum JCA Resource Adapter Project
 
  * JBoss EAP 6.4.23
  
- * JBoss EAP 7.3.4
+ * JBoss EAP 7.3.5
 
  * JBoss WildFly 22.0.0.Final
 
@@ -18,9 +18,9 @@ Ethereum JCA Resource Adapter Project
 
  * go-ethereum 1.9.25
 
- * OpenEthereum 3.1.0
+ * OpenEthereum 3.1.1
 
- * Hyperledger Besu 20.10.1
+ * Hyperledger Besu 20.10.4
 
  []
 
