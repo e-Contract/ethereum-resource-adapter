@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2019 e-Contract.be BVBA.
+ * Copyright (C) 2019-2021 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -234,6 +234,9 @@ public class EthereumTransactionManager {
                     LOGGER.debug("transaction {} confirming blocks {}", transactionHash, confirmingBlocks);
                     continue;
                 }
+                LOGGER.debug("transaction {} confirmed", transactionHash);
+                LOGGER.debug("gas used: {} wei", transactionReceipt.getGasUsed());
+                LOGGER.debug("cumulative gas used: {} wei", transactionReceipt.getCumulativeGasUsed());
                 BigInteger publicationBlockNumber = transactionReceipt.getBlockNumber();
                 publicationEvents.add(new EthereumPublicationEvent(transactionHash, transactionReceipt, publicationBlockNumber,
                         transactionInfo.getInfo()));
