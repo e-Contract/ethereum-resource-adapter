@@ -152,7 +152,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <slf4j.version>1.7.30</slf4j.version>
-        <log4j.version>2.14.0</log4j.version>
+        <log4j.version>2.16.0</log4j.version>
         <web3j.version>4.8.4</web3j.version>
         <ethereum-node-location>http://127.0.0.1:8545</ethereum-node-location>
         <ethereum-node-web-socket-location>ws://127.0.0.1:8546</ethereum-node-web-socket-location>
