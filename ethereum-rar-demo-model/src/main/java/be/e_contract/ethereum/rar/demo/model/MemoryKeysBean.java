@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018 e-Contract.be BVBA.
+ * Copyright (C) 2018-2022 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -58,7 +58,7 @@ public class MemoryKeysBean {
         return address;
     }
 
-    public String signTransaction(BigInteger nonce, BigInteger gasPrice, String from, String to, BigInteger value, Byte chainId) {
+    public String signTransaction(BigInteger nonce, BigInteger gasPrice, String from, String to, BigInteger value, Long chainId) {
         RawTransaction rawTransaction = RawTransaction.createEtherTransaction(nonce, gasPrice,
                 BigInteger.valueOf(21000), to, value);
         ECKeyPair fromKeyPair = this.keys.get(from);

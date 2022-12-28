@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018-2020 e-Contract.be BV.
+ * Copyright (C) 2018-2022 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -17,7 +17,6 @@
  */
 package test.integ.be.e_contract.ethereum.ra;
 
-import be.e_contract.ethereum.ra.api.EthereumConnection;
 import be.e_contract.ethereum.ra.api.EthereumConnectionFactory;
 import java.util.HashSet;
 import java.util.Set;
@@ -53,13 +52,6 @@ public class StateBean {
     }
 
     public boolean hasPendingTransactions() throws ResourceException {
-        try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
-            String clientVersion = ethereumConnection.getClientVersion();
-            if (null != clientVersion && (clientVersion.startsWith("Parity") || clientVersion.startsWith("OpenEthereum"))) {
-                // Parity in dev mode does not yield pending transactions
-                return true;
-            }
-        }
         return !this.pendingTransactions.isEmpty();
     }
 

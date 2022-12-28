@@ -167,17 +167,7 @@ public class EthereumBean {
         try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
             Long chainId = ethereumConnection.getChainId();
             LOGGER.debug("chain id: {}", chainId);
-            Long _chainId;
-            if (null == chainId) {
-                _chainId = null;
-            } else if (chainId > 255) {
-                // TODO: chainId can be larger than byte... web3j TODO
-                // dev network has ip155 option to 0
-                _chainId = null;
-            } else {
-                _chainId = chainId;
-            }
-            return ethereumConnection.deploy(DemoContract.class, this.contractGasProvider, credentials, _chainId);
+            return ethereumConnection.deploy(DemoContract.class, this.contractGasProvider, credentials, chainId);
         } catch (ResourceException ex) {
             LOGGER.error("JCA error: " + ex.getMessage(), ex);
             return null;
@@ -188,19 +178,8 @@ public class EthereumBean {
         try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
             Long chainId = ethereumConnection.getChainId();
             LOGGER.debug("chain id: {}", chainId);
-            Long _chainId;
-            if (null == chainId) {
-                _chainId = null;
-            } else if (chainId > 46) {
-                // web3j cannot handle chainId above 46
-                // TODO: chainId can be larger than byte... web3j TODO
-                // dev network has ip155 option to 0
-                _chainId = null;
-            } else {
-                _chainId = chainId;
-            }
             DemoContract demoContract = ethereumConnection.load(DemoContract.class, contractAddress,
-                    credentials, _chainId, this.contractGasProvider);
+                    credentials, chainId, this.contractGasProvider);
             String transactionHash = demoContract.setValue(value).send().getTransactionHash();
             if (rollback) {
                 throw new RollbackException("rollback");
@@ -216,19 +195,8 @@ public class EthereumBean {
         try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
             Long chainId = ethereumConnection.getChainId();
             LOGGER.debug("chain id: {}", chainId);
-            Long _chainId;
-            if (null == chainId) {
-                _chainId = null;
-            } else if (chainId > 46) {
-                // web3j cannot handle chainId above 46
-                // TODO: chainId can be larger than byte... web3j TODO
-                // dev network has ip155 option to 0
-                _chainId = null;
-            } else {
-                _chainId = chainId;
-            }
             DemoContract demoContract = ethereumConnection.load(DemoContract.class, contractAddress,
-                    credentials, _chainId, this.contractGasProvider);
+                    credentials, chainId, this.contractGasProvider);
             return demoContract.getValue().send();
         } catch (ResourceException ex) {
             LOGGER.error("JCA error: " + ex.getMessage(), ex);

@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018-2019 e-Contract.be BVBA.
+ * Copyright (C) 2018-2022 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -72,12 +72,6 @@ public class ContractBean {
             assertEquals(value, balance);
 
             Long chainId = ethereumConnection.getChainId();
-            if (chainId != null) {
-                if (chainId > 46) {
-                    // test network
-                    chainId = null;
-                }
-            }
             Credentials credentials = Credentials.create(ecKeyPair);
             LocalTransaction localTransaction = ethereumConnection.getLocalTransaction();
             localTransaction.begin();
@@ -154,12 +148,6 @@ public class ContractBean {
             assertEquals(value, balance);
 
             Long chainId = ethereumConnection.getChainId();
-            if (chainId != null) {
-                if (chainId > 46) {
-                    // test network
-                    chainId = null;
-                }
-            }
             Credentials credentials = Credentials.create(ecKeyPair);
             LocalTransaction localTransaction = ethereumConnection.getLocalTransaction();
             localTransaction.begin();

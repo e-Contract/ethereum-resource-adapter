@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018 e-Contract.be BVBA.
+ * Copyright (C) 2018-2022 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -56,7 +56,7 @@ public class EthereumDemoKeysController implements Serializable {
     private BigInteger value;
     private BigInteger gasPrice;
     private BigInteger nonce;
-    private Integer chainId;
+    private Long chainId;
 
     private String contractAddress;
 
@@ -100,11 +100,11 @@ public class EthereumDemoKeysController implements Serializable {
         this.nonce = nonce;
     }
 
-    public Integer getChainId() {
+    public Long getChainId() {
         return this.chainId;
     }
 
-    public void setChainId(Integer chainId) {
+    public void setChainId(Long chainId) {
         this.chainId = chainId;
     }
 
@@ -158,6 +158,11 @@ public class EthereumDemoKeysController implements Serializable {
         } catch (RollbackException ex) {
             LOGGER.error("gas price error: " + ex.getMessage(), ex);
         }
+        try {
+            this.chainId = this.ethereumBean.getChainId();
+        } catch (Exception ex) {
+            LOGGER.error("chain id error: " + ex.getMessage(), ex);
+        }
         this.nonce = this.ethereumBean.getNonce(this.selectedAddress);
         return "/keys/transaction";
     }
@@ -169,14 +174,8 @@ public class EthereumDemoKeysController implements Serializable {
     }
 
     public String signTransaction() {
-        Byte chainIdByte;
-        if (null != this.chainId) {
-            chainIdByte = this.chainId.byteValue();
-        } else {
-            chainIdByte = null;
-        }
         this.transaction = this.memoryKeysBean.signTransaction(this.nonce, this.gasPrice,
-                this.selectedAddress, this.to, this.value, chainIdByte);
+                this.selectedAddress, this.to, this.value, this.chainId);
         return "/keys/transaction-result";
     }
 
