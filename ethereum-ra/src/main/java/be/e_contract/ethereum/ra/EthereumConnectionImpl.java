@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018-2019 e-Contract.be BVBA.
+ * Copyright (C) 2018-2022 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -323,17 +323,6 @@ public class EthereumConnectionImpl implements EthereumConnection {
         checkIfClosed();
         try {
             return this.ethereumManagedConnection.getPeerCount();
-        } catch (Exception ex) {
-            LOGGER.error("error: " + ex.getMessage(), ex);
-            throw new ResourceException(ex);
-        }
-    }
-
-    @Override
-    public String getProtocolVersion() throws ResourceException {
-        checkIfClosed();
-        try {
-            return this.ethereumManagedConnection.getProtocolVersion();
         } catch (Exception ex) {
             LOGGER.error("error: " + ex.getMessage(), ex);
             throw new ResourceException(ex);

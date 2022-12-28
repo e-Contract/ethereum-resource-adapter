@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018-2020 e-Contract.be BV.
+ * Copyright (C) 2018-2022 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -21,7 +21,6 @@ import be.e_contract.ethereum.ra.tx.EthereumLocalTransaction;
 import be.e_contract.ethereum.ra.tx.EthereumTransactionCommit;
 import be.e_contract.ethereum.ra.tx.EthereumXAResource;
 import be.e_contract.ethereum.ra.web3j.EthereumTransactionManager;
-import be.e_contract.ethereum.ra.web3j.ParityNextNonce;
 import be.e_contract.ethereum.ra.web3j.Web3jFactory;
 import be.e_contract.ethereum.ra.api.EthereumConnection;
 import be.e_contract.ethereum.ra.api.EthereumException;
@@ -32,7 +31,6 @@ import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigInteger;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -62,7 +60,6 @@ import org.web3j.protocol.admin.Admin;
 import org.web3j.protocol.admin.methods.response.PersonalUnlockAccount;
 import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.DefaultBlockParameterName;
-import org.web3j.protocol.core.Request;
 import org.web3j.protocol.core.Response;
 import org.web3j.protocol.core.methods.response.EthBlock;
 import org.web3j.protocol.core.methods.response.EthChainId;
@@ -123,15 +120,6 @@ public class EthereumManagedConnection implements ManagedConnection {
         String location = this.ethereumConnectionRequestInfo.getNodeLocation();
         this.web3 = Web3jFactory.createWeb3j(location);
         return this.web3;
-    }
-
-    Web3jService getWeb3jService() {
-        if (null != this.service) {
-            return service;
-        }
-        String location = this.ethereumConnectionRequestInfo.getNodeLocation();
-        this.service = Web3jFactory.getWeb3jService(location);
-        return this.service;
     }
 
     void checkIfDestroyed() throws ResourceException {
@@ -458,31 +446,6 @@ public class EthereumManagedConnection implements ManagedConnection {
         return transactionCount;
     }
 
-    BigInteger getParityNextNonce(String address) throws Exception {
-        Web3j web3j = getWeb3j();
-        String clientVersion = web3j.web3ClientVersion().send().getWeb3ClientVersion();
-        LOGGER.debug("client version: {}", clientVersion);
-        if (null == clientVersion) {
-            return null;
-        }
-        if (!clientVersion.startsWith("Parity")) {
-            return null;
-        }
-        Web3jService web3jService = getWeb3jService();
-        Request<?, ParityNextNonce> request = new Request<>(
-                "parity_nextNonce",
-                Arrays.asList(address),
-                web3jService,
-                ParityNextNonce.class);
-        ParityNextNonce parityNextNonce = request.send();
-        if (parityNextNonce.hasError()) {
-            LOGGER.warn("parity next nonce error: {}", parityNextNonce.getError().getMessage());
-            return null;
-        }
-        BigInteger nextNonce = request.send().getNextNonce();
-        return nextNonce;
-    }
-
     public BigInteger getNextNonce(String address) throws Exception {
         Map<String, BigInteger> nonces = this.resourceAdapter.getNonces();
         synchronized (nonces) {
@@ -491,11 +454,8 @@ public class EthereumManagedConnection implements ManagedConnection {
                 nonces.put(address, nonce.add(BigInteger.ONE));
                 return nonce;
             }
-            nonce = getParityNextNonce(address);
-            if (null == nonce) {
-                Web3j web3j = getWeb3j();
-                nonce = web3j.ethGetTransactionCount(address, DefaultBlockParameterName.PENDING).send().getTransactionCount();
-            }
+            Web3j web3j = getWeb3j();
+            nonce = web3j.ethGetTransactionCount(address, DefaultBlockParameterName.PENDING).send().getTransactionCount();
             nonces.put(address, nonce.add(BigInteger.ONE));
             return nonce;
         }
@@ -618,13 +578,7 @@ public class EthereumManagedConnection implements ManagedConnection {
         long _chainId;
         if (null != chainId) {
             LOGGER.debug("Chain Id: {}", chainId);
-            // https://github.com/web3j/web3j/issues/234
-            if (chainId > 46) {
-                LOGGER.warn("web3j cannot sign with chainId > 46");
-                _chainId = ChainIdLong.NONE;
-            } else {
-                _chainId = chainId.byteValue();
-            }
+            _chainId = chainId;
         } else {
             _chainId = ChainIdLong.NONE;
         }
@@ -653,11 +607,6 @@ public class EthereumManagedConnection implements ManagedConnection {
     BigInteger getPeerCount() throws Exception {
         Web3j web3j = getWeb3j();
         return web3j.netPeerCount().send().getQuantity();
-    }
-
-    String getProtocolVersion() throws Exception {
-        Web3j web3j = getWeb3j();
-        return web3j.ethProtocolVersion().send().getProtocolVersion();
     }
 
     boolean isSyncing() throws Exception {

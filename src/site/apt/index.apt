@@ -6,7 +6,7 @@ Ethereum JCA Resource Adapter Project
 
  * JBoss EAP 6.4.23
  
- * JBoss EAP 7.3.5
+ * JBoss EAP 7.4.8
 
  * JBoss WildFly 22.0.0.Final
 
@@ -16,9 +16,7 @@ Ethereum JCA Resource Adapter Project
 
  Tested Ethereum client nodes:
 
- * go-ethereum 1.9.25
-
- * OpenEthereum 3.1.1
+ * go-ethereum 1.10.26
 
  * Hyperledger Besu 20.10.4
 

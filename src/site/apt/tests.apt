@@ -5,11 +5,9 @@ Integration Tests
 
 * Ethereum client node
 
- The integration tests can use either <<<geth>>> or <<<openethereum>>>.
+ The integration tests use <<<geth>>>.
 
  Download <<<geth>>> from: {{https://geth.ethereum.org/}}
-
- Download <<<openethereum>>> from: {{https://www.parity.io/ethereum/}}
 
 ** geth
 
@@ -17,21 +15,6 @@ Integration Tests
 
 +--
 geth --dev --http --http.api personal,eth,net,web3 --dev.period 0 --ws --allow-insecure-unlock
-+--
-
-** OpenEthereum
-
- Start an <<<openethereum>>> Ethereum client node in development mode via:
-
-+--
-openethereum --config dev --base-path dev --jsonrpc-apis=personal,eth,net,web3,parity --ws-origins=http://localhost
-+--
-
- Please notice that <<<openethereum>>> leaves behind a <<<dev>>> directory.
- So after running it, you might want to cleanup this directory:
-
-+--
-rm -rf dev
 +--
 
 * Java EE Application Server
@@ -73,7 +56,7 @@ mvn clean install -Pintegration-tests-jboss-eap
  Start JBoss EAP via:
 
 +--
-cd jboss-eap-7.3.5/bin
+cd jboss-eap-7.4/bin
 ./standalone.sh --server-config=standalone-full.xml
 +--
 

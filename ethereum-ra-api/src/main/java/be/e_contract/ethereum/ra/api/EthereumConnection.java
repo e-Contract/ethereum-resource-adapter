@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018-2019 e-Contract.be BVBA.
+ * Copyright (C) 2018-2022 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -238,14 +238,6 @@ public interface EthereumConnection extends Connection, AutoCloseable {
      * @throws ResourceException
      */
     BigInteger getPeerCount() throws ResourceException;
-
-    /**
-     * Gives back the protocol version of the Ethereum network.
-     *
-     * @return the protocol version.
-     * @throws ResourceException
-     */
-    String getProtocolVersion() throws ResourceException;
 
     /**
      * Returns true if the Ethereum client node is synchronizing.

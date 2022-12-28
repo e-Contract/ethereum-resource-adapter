@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018-2020 e-Contract.be BV.
+ * Copyright (C) 2018-2022 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -245,12 +245,6 @@ public class EthereumBean {
     public String getNetVersion() throws Exception {
         try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
             return ethereumConnection.getNetVersion();
-        }
-    }
-
-    public String getProtocolVersion() throws Exception {
-        try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
-            return ethereumConnection.getProtocolVersion();
         }
     }
 

@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018-2019 e-Contract.be BVBA.
+ * Copyright (C) 2018-2022 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -95,7 +95,7 @@ public class EthereumXAResource implements XAResource {
             try {
                 Web3j web3j = this.ethereumManagedConnection.getWeb3j();
                 // make sure the node is available
-                web3j.ethProtocolVersion().send();
+                web3j.ethBlockNumber().send();
             } catch (Exception e) {
                 LOGGER.error("error during end: " + e.getMessage(), e);
                 throw new XAException(XAException.XA_RBROLLBACK);

@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2019-2020 e-Contract.be BV.
+ * Copyright (C) 2019-2022 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -46,16 +46,6 @@ public class EthereumDemoInfoController {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         try {
             return this.ethereumBean.getNetVersion();
-        } catch (Exception ex) {
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "error: " + ex.getMessage(), null));
-            return null;
-        }
-    }
-
-    public String getProtocolVersion() {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        try {
-            return this.ethereumBean.getProtocolVersion();
         } catch (Exception ex) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "error: " + ex.getMessage(), null));
             return null;

@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018-2020 e-Contract.be BV.
+ * Copyright (C) 2018-2022 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -148,13 +148,13 @@ public class EthereumTransactionManager extends TransactionManager {
     }
 
     @Override
-    public EthSendTransaction sendTransactionEIP1559(BigInteger gasPremium,
-            BigInteger feeCap,
+    public EthSendTransaction sendEIP1559Transaction(long chainId,
+            BigInteger maxPriorityFeePerGas,
+            BigInteger maxFeePerGas,
             BigInteger gasLimit,
             String to,
             String data,
-            BigInteger value,
-            boolean constructor) throws IOException {
+            BigInteger value, boolean constructor) throws IOException {
         LOGGER.debug("sendTransaction");
         LOGGER.debug("constructor: {}", constructor);
         BigInteger nonce;
@@ -165,8 +165,14 @@ public class EthereumTransactionManager extends TransactionManager {
         }
         LOGGER.debug("nonce: {}", nonce);
         RawTransaction rawTransaction
-                = RawTransaction.createTransaction(
-                        nonce, null, gasLimit, to, value, data, gasPremium, feeCap);
+                = RawTransaction.createTransaction(chainId,
+                        nonce,
+                        gasLimit,
+                        to,
+                        value,
+                        data,
+                        maxPriorityFeePerGas,
+                        maxFeePerGas);
         byte[] signedMessage;
         if (this.chainId != ChainIdLong.NONE) {
             signedMessage = TransactionEncoder.signMessage(rawTransaction, this.chainId, this.credentials);

@@ -1,3 +1,7 @@
 target/
 faces-config.NavData
 .DS_Store
+nb-configuration.xml
+.project
+.classpath
+.settings
