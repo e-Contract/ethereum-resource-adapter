@@ -34,18 +34,6 @@
                     <rarFile>${basedir}/target/ethereum-rar-${project.version}.rar</rarFile>
                     <outputDir>${basedir}/target</outputDir>
                 </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>javax.validation</groupId>
-                        <artifactId>validation-api</artifactId>
-                        <version>1.0.0.GA</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>javax.resource</groupId>
-                        <artifactId>javax.resource-api</artifactId>
-                        <version>1.7.1</version>
-                    </dependency>
-                </dependencies>
             </plugin>
         </plugins>
     </build>
