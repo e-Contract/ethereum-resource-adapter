@@ -55,7 +55,6 @@ import org.web3j.crypto.SignedRawTransaction;
 import org.web3j.crypto.TransactionDecoder;
 import org.web3j.crypto.TransactionEncoder;
 import org.web3j.protocol.Web3j;
-import org.web3j.protocol.Web3jService;
 import org.web3j.protocol.admin.Admin;
 import org.web3j.protocol.admin.methods.response.PersonalUnlockAccount;
 import org.web3j.protocol.core.DefaultBlockParameter;
@@ -88,8 +87,6 @@ public class EthereumManagedConnection implements ManagedConnection {
     private final Set<EthereumConnectionImpl> ethereumConnections;
 
     private Admin web3;
-
-    private Web3jService service;
 
     private EthereumLocalTransaction ethereumLocalTransaction;
 

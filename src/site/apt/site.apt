@@ -6,7 +6,7 @@ Maven Site Development
 mvn clean install site site:stage
 +--
 
- View the site on Mac OS X via:
+ View the site on Mac OS via:
 
 +--
 open target/staging/index.html

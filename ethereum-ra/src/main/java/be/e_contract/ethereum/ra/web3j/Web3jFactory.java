@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018-2021 e-Contract.be BV.
+ * Copyright (C) 2018-2022 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -76,8 +76,6 @@ public class Web3jFactory {
         if (nodeLocation.startsWith("http")) {
             return new HttpService(nodeLocation);
         } else {
-            // https://github.com/web3j/web3j/pull/245
-            LOGGER.warn("web3j IPC is not really stable");
             return new UnixIpcService(nodeLocation);
         }
     }
