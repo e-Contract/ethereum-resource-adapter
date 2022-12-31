@@ -4,7 +4,7 @@
     <parent>
         <groupId>be.e-contract</groupId>
         <artifactId>ethereum-resource-adapter</artifactId>
-        <version>1.3.0</version>
+        <version>1.3.1-SNAPSHOT</version>
     </parent>
     <name>Ethereum Resource Adapter Oracle</name>
     <groupId>be.e-contract.ethereum-resource-adapter</groupId>
@@ -51,17 +51,17 @@
         <dependency>
             <groupId>be.e-contract.ethereum-resource-adapter</groupId>
             <artifactId>ethereum-ra-oracle-api</artifactId>
-            <version>1.3.0</version>
+            <version>1.3.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>be.e-contract.ethereum-resource-adapter</groupId>
             <artifactId>ethereum-ra-oracle-spi</artifactId>
-            <version>1.3.0</version>
+            <version>1.3.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>be.e-contract.ethereum-resource-adapter</groupId>
             <artifactId>ethereum-ra</artifactId>
-            <version>1.3.0</version>
+            <version>1.3.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
