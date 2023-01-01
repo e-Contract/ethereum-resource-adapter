@@ -38,7 +38,8 @@
         </dependency>
         <dependency>
             <groupId>org.jboss.spec</groupId>
-            <artifactId>jboss-javaee-all-6.0</artifactId>
+            <artifactId>jboss-javaee-all-8.0</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

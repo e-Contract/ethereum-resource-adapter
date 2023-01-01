@@ -24,7 +24,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-ear-plugin</artifactId>
                 <configuration>
-                    <version>6</version>
+                    <version>8</version>
                     <defaultLibBundleDir>lib</defaultLibBundleDir>
                     <earSourceDirectory>${project.build.outputDirectory}</earSourceDirectory>
                     <modules>
@@ -80,7 +80,7 @@
     <dependencies>
         <dependency>
             <groupId>org.jboss.spec</groupId>
-            <artifactId>jboss-javaee-all-6.0</artifactId>
+            <artifactId>jboss-javaee-all-8.0</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>

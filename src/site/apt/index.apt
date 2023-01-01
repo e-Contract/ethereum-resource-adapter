@@ -3,8 +3,6 @@ Ethereum JCA Resource Adapter Project
  This project delivers a standard Java EE JCA Resource Adapter to connect to Ethereum networks.
 
  Tested Java EE application servers:
-
- * JBoss EAP 6.4.24
  
  * JBoss EAP 7.4.8
 
@@ -22,9 +20,9 @@ Ethereum JCA Resource Adapter Project
 
  []
 
- We should be able to support every Java EE 6+ application server.
+ We should be able to support every Java EE 8+ application server.
 
- We target the Java EE JCA version 1.6 specification and Java 8+.
+ We target the Java EE JCA version 1.7 specification and Java 8+.
 
  If you like this project, please consider a donation at:
 
