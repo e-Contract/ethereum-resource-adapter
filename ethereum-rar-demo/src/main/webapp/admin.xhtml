@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta http-equiv="Content-Script-Type" content="text/javascript" />
+        <meta http-equiv="Content-Style-Type" content="text/css" />
+        <meta http-equiv="Expires" content="-1" />
+        <meta http-equiv="Cache-Control"
+              content="no-cache, no-store, max-age=0, must-revalidate" />
+        <meta http-equiv="Pragma" content="no-cache" />
+        <title>Ethereum Resource Adapter Demo Web Application</title>
+    </h:head>
+
+    <h:body>
+        <h1>Resource Adapter Admin Object</h1>
+        <h:messages errorStyle="color:red;" infoStyle="color:blue;" id="messages"/>
+        <h:form>
+            <h:panelGrid columns="2">
+                <h:outputText value="Implementation version:"/>
+                <h:outputText value="#{ethereumDemoAdminController.implementationVersion}"/>
+
+                <h:outputText value="Default node location:"/>
+                <h:outputText value="#{ethereumDemoAdminController.defaultNodeLocation}"/>
+
+                <h:outputText value="Default web socket node location:"/>
+                <h:outputText value="#{ethereumDemoAdminController.defaultWebSocketNodeLocation}"/>
+            </h:panelGrid>
+            <h:panelGrid columns="2">
+                <h:commandButton value="Clear nounce cache" action="#{ethereumDemoAdminController.clearNouncesCache()}">
+                    <f:ajax execute="@form" render="@form messages"/>
+                </h:commandButton>
+                <h:commandButton value="Back" action="/index" immediate="true"/>
+            </h:panelGrid>
+        </h:form>
+    </h:body>
+
+</html>

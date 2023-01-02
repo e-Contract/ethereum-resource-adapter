@@ -4,11 +4,11 @@
              xsi:schemaLocation="http://www.jboss.org/ironjacamar/schema https://www.jboss.org/ironjacamar/schema/ironjacamar_1_0.xsd">
     
     <config-property name="nodeLocation">${ethereum-node-location}</config-property>
+    <config-property name="webSocketNodeLocation">${ethereum-node-web-socket-location}</config-property>
     
     <connection-definitions>  
         <connection-definition class-name="be.e_contract.ethereum.ra.EthereumManagedConnectionFactory"
                                jndi-name="java:/EthereumConnectionFactory">
-            <config-property name="nodeLocation">${ethereum-node-location}</config-property>
             <!-- next is really required for XA not to whine -->
             <recovery>
                 <recover-credential>
@@ -26,5 +26,10 @@
             </xa-pool>
         </connection-definition>
     </connection-definitions>
+    
+    <admin-objects>
+        <admin-object class-name="be.e_contract.ethereum.ra.EthereumAdminImpl" jndi-name="java:/EthereumAdmin">
+        </admin-object>
+    </admin-objects>
 
 </ironjacamar>

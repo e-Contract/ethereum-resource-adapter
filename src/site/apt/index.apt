@@ -8,15 +8,11 @@ Ethereum JCA Resource Adapter Project
 
  * JBoss WildFly 26.1.2.Final
 
- * Oracle WebLogic 12.2.1.3.0
-
  []
 
  Tested Ethereum client nodes:
 
  * go-ethereum 1.10.26
-
- * Hyperledger Besu 20.10.4
 
  []
 

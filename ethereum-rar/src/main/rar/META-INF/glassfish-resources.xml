@@ -6,5 +6,6 @@
                      factory-class="be.e_contract.ethereum.ra.EthereumManagedConnectionFactory"
                      res-type="String">
         <property name="nodeLocation" value="${ethereum-node-location}"/>
+        <property name="webSocketNodeLocation" value="${ethereum-node-web-socket-location}"/>
     </custom-resource>
 </resources>

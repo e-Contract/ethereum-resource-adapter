@@ -207,6 +207,10 @@ private EthereumConnectionFactory ethereumConnectionFactory;
                     </recovery>
                 </connection-definition>
             </connection-definitions>
+            <admin-objects>
+                <admin-object class-name="be.e_contract.ethereum.ra.EthereumAdminImpl" jndi-name="java:/EthereumAdmin">
+                </admin-object>
+            </admin-objects>
         </resource-adapter>
     </resource-adapters>
 </subsystem>
