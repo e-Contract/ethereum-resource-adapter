@@ -17,12 +17,15 @@
  */
 package be.e_contract.ethereum.ra.api;
 
+import java.io.Serializable;
+import javax.resource.Referenceable;
+
 /**
  * Administrator interface for Ethereum Resource Adapter.
  *
  * @author Frank Cornelis
  */
-public interface EthereumAdmin {
+public interface EthereumAdmin extends Serializable, Referenceable {
 
     /**
      * Gives back the implementation version of the Ethereum resource adapter.

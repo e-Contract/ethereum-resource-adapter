@@ -118,3 +118,32 @@ tail -F wlp/usr/servers/defaultServer/logs/console.log
 cd wlp/bin
 ./server stop
 +--
+
+* Oracle WebLogic
+
+ <<Work in progress>>
+
+ Download Oracle WebLogic Server version 14.1.1.0.0 via:
+ {{https://www.oracle.com/middleware/technologies/weblogic-server-installers-downloads.html}}
+
+ Start the server via:
+
++--
+cd Oracle/Middleware/Oracle_Home/user_projects/domains/base_domain/bin
+./startWebLogic.sh
++--
+
+ Deploy the Ethereum resource adapter via:
+
++--
+cp ethereum-rar/target/ethereum-rar-${project.version}.rar Oracle/Middleware/Oracle_Home/user_projects/domains/base_domain/autodeploy/ethereum-ra.rar
++--
+
+ Deploy the demo web application via:
+
++--
+cp ethereum-rar-demo-deploy/target/ethereum-rar-demo-deploy-${project.version}.ear Oracle/Middleware/Oracle_Home/user_projects/domains/base_domain/autodeploy/demo.ear
++--
+
+ The web application should be available at:
+ {{http://localhost:7001/ethereum-demo/}}

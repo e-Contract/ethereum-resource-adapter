@@ -243,6 +243,10 @@ public class EthereumResourceAdapter implements ResourceAdapter, Serializable, R
 
     @Override
     public int hashCode() {
+        if (null == this.nodeLocation) {
+            // weblogic
+            return 0;
+        }
         return this.nodeLocation.hashCode();
     }
 

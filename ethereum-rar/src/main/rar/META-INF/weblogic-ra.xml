@@ -3,6 +3,26 @@
                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                     xsi:schemaLocation="http://xmlns.oracle.com/weblogic/weblogic-connector http://xmlns.oracle.com/weblogic/weblogic-connector/1.5/weblogic-connector.xsd">
     <jndi-name>EthereumResourceAdapter</jndi-name>
+    <enable-global-access-to-classes>true</enable-global-access-to-classes>
+    <properties>
+        <property>
+            <name>nodeLocation</name>
+            <value>${ethereum-node-location}</value>
+        </property>
+        <property>
+            <name>webSocketNodeLocation</name>
+            <value>${ethereum-node-web-socket-location}</value>
+        </property>
+    </properties>
+    <admin-objects>
+        <admin-object-group>
+            <admin-object-interface>be.e_contract.ethereum.ra.api.EthereumAdmin</admin-object-interface>
+            <admin-object-class>be.e_contract.ethereum.ra.EthereumAdminImpl</admin-object-class>
+            <admin-object-instance>
+                <jndi-name>EthereumAdmin</jndi-name>
+            </admin-object-instance>
+        </admin-object-group>
+    </admin-objects>
     <outbound-resource-adapter>
         <connection-definition-group>
             <connection-factory-interface>be.e_contract.ethereum.ra.api.EthereumConnectionFactory</connection-factory-interface>
