@@ -15,10 +15,22 @@ cd wildfly-26.1.2.Final/bin
 ./standalone.sh --server-config=standalone-full.xml
 +--
 
- Compile and deploy the demo web application via:
+ Compile the project via:
 
 +--
 mvn clean install
++--
+
+ Deploy the Ethereum resource adapter via:
+
++--
+cd ethereum-rar/
+mvn wildfly:deploy
++--
+
+ Deploy the demo web application via:
+
++--
 cd ethereum-rar-demo-deploy/
 mvn wildfly:deploy
 +--

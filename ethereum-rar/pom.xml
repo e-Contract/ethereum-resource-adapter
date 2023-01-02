@@ -34,6 +34,25 @@
                     <rarFile>${basedir}/target/ethereum-rar-${project.version}.rar</rarFile>
                     <outputDir>${basedir}/target</outputDir>
                 </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>javax.validation</groupId>
+                        <artifactId>validation-api</artifactId>
+                        <version>1.0.0.GA</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>javax.resource</groupId>
+                        <artifactId>javax.resource-api</artifactId>
+                        <version>1.7.1</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.wildfly.plugins</groupId>
+                <artifactId>wildfly-maven-plugin</artifactId>
+                <configuration>
+                    <name>ethereum-ra.rar</name>
+                </configuration>
             </plugin>
         </plugins>
     </build>
@@ -52,12 +71,6 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <!-- jffi within the RAR makes the VM crash in JBoss EAP, moving web3j to the EAR level fixes the issue -->
-            <groupId>org.web3j</groupId>
-            <artifactId>core</artifactId>
             <scope>provided</scope>
         </dependency>
     </dependencies>

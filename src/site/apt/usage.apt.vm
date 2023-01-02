@@ -2,6 +2,10 @@ Usage
 
  This section provides generic usage information and usage information per Java EE application server.
 
+ The Ethereum RAR can be deployed separately, or embedded within your EAR.
+
+* Embedded RAR
+
  Within your EAR, you need to include the RAR.
 
  If you use Maven, refer to the e-contract.be Maven repository via:
@@ -37,16 +41,6 @@ Usage
 </rarModule>
 +--
 
- also add <<<web3j>>> as dependency within your EAR via:
-
-+--
-<dependency>
-    <groupId>org.web3j</groupId>
-    <artifactId>core</artifactId>
-    <version>${web3j.version}</version>
-</dependency>
-+--
-
  within your EJB JAR or WAR you add the API dependency under <<<dependencies>>> via:
 
 +--
@@ -58,7 +52,7 @@ Usage
 </dependency>
 +--
 
-* JBoss EAP/WildFly
+** JBoss EAP/WildFly
 
  The <<<EthereumConnectionFactory>>> will be available within JNDI under:
 
@@ -114,7 +108,7 @@ import org.jboss.ejb3.annotation.ResourceAdapter;
 @ResourceAdapter("#ethereum-ra.rar")
 +--
 
-* Oracle WebLogic
+** Oracle WebLogic
 
  The <<<EthereumConnectionFactory>>> will be available within JNDI under:
 
@@ -152,3 +146,30 @@ private EthereumConnectionFactory ethereumConnectionFactory;
     </message-driven-descriptor>
 </weblogic-enterprise-bean>
 +--
+
+* Deployed RAR
+
+ The advantages of having a deployed RAR instead of an embedded RAR are:
+
+  * multiple applications can use the same RAR
+
+  * you can reconfigure the RAR more easily within the application server
+
+ When deploying the RAR, make sure to give it a versionless name like <<<ethereum-ra.rar>>>.
+
+** JBoss EAP/WildFly
+
+ Within your EAR you need to include <<<META-INF/jboss-deployment-structure.xml>>> with:
+
++--
+<?xml version="1.0" encoding="UTF-8"?>
+<jboss-deployment-structure>
+    <deployment>
+        <dependencies>
+            <module name="deployment.ethereum-ra.rar" export="true"/>
+        </dependencies>
+    </deployment>
+</jboss-deployment-structure>
++--
+
+ Further usage instructions are the same as for the embedded RAR case, except we change the RAR name from the embedded name <<<#ethereum-ra.rar>>> to <<<ethereum-ra.rar>>> of course.
