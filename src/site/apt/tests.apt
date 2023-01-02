@@ -9,8 +9,6 @@ Integration Tests
 
  Download <<<geth>>> from: {{https://geth.ethereum.org/}}
 
-** geth
-
  Start a <<<geth>>> Ethereum client node in development mode via:
 
 +--

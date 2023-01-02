@@ -5,8 +5,10 @@ Demo Web Application
  Start a <<<geth>>> Ethereum client node in development mode via:
 
 +--
-geth --dev --http --http.api personal,eth,net,web3 --dev.period 0 --ws --allow-insecure-unlock
+geth --dev --http --http.api personal,eth,net,web3 --dev.period 0 --ws --ws.origins '*' --allow-insecure-unlock
 +--
+
+* WildFly
 
  Start WildFly via:
 
@@ -62,4 +64,57 @@ mvn wildfly:deploy
 
 +--
 tail -F standalone/log/ethereum.log
++--
+
+* OpenLiberty
+
+ <<Work in progress>>
+
+ Download OpenLiberty version 22.0.0.13 package Jakarta EE 8 from:
+ {{https://www.openliberty.io/start/}}
+
+ Create the server via:
+
++--
+cd wlp/bin
+./server create
++--
+
+ Copy <<<ethereum-rar/target/ethereum-rar-${project.version}.rar>>> to <<<wlp/usr/servers/defaultServer/ethereum-ra.rar>>>.
+
+ Copy <<<ethereum-rar-demo-deploy/target/ethereum-rar-demo-deploy-${project.version}.ear>>> to <<<wlp/usr/servers/defaultServer/demo.ear>>>.
+
+ Configure <<<wlp/usr/servers/defaultServer/server.xml>>> with:
+
++--
+<resourceAdapter id="ethereum_ra" location="${server.config.dir}/ethereum-ra.rar">
+    <classloader apiTypeVisibility="spec,ibm-api,api,stable,third-party"/>
+</resourceAdapter>
+
+<application type="ear" id="demo" location="${server.config.dir}/demo.ear">
+    <classloader classProviderRef="ethereum_ra" apiTypeVisibility="spec,ibm-api,api,stable,third-party"/>
+</application>
++--
+
+ Start the server via:
+
++--
+cd wlp/bin
+./server start
++--
+
+ Monitor the server logging via:
+
++--
+tail -F wlp/usr/servers/defaultServer/logs/console.log
++--
+
+ The demo web application is now available at:
+ {{http://localhost:9080/ethereum-demo/}}
+
+ Stop the server via:
+
++--
+cd wlp/bin
+./server stop
 +--
