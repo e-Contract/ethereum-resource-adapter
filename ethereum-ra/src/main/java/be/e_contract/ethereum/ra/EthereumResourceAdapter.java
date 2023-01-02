@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018-2019 e-Contract.be BVBA.
+ * Copyright (C) 2018-2023 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
         reauthenticationSupport = false,
         transactionSupport = TransactionSupport.TransactionSupportLevel.XATransaction,
         displayName = "Ethereum Resource Adapter",
-        vendorName = "e-Contract.be BVBA",
+        vendorName = "e-Contract.be BV",
         description = "JCA Resource Adapter to connect to Ethereum blockchain networks.")
 public class EthereumResourceAdapter implements ResourceAdapter, Serializable, Referenceable {
 
@@ -60,6 +60,9 @@ public class EthereumResourceAdapter implements ResourceAdapter, Serializable, R
             description = "The location of the client node.")
     @NotNull
     private String nodeLocation;
+
+    @ConfigProperty(type = String.class, description = "The optional web socket location of the client node.")
+    private String webSocketNodeLocation;
 
     private BootstrapContext bootstrapContext;
 
@@ -88,6 +91,14 @@ public class EthereumResourceAdapter implements ResourceAdapter, Serializable, R
 
     public void setNodeLocation(String nodeLocation) {
         this.nodeLocation = nodeLocation;
+    }
+
+    public String getWebSocketNodeLocation() {
+        return this.webSocketNodeLocation;
+    }
+
+    public void setWebSocketNodeLocation(String webSocketNodeLocation) {
+        this.webSocketNodeLocation = webSocketNodeLocation;
     }
 
     @Override

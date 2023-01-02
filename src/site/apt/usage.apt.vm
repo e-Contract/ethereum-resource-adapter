@@ -173,3 +173,53 @@ private EthereumConnectionFactory ethereumConnectionFactory;
 +--
 
  Further usage instructions are the same as for the embedded RAR case, except we change the RAR name from the embedded name <<<#ethereum-ra.rar>>> to <<<ethereum-ra.rar>>> of course.
+
+ If you want to be able to reconfigure the Ethereum resource adapter within the application server itself, you need to remove <<<META-INF/ironjacamar.xml>>> from the <<<ethereum-ra.rar>>>.
+ Next deploy <<<ethereum-ra.rar>>> and configure <<<standalone-full.xml>>> under <<<urn:jboss:domain:resource-adapters:6.0>>> as follows:
+
++--
+<subsystem xmlns="urn:jboss:domain:resource-adapters:6.0">
+    <resource-adapters>
+        <resource-adapter id="ethereum-ra.rar">
+            <archive>
+                ethereum-ra.rar
+            </archive>
+            <transaction-support>XATransaction</transaction-support>
+            <config-property name="nodeLocation">http://localhost:8545</config-property>
+            <config-property name="webSocketNodeLocation">ws://localhost:8546</config-property>
+            <connection-definitions>
+                <connection-definition class-name="be.e_contract.ethereum.ra.EthereumManagedConnectionFactory"
+                                       jndi-name="java:/EthereumConnectionFactory"
+                                       pool-name="EthereumConnectionFactory">
+                    <xa-pool>
+                        <min-pool-size>5</min-pool-size>
+                        <max-pool-size>50</max-pool-size>
+                    </xa-pool>
+                    <timeout>
+                        <allocation-retry>5</allocation-retry>
+                        <allocation-retry-wait-millis>5000</allocation-retry-wait-millis>
+                    </timeout>
+                    <recovery>
+                        <recover-credential>
+                            <user-name>crashrec</user-name>
+                            <password>crashrec</password>
+                        </recover-credential>
+                    </recovery>
+                </connection-definition>
+            </connection-definitions>
+        </resource-adapter>
+    </resource-adapters>
+</subsystem>
++--
+
+ Change the Ethereum client node location configuration at runtime as follows:
+
++--
+./jboss-cli.sh
+connect
+ls /subsystem=resource-adapters/resource-adapter=ethereum-ra.rar/config-properties=nodeLocation
+/subsystem=resource-adapters/resource-adapter=ethereum-ra.rar/config-properties=nodeLocation:write-attribute(name=value,value=http://localhost:8545)
+ls /subsystem=resource-adapters/resource-adapter=ethereum-ra.rar/config-properties=webSocketNodeLocation
+/subsystem=resource-adapters/resource-adapter=ethereum-ra.rar/config-properties=webSocketNodeLocation:write-attribute(name=value,value=ws://localhost:8546)
+:reload
++--
