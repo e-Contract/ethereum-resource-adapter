@@ -12,7 +12,7 @@
     <assembly-descriptor>
         <mdb:resource-adapter-binding>
             <ejb-name>GasPriceOracleMDB</ejb-name>
-            <mdb:resource-adapter-name>ethereum-ra.rar</mdb:resource-adapter-name>
+            <mdb:resource-adapter-name>${resource-adapter-name}</mdb:resource-adapter-name>
         </mdb:resource-adapter-binding>
     </assembly-descriptor>
     

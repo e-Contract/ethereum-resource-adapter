@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018 e-Contract.be BVBA.
+ * Copyright (C) 2018-2023 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -31,11 +31,6 @@ public class TestUtils {
                 .resolve("be.e-contract.ethereum-resource-adapter:ethereum-rar:rar:?")
                 .withoutTransitivity().asSingleFile();
         ear.addAsModule(rarFile, "ethereum-ra.rar");
-
-        File[] web3jDependencies = Maven.resolver().loadPomFromFile("pom.xml")
-                .resolve("org.web3j:core")
-                .withTransitivity().asFile();
-        ear.addAsLibraries(web3jDependencies);
 
         File[] commonsLangDependencies = Maven.resolver().loadPomFromFile("pom.xml")
                 .resolve("commons-lang:commons-lang")

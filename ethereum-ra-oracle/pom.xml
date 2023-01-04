@@ -26,14 +26,14 @@
                 <directory>src/main/resources</directory>
                 <filtering>false</filtering>
                 <excludes>
-                    <exclude>META-INF/sun-ejb-jar.xml</exclude>
+                    <exclude>META-INF/jboss-ejb3.xml</exclude>
                 </excludes>
             </resource>
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
                 <includes>
-                    <include>META-INF/sun-ejb-jar.xml</include>
+                    <include>META-INF/jboss-ejb3.xml</include>
                 </includes>
             </resource>
         </resources>
@@ -69,5 +69,23 @@
             <artifactId>slf4j-api</artifactId>
         </dependency>
     </dependencies>
+    
+    <profiles>
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <resource-adapter-name>ethereum-ra.rar</resource-adapter-name>
+            </properties>
+        </profile>
+        <profile>
+            <id>integration-tests-wildfly</id>
+            <properties>
+                <resource-adapter-name>#ethereum-ra.rar</resource-adapter-name>
+            </properties>
+        </profile>
+    </profiles>
     
 </project>
