@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018-2022 e-Contract.be BV.
+ * Copyright (C) 2018-2023 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -30,7 +30,7 @@ import javax.resource.ResourceException;
 @Startup
 public class StateBean {
 
-    @Resource(mappedName = "java:/EthereumConnectionFactory")
+    @Resource(lookup = "java:/EthereumConnectionFactory")
     private EthereumConnectionFactory ethereumConnectionFactory;
 
     private Set<String> pendingTransactions;

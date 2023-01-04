@@ -42,7 +42,7 @@ import org.web3j.utils.Convert;
 @Lock(LockType.READ)
 public class EthereumTransactionManagerTestBean {
 
-    @Resource(mappedName = "java:/EthereumConnectionFactory")
+    @Resource(lookup = "java:/EthereumConnectionFactory")
     private EthereumConnectionFactory ethereumConnectionFactory;
 
     @Inject

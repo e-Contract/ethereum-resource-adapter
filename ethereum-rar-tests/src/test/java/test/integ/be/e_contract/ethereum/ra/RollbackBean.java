@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2019 e-Contract.be BVBA.
+ * Copyright (C) 2019-2023 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -32,7 +32,7 @@ public class RollbackBean {
     @Resource
     private UserTransaction userTransaction;
 
-    @Resource(mappedName = "java:/EthereumConnectionFactory")
+    @Resource(lookup = "java:/EthereumConnectionFactory")
     private EthereumConnectionFactory ethereumConnectionFactory;
 
     public void rollback() throws Exception {

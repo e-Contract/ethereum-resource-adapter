@@ -54,7 +54,7 @@ public class EthereumTransactionManager {
 
     public static final int DEFAULT_CONFIRMATION_BLOCK_COUNT = 12;
 
-    @Resource(mappedName = "java:/EthereumConnectionFactory")
+    @Resource(lookup = "java:/EthereumConnectionFactory")
     private EthereumConnectionFactory ethereumConnectionFactory;
 
     @Inject
@@ -171,7 +171,7 @@ public class EthereumTransactionManager {
             return;
         }
         if (null == this.latestBlockNumber) {
-            try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
+            try ( EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
                 this.latestBlockNumber = ethereumConnection.getBlockNumber();
             }
         }
@@ -200,7 +200,7 @@ public class EthereumTransactionManager {
      */
     public void block(String blockHash) throws ResourceException {
         List<EthereumPublicationEvent> publicationEvents = new LinkedList<>();
-        try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
+        try ( EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
             this.latestBlockNumber = ethereumConnection.getBlock(blockHash, false).getNumber();
             EthBlock.Block pendingBlock = ethereumConnection.getBlock(DefaultBlockParameterName.PENDING, true);
             for (Map.Entry<String, TransactionInfo> transactionEntry : this.transactions.entrySet()) {
