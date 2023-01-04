@@ -119,6 +119,8 @@ this.ethereumTransactionManager.monitorTransaction(yourTransactionHash);
  And observe the state of the Ethereum transaction via:
 
 +--
+import be.e_contract.ethereum.utils.EthereumPublicationEvent;
+
 private void observeEthereumEvent(@Observes EthereumPublicationEvent event) {
   // do something here, depending on the event outcome...
 }
