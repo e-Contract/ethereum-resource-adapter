@@ -1,0 +1,21 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<jboss:ejb-jar xmlns:jboss="http://www.jboss.com/xml/ns/javaee"
+               xmlns="http://java.sun.com/xml/ns/javaee"
+               xmlns:mdb="urn:resource-adapter-binding"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.jboss.com/xml/ns/javaee http://www.jboss.org/j2ee/schema/jboss-ejb3-2_0.xsd
+                    http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd"
+               version="3.1"
+               impl-version="2.0">
+    
+    <jboss:enterprise-beans>
+        <session>
+            <ejb-name>AdminBean</ejb-name>
+            <resource-ref>
+                <res-ref-name>EthereumAdmin</res-ref-name>
+                <jndi-name>java:/EthereumAdmin</jndi-name>
+            </resource-ref>
+        </session>
+    </jboss:enterprise-beans>
+   
+</jboss:ejb-jar>

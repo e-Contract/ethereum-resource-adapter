@@ -6,9 +6,9 @@
 
     <enterprise-beans>
         <session>
-            <ejb-name>ConnectionBean</ejb-name>
+            <ejb-name>AdminBean</ejb-name>
             <resource-ref>
-                <res-ref-name>EthereumConnectionFactory</res-ref-name>
+                <res-ref-name>EthereumAdmin</res-ref-name>
             </resource-ref>
         </session>
     </enterprise-beans>
