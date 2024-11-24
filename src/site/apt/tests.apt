@@ -12,7 +12,7 @@ Integration Tests
  Start a <<<geth>>> Ethereum client node in development mode via:
 
 +--
-geth --dev --http --http.api personal,eth,net,web3 --dev.period 1 --ws --allow-insecure-unlock
+geth --dev --http --http.api eth,net,web3 --dev.period 1 --ws
 +--
 
 * Java EE Application Server
@@ -24,7 +24,7 @@ geth --dev --http --http.api personal,eth,net,web3 --dev.period 1 --ws --allow-i
  Start WildFly via:
 
 +--
-cd wildfly-26.1.2.Final/bin
+cd wildfly-26.1.3.Final/bin
 ./standalone.sh --server-config=standalone-full.xml
 +--
 

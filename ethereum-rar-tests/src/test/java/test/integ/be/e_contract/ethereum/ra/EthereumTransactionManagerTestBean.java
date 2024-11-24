@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2023 e-Contract.be BV.
+ * Copyright (C) 2023-2024 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -33,7 +33,6 @@ import javax.ejb.Singleton;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import static org.junit.Assert.assertTrue;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.Keys;
 import org.web3j.utils.Convert;
@@ -55,9 +54,6 @@ public class EthereumTransactionManagerTestBean {
         try ( EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
             List<String> accounts = ethereumConnection.getAccounts();
             String account = accounts.get(0);
-            String password = "";
-            boolean unlockResult = ethereumConnection.unlockAccount(account, password);
-            assertTrue(unlockResult);
 
             ECKeyPair ecKeyPair = Keys.createEcKeyPair();
             String address = "0x" + Keys.getAddress(ecKeyPair);
