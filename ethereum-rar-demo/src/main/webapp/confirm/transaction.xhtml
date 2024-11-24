@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:eth="urn:be:e-contract:ethereum:jsf">
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
 
     <h:head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -32,13 +31,8 @@
             <h:outputText value="from:"/>
             <h:outputText value="#{ethereumDemoConfirmController.transactionConfirmation.transactionReceipt.from}"/>
 
-            <h:outputText value="gas used (wei):"/>
+            <h:outputText value="gas used:"/>
             <h:outputText value="#{ethereumDemoConfirmController.transactionConfirmation.transactionReceipt.gasUsed}"/>
-
-            <h:outputText value="gas used (gwei):"/>
-            <h:outputText value="#{ethereumDemoConfirmController.transactionConfirmation.transactionReceipt.gasUsed}">
-                <eth:fromWei unit="GWEI"/>
-            </h:outputText>
 
             <h:outputText value="block number:"/>
             <h:outputText value="#{ethereumDemoConfirmController.transactionConfirmation.transactionReceipt.blockNumber}"/>
