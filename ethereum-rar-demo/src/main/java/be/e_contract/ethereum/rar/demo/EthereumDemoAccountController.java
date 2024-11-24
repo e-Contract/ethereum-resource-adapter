@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018 e-Contract.be BVBA.
+ * Copyright (C) 2018-2024 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -43,8 +43,6 @@ public class EthereumDemoAccountController implements Serializable {
     private String selectedAccount;
 
     private BigInteger selectedAccountBalance;
-
-    private String password;
 
     private String to;
     private BigInteger value;
@@ -95,23 +93,8 @@ public class EthereumDemoAccountController implements Serializable {
         return "/accounts/index";
     }
 
-    public String getPassword() {
-        return this.password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public List<String> getAccounts() {
         return this.ethereumBean.getAccounts();
-    }
-
-    public String newAccount() {
-        String address = this.ethereumBean.newAccount(this.password);
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "new account: " + address, null));
-        return "/accounts/index";
     }
 
     public String getSelectedAccount() {
@@ -131,25 +114,6 @@ public class EthereumDemoAccountController implements Serializable {
         this.selectedAccount = account;
         this.selectedAccountBalance = this.ethereumBean.getBalance(this.selectedAccount);
         return "/accounts/balance";
-    }
-
-    public String unlock(String account) {
-        this.selectedAccount = account;
-        return "/accounts/unlock";
-    }
-
-    public String doUnlock() {
-        LOGGER.debug("unlock {} - password {}", this.selectedAccount, this.password);
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        try {
-            this.ethereumBean.unlockAccount(this.selectedAccount, this.password);
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
-                    "Unlocked: " + this.selectedAccount, null));
-        } catch (EthereumException ex) {
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    this.selectedAccount + " unlock error: " + ex.getMessage(), null));
-        }
-        return "/accounts/index";
     }
 
     public String initTransaction(String account) {

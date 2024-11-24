@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018-2022 e-Contract.be BV.
+ * Copyright (C) 2018-2024 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -119,29 +119,12 @@ public class EthereumBean {
         }
     }
 
-    public String newAccount(String password) {
-        try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
-            return ethereumConnection.newAccount(password);
-        } catch (ResourceException ex) {
-            LOGGER.error("JCA error: " + ex.getMessage(), ex);
-            return null;
-        }
-    }
-
     public BigInteger getBalance(String account) {
         try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
             return ethereumConnection.getBalance(account);
         } catch (ResourceException ex) {
             LOGGER.error("JCA error: " + ex.getMessage(), ex);
             return null;
-        }
-    }
-
-    public void unlockAccount(String account, String password) throws EthereumException {
-        try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
-            ethereumConnection.unlockAccount(account, password);
-        } catch (ResourceException ex) {
-            LOGGER.error("JCA error: " + ex.getMessage(), ex);
         }
     }
 

@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018-2022 e-Contract.be BV.
+ * Copyright (C) 2018-2024 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -56,7 +56,6 @@ import org.web3j.crypto.TransactionDecoder;
 import org.web3j.crypto.TransactionEncoder;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.admin.Admin;
-import org.web3j.protocol.admin.methods.response.PersonalUnlockAccount;
 import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.Response;
@@ -461,22 +460,6 @@ public class EthereumManagedConnection implements ManagedConnection {
     List<String> getAccounts() throws Exception {
         Admin admin = getWeb3j();
         return admin.ethAccounts().send().getAccounts();
-    }
-
-    String newAccount(String password) throws Exception {
-        Admin admin = getWeb3j();
-        return admin.personalNewAccount(password).send().getAccountId();
-    }
-
-    boolean unlockAccount(String account, String password) throws Exception {
-        Admin admin = getWeb3j();
-        PersonalUnlockAccount personalUnlockAccount = admin.personalUnlockAccount(account, password).send();
-        if (personalUnlockAccount.hasError()) {
-            Response.Error error = personalUnlockAccount.getError();
-            LOGGER.error("personal unlock account error: {}", error.getMessage());
-            throw new EthereumException(error.getCode(), error.getMessage());
-        }
-        return personalUnlockAccount.accountUnlocked();
     }
 
     String sendAccountTransaction(String account, String to, BigInteger value, BigInteger gasPrice, BigInteger nonce) throws Exception {

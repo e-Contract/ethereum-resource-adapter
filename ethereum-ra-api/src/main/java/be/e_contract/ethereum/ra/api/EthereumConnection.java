@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018-2022 e-Contract.be BV.
+ * Copyright (C) 2018-2024 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -127,26 +127,6 @@ public interface EthereumConnection extends Connection, AutoCloseable {
      * @throws ResourceException
      */
     List<String> getAccounts() throws ResourceException;
-
-    /**
-     * Create a new account managed by the client node.
-     *
-     * @param password
-     * @return the address of the new account.
-     * @throws ResourceException
-     */
-    String newAccount(String password) throws ResourceException;
-
-    /**
-     * Unlocks the given client node managed account.
-     *
-     * @param account
-     * @param password
-     * @return true on successful unlock.
-     * @throws ResourceException
-     * @throws be.e_contract.ethereum.ra.api.EthereumException
-     */
-    boolean unlockAccount(String account, String password) throws ResourceException, EthereumException;
 
     /**
      * Send transaction via client node account. This type of Ethereum

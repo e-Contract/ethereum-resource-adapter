@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018-2022 e-Contract.be BV.
+ * Copyright (C) 2018-2024 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -193,31 +193,6 @@ public class EthereumConnectionImpl implements EthereumConnection {
         checkIfClosed();
         try {
             return this.ethereumManagedConnection.getAccounts();
-        } catch (Exception ex) {
-            LOGGER.error("error: " + ex.getMessage(), ex);
-            throw new ResourceException(ex);
-        }
-    }
-
-    @Override
-    public String newAccount(String password) throws ResourceException {
-        checkIfClosed();
-        try {
-            return this.ethereumManagedConnection.newAccount(password);
-        } catch (Exception ex) {
-            LOGGER.error("error: " + ex.getMessage(), ex);
-            throw new ResourceException(ex);
-        }
-    }
-
-    @Override
-    public boolean unlockAccount(String account, String password) throws ResourceException, EthereumException {
-        checkIfClosed();
-        try {
-            return this.ethereumManagedConnection.unlockAccount(account, password);
-        } catch (EthereumException ex) {
-            LOGGER.error("ethereum error: " + ex.getMessage());
-            throw ex;
         } catch (Exception ex) {
             LOGGER.error("error: " + ex.getMessage(), ex);
             throw new ResourceException(ex);
