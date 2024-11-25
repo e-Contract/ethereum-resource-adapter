@@ -25,7 +25,7 @@
                 <h:message for="transactionHash" errorStyle="color:red;"/>
             </h:panelGrid>
             <h:panelGrid columns="2">
-                <h:commandButton value="Confirm" action="#{ethereumDemoConfirmController.confirm}"/>
+                <h:commandButton value="Confirm" action="#{ethereumDemoConfirmController.confirm()}"/>
                 <h:commandButton value="Back" action="/index" immediate="true"/>
             </h:panelGrid>
         </h:form>

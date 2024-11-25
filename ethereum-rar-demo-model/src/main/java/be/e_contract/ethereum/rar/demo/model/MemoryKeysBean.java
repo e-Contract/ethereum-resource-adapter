@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018-2022 e-Contract.be BV.
+ * Copyright (C) 2018-2024 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -58,9 +58,30 @@ public class MemoryKeysBean {
         return address;
     }
 
-    public String signTransaction(BigInteger nonce, BigInteger gasPrice, String from, String to, BigInteger value, Long chainId) {
-        RawTransaction rawTransaction = RawTransaction.createEtherTransaction(nonce, gasPrice,
-                BigInteger.valueOf(21000), to, value);
+    public String signTransaction(BigInteger nonce, BigInteger gasPrice, String from, String to,
+            BigInteger value, Long chainId, boolean eip1559, BigInteger maxPriorityFeePerGas) {
+        RawTransaction rawTransaction;
+        if (eip1559) {
+            long chainIdentifier;
+            if (null == chainId) {
+                chainIdentifier = 1;
+            } else {
+                chainIdentifier = chainId;
+            }
+            // What eth_GasPrice returns exactly is very unclear. Some sources say base fee, others say base fee + priority fee.
+            // https://github.com/ethereum/pm/issues/328
+            // Geth's implementation currently:
+            // eth_gasPrice after London will return the exact same number based on the total fees paid (tip + base)
+            BigInteger baseFee = gasPrice.subtract(maxPriorityFeePerGas); // rough estimation
+            // max fee = 2 * base fee + max priority fee gives you assurance for the next 6 blocks the be accepted
+            BigInteger maxFeePerGas = baseFee.multiply(BigInteger.valueOf(2)).add(maxPriorityFeePerGas);
+            rawTransaction = RawTransaction.createEtherTransaction(chainIdentifier, nonce, BigInteger.valueOf(21000),
+                    to, value,
+                    maxPriorityFeePerGas, maxFeePerGas);
+        } else {
+            rawTransaction = RawTransaction.createEtherTransaction(nonce, gasPrice,
+                    BigInteger.valueOf(21000), to, value);
+        }
         ECKeyPair fromKeyPair = this.keys.get(from);
         if (null == fromKeyPair) {
             throw new RuntimeException("unvalid from");

@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018-2022 e-Contract.be BV.
+ * Copyright (C) 2018-2024 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -57,8 +57,18 @@ public class EthereumDemoKeysController implements Serializable {
     private BigInteger gasPrice;
     private BigInteger nonce;
     private Long chainId;
+    private boolean eip1559;
+    private BigInteger maxPriorityFeePerGas;
 
     private String contractAddress;
+
+    public boolean isEip1559() {
+        return this.eip1559;
+    }
+
+    public void setEip1559(boolean eip1559) {
+        this.eip1559 = eip1559;
+    }
 
     public boolean isRollback() {
         return this.rollback;
@@ -90,6 +100,14 @@ public class EthereumDemoKeysController implements Serializable {
 
     public void setGasPrice(BigInteger gasPrice) {
         this.gasPrice = gasPrice;
+    }
+
+    public BigInteger getMaxPriorityFeePerGas() {
+        return this.maxPriorityFeePerGas;
+    }
+
+    public void setMaxPriorityFeePerGas(BigInteger maxPriorityFeePerGas) {
+        this.maxPriorityFeePerGas = maxPriorityFeePerGas;
     }
 
     public BigInteger getNonce() {
@@ -164,6 +182,7 @@ public class EthereumDemoKeysController implements Serializable {
             LOGGER.error("chain id error: " + ex.getMessage(), ex);
         }
         this.nonce = this.ethereumBean.getNonce(this.selectedAddress);
+        this.maxPriorityFeePerGas = this.ethereumBean.getMaxPriorityFeePerGas();
         return "/keys/transaction";
     }
 
@@ -175,7 +194,7 @@ public class EthereumDemoKeysController implements Serializable {
 
     public String signTransaction() {
         this.transaction = this.memoryKeysBean.signTransaction(this.nonce, this.gasPrice,
-                this.selectedAddress, this.to, this.value, this.chainId);
+                this.selectedAddress, this.to, this.value, this.chainId, this.eip1559, this.maxPriorityFeePerGas);
         return "/keys/transaction-result";
     }
 

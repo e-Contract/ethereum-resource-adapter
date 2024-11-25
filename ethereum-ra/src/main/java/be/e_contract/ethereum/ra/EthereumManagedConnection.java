@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.HashSet;
@@ -54,6 +55,8 @@ import org.web3j.crypto.RawTransaction;
 import org.web3j.crypto.SignedRawTransaction;
 import org.web3j.crypto.TransactionDecoder;
 import org.web3j.crypto.TransactionEncoder;
+import org.web3j.crypto.transaction.type.Transaction1559;
+import org.web3j.crypto.transaction.type.TransactionType;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.admin.Admin;
 import org.web3j.protocol.core.DefaultBlockParameter;
@@ -69,6 +72,7 @@ import org.web3j.tx.ChainIdLong;
 import org.web3j.tx.Contract;
 import org.web3j.tx.TransactionManager;
 import org.web3j.tx.gas.ContractGasProvider;
+import org.web3j.utils.Convert;
 import org.web3j.utils.Numeric;
 
 /**
@@ -365,8 +369,21 @@ public class EthereumManagedConnection implements ManagedConnection {
         LOGGER.debug("to: {}", signedRawTransaction.getTo());
         LOGGER.debug("nonce: {}", signedRawTransaction.getNonce());
         LOGGER.debug("chain id: {}", signedRawTransaction.getChainId());
-        LOGGER.debug("gas limit: {} wei", signedRawTransaction.getGasLimit());
-        LOGGER.debug("gas price: {} wei", signedRawTransaction.getGasPrice());
+        LOGGER.debug("gas limit: {}", signedRawTransaction.getGasLimit());
+        TransactionType transactionType = signedRawTransaction.getType();
+        if (transactionType == TransactionType.EIP1559) {
+            Transaction1559 transaction1559 = (Transaction1559) signedRawTransaction.getTransaction();
+            LOGGER.debug("Chain id: {}", transaction1559.getChainId());
+            BigDecimal maxFeePerGasWei = new BigDecimal(transaction1559.getMaxFeePerGas());
+            BigDecimal maxFeePerGasGwei = Convert.fromWei(maxFeePerGasWei, Convert.Unit.GWEI);
+            LOGGER.debug("Maximum fee per gas: {} Gwei", maxFeePerGasGwei);
+            BigDecimal maxPriorityFeePerGasWei = new BigDecimal(transaction1559.getMaxPriorityFeePerGas());
+            BigDecimal maxPriorityFeePerGasGwei = Convert.fromWei(maxPriorityFeePerGasWei, Convert.Unit.GWEI);
+            LOGGER.debug("Maximum priority fee per gas: {} Gwei", maxPriorityFeePerGasGwei);
+        } else {
+            LOGGER.warn("legacy transaction");
+            LOGGER.debug("gas price: {} wei", signedRawTransaction.getGasPrice());
+        }
         // we want to support JCA transactions here
         // important to check local transaction first because of CCI local transactions
         String transactionHash = Hash.sha3(rawTransaction);

@@ -36,7 +36,7 @@
                 </h:inputText>
                 <h:message for="value" errorStyle="color:red;"/>
 
-                <h:outputText value="Gas Price:"/>
+                <h:outputText value="Gas Price (gwei):"/>
                 <h:inputText id="gasPrice" value="#{ethereumDemoKeysController.gasPrice}" required="true">
                     <eth:fromWei unit="GWEI"/>
                 </h:inputText>
@@ -49,9 +49,19 @@
                 <h:outputText value="Chain Id:"/>
                 <h:inputText id="chainId" value="#{ethereumDemoKeysController.chainId}"/>
                 <h:message for="chainId" errorStyle="color:red;"/>
+
+                <h:outputText value="EIP-1559:"/>
+                <h:selectBooleanCheckbox value="#{ethereumDemoKeysController.eip1559}"/>
+                <h:message for="@previous" errorStyle="color:red;"/>
+
+                <h:outputText value="Max Priority Fee Per Gas (gwei):"/>
+                <h:inputText id="maxPriorityFeePerGas" value="#{ethereumDemoKeysController.maxPriorityFeePerGas}" required="true">
+                    <eth:fromWei unit="GWEI"/>
+                </h:inputText>
+                <h:message for="maxPriorityFeePerGas" errorStyle="color:red;"/>
             </h:panelGrid>
             <h:panelGrid columns="2">
-                <h:commandButton value="Sign" action="#{ethereumDemoKeysController.signTransaction}"/>
+                <h:commandButton value="Sign" action="#{ethereumDemoKeysController.signTransaction()}"/>
                 <h:commandButton value="Back" action="/keys/index" immediate="true"/>
             </h:panelGrid>
         </h:form>
