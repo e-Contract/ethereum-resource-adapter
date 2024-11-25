@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2023 e-Contract.be BV.
+ * Copyright (C) 2023-2024 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -19,17 +19,21 @@ package test.integ.be.e_contract.ethereum.ra;
 
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import static org.junit.Assert.assertNotNull;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
 public class AdminTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AdminTest.class);
 
     @Deployment
     public static EnterpriseArchive createDeployment() throws Exception {
@@ -56,5 +60,6 @@ public class AdminTest {
     public void testEthereumAdmin() throws Exception {
         String implementationVersion = this.adminBean.getImplementationVersion();
         assertNotNull(implementationVersion);
+        LOGGER.debug("implementation version: {}", implementationVersion);
     }
 }

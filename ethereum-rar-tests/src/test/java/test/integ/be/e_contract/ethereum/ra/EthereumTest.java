@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2019-2022 e-Contract.be BV.
+ * Copyright (C) 2019-2024 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -17,8 +17,8 @@
  */
 package test.integ.be.e_contract.ethereum.ra;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.web3j.protocol.Web3j;
@@ -32,7 +32,7 @@ public class EthereumTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(EthereumTest.class);
 
     @Test
-    @Ignore
+    @Disabled
     public void testPoolStatus() throws Exception {
         Web3jService service = new HttpService();
         Web3j web3j = Web3j.build(service);

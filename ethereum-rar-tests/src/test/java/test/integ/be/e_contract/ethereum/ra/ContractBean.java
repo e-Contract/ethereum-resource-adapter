@@ -29,8 +29,8 @@ import javax.ejb.Stateless;
 import javax.resource.ResourceException;
 import javax.resource.cci.LocalTransaction;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.Assert;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.Keys;
@@ -158,6 +158,7 @@ public class ContractBean {
             DemoContract contract = ethereumConnection.load(DemoContract.class, contractAddress, credentials, chainId, contractGasProvider);
 
             localTransaction.begin();
+            // TODO: solidity selfdestruct deprecated
             String contractTransactionHash = contract.kill().send().getTransactionHash();
             localTransaction.commit();
 
@@ -169,7 +170,7 @@ public class ContractBean {
 
             try {
                 ethereumConnection.load(DemoContract.class, contractAddress, credentials, chainId, contractGasProvider);
-                Assert.fail();
+                fail();
             } catch (ResourceException e) {
                 // expected
             }
