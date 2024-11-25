@@ -28,6 +28,14 @@
                     <eth:fromWei unit="GWEI"/>
                 </h:outputText>
 
+                <h:outputText value="node maximum priority fee per gas (wei):"/>
+                <h:outputText value="#{ethereumDemoGasPriceController.maxPriorityFeePerGas}"/>
+
+                <h:outputText value="node maximum priority fee per gas (gwei):"/>
+                <h:outputText value="#{ethereumDemoGasPriceController.maxPriorityFeePerGas}">
+                    <eth:fromWei unit="GWEI"/>
+                </h:outputText>
+
                 <h:outputText value="maximum transaction duration:"/>
                 <h:inputText value="#{ethereumDemoGasPriceController.maxDuration}"/>
             </h:panelGrid>

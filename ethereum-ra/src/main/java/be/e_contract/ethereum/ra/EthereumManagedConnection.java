@@ -289,6 +289,24 @@ public class EthereumManagedConnection implements ManagedConnection {
         return gasPrice;
     }
 
+    BigInteger getMaxPriorityFeePerGas() throws ResourceException {
+        Web3j web3j;
+        try {
+            web3j = getWeb3j();
+        } catch (Exception ex) {
+            LOGGER.error("error retrieving maximum priority fee per gas: " + ex.getMessage(), ex);
+            throw new ResourceException(ex);
+        }
+        BigInteger maxPriorityFeePerGas;
+        try {
+            maxPriorityFeePerGas = web3j.ethMaxPriorityFeePerGas().send().getMaxPriorityFeePerGas();
+        } catch (IOException ex) {
+            LOGGER.error("error retrieving maximum priority fee per gas: " + ex.getMessage(), ex);
+            throw new ResourceException(ex);
+        }
+        return maxPriorityFeePerGas;
+    }
+
     boolean match(ConnectionRequestInfo connectionRequestInfo) {
         if (null == this.ethereumConnectionRequestInfo && null == connectionRequestInfo) {
             return true;

@@ -46,6 +46,14 @@ public interface EthereumConnection extends Connection, AutoCloseable {
     BigInteger getGasPrice() throws ResourceException;
 
     /**
+     * Gives back the node estimate for maximum priority fee per gas.
+     *
+     * @return the maximum priority fee per gas in wei.
+     * @throws ResourceException
+     */
+    BigInteger getMaxPriorityFeePerGas() throws ResourceException;
+
+    /**
      * Gives back the latest block number.
      *
      * @return the block number.

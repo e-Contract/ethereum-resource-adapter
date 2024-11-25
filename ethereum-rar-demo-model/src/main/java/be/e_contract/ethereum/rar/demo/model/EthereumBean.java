@@ -69,6 +69,15 @@ public class EthereumBean {
         }
     }
 
+    public BigInteger getMaxPriorityFeePerGas() {
+        try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
+            return ethereumConnection.getMaxPriorityFeePerGas();
+        } catch (ResourceException ex) {
+            LOGGER.error("JCA error: " + ex.getMessage(), ex);
+            return null;
+        }
+    }
+
     public String sendRawTransaction(String rawTransaction, boolean rollback) throws RollbackException, EthereumException {
         String transactionHash;
         try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {

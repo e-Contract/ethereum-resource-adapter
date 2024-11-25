@@ -69,6 +69,15 @@ public class EthereumConnectionImpl implements EthereumConnection {
     }
 
     @Override
+    public BigInteger getMaxPriorityFeePerGas() throws ResourceException {
+        LOGGER.debug("getMaxPriorityFeePerGas");
+        checkIfClosed();
+        BigInteger maxPriorityFeePerGas = this.ethereumManagedConnection.getMaxPriorityFeePerGas();
+        LOGGER.debug("maximum priority fee per gas: {}", maxPriorityFeePerGas);
+        return maxPriorityFeePerGas;
+    }
+
+    @Override
     public Interaction createInteraction() throws ResourceException {
         LOGGER.debug("createInteraction");
         throw new NotSupportedException("Interaction not supported");
