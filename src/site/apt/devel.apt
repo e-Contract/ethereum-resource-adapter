@@ -1,6 +1,6 @@
 Development
 
- We use Solidity compiler version 0.8.13, which gets automatically downloaded.
+ We use Solidity compiler version 0.8.26, which gets automatically downloaded.
 
  We use Apache Maven version 3.9.9 to build the project.
 

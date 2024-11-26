@@ -11,7 +11,7 @@ Gas Price Oracle Usage
 </dependency>
 +--
 
- and as <<<maven-ear-plugin>>> configuration under <<<modules>>> you put:
+ As <<<maven-ear-plugin>>> configuration, under <<<modules>>>, you put the following:
 
 +--
 <ejbModule>
@@ -20,7 +20,7 @@ Gas Price Oracle Usage
 </ejbModule>
 +--
 
- within your EJB JAR or WAR you add the API dependency under <<<dependencies>>> via:
+ Within your EJB JAR or WAR you add the API dependency under <<<dependencies>>> via:
 
 +--
 <dependency>
@@ -31,7 +31,8 @@ Gas Price Oracle Usage
 </dependency>
 +--
 
- And per gas price oracle implemention, you include the corresponding EJB JAR within the EAR. For the default oracle you include:
+ And per gas price oracle implemention that you want to use, you include the corresponding EJB JAR within the EAR.
+ For the default oracle you include:
 
 +--
 <dependency>
@@ -42,7 +43,7 @@ Gas Price Oracle Usage
 </dependency>
 +--
 
- and as <<<maven-ear-plugin>>> configuration under <<<modules>>> you put:
+ As <<<maven-ear-plugin>>> configuration, under <<<modules>>>, you put the following:
 
 +--
 <ejbModule>

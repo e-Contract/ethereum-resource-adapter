@@ -20,7 +20,7 @@ Usage
 </repository>
 +--
 
- Include within your Java EE application EAR the resource adapter RAR via:
+ Include the resource adapter RAR within your Java EE application EAR via:
 
 +--
 <dependency>
@@ -31,7 +31,7 @@ Usage
 </dependency>
 +--
 
- and as <<<maven-ear-plugin>>> configuration under <<<modules>>> you put:
+ Within your <<<maven-ear-plugin>>> configuration, under <<<modules>>>, you put the following:
 
 +--
 <rarModule>
@@ -41,7 +41,7 @@ Usage
 </rarModule>
 +--
 
- within your EJB JAR or WAR you add the API dependency under <<<dependencies>>> via:
+ Within your EJB JAR or WAR you can now add the API dependency under <<<dependencies>>> via:
 
 +--
 <dependency>
@@ -54,7 +54,7 @@ Usage
 
 ** JBoss EAP/WildFly
 
- The <<<EthereumConnectionFactory>>> will be available within JNDI under:
+ The <<<EthereumConnectionFactory>>> is available within JNDI under:
 
 +--
 java:/EthereumConnectionFactory
@@ -110,7 +110,7 @@ import org.jboss.ejb3.annotation.ResourceAdapter;
 
 ** Oracle WebLogic
 
- The <<<EthereumConnectionFactory>>> will be available within JNDI under:
+ The <<<EthereumConnectionFactory>>> is available within JNDI under:
 
 +--
 EthereumConnectionFactory
@@ -151,11 +151,12 @@ private EthereumConnectionFactory ethereumConnectionFactory;
 
  The advantages of having a deployed RAR instead of an embedded RAR are:
 
-  * multiple applications can use the same RAR
+  * multiple applications can use the same resource adapter
 
-  * you can reconfigure the RAR more easily within the application server
+  * you can reconfigure the resource adapter more easily within the application server
 
  When deploying the RAR, make sure to give it a versionless name like <<<ethereum-ra.rar>>>.
+ This makes it easier to refer to it from within your Java EE applications.
 
 ** JBoss EAP/WildFly
 

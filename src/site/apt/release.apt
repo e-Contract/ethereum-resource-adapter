@@ -10,7 +10,7 @@ Release Procedure
 
  []
 
- However with a few minor changes to the parent <<<pom.xml>>> you should be able to run your own releases if you feel like.
+ However with a few minor changes to the parent <<<pom.xml>>> you should be able to run your own releases if required.
 
  We use the <<<maven-release-plugin>>> to manage the release of the project.
  Release the project via:

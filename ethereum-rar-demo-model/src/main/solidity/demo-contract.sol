@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018-2022 e-Contract.be BV.
+ * Copyright (C) 2018-2024 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -17,7 +17,7 @@
  */
 
 // SPDX-License-Identifier: LGPL-3.0
-pragma solidity >=0.8.13;
+pragma solidity >=0.8.26;
 
 contract DemoContract {
     event DemoEvent(address _from, int _value);

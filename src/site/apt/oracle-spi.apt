@@ -2,7 +2,7 @@ Ethereum Resource Adapter Oracle SPI
 
  If you want to develop your own Gas Price Oracle, you need to provide an implementation against the Oracle SPI.
 
- Basic implementation looks as follows:
+ A basic implementation looks as follows:
 
 +--
 @GasPriceOracleType("my-oracle")
@@ -11,6 +11,16 @@ public class MyGasPriceOracle implements GasPriceOracleSpi {
 
     @Override
     public BigInteger getGasPrice(Integer maxDuration) {
+        // do your magic here
+    }
+
+    @Override
+    public BigInteger getMaxFeePerGas() {
+        // do your magic here
+    }
+
+    @Override
+    public BigInteger getMaxPriorityFeePerGas(Integer maxDuration) {
         // do your magic here
     }
 }
