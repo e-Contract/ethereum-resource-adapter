@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2019 e-Contract.be BVBA.
+ * Copyright (C) 2019-2024 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -18,12 +18,13 @@
 package test.integ.be.e_contract.ethereum.ra;
 
 import be.e_contract.ethereum.ra.api.EthereumConnection;
+import be.e_contract.ethereum.ra.api.EthereumException;
 import java.math.BigInteger;
 import javax.resource.ResourceException;
-import org.web3j.tx.gas.ContractGasProvider;
+import org.web3j.tx.gas.ContractEIP1559GasProvider;
 import org.web3j.tx.gas.DefaultGasProvider;
 
-public class TestContractGasProvider implements ContractGasProvider {
+public class TestContractGasProvider implements ContractEIP1559GasProvider {
 
     private final EthereumConnection ethereumConnection;
 
@@ -57,5 +58,37 @@ public class TestContractGasProvider implements ContractGasProvider {
     @Override
     public BigInteger getGasLimit() {
         return DefaultGasProvider.GAS_LIMIT;
+    }
+
+    @Override
+    public boolean isEIP1559Enabled() {
+        return true;
+    }
+
+    @Override
+    public long getChainId() {
+        try {
+            return this.ethereumConnection.getChainId();
+        } catch (ResourceException | EthereumException ex) {
+            return -1;
+        }
+    }
+
+    @Override
+    public BigInteger getMaxFeePerGas(String contractFunc) {
+        try {
+            return this.ethereumConnection.getGasPrice().multiply(BigInteger.valueOf(2));
+        } catch (ResourceException ex2) {
+            return null;
+        }
+    }
+
+    @Override
+    public BigInteger getMaxPriorityFeePerGas(String contractFunc) {
+        try {
+            return this.ethereumConnection.getMaxPriorityFeePerGas();
+        } catch (ResourceException ex2) {
+            return null;
+        }
     }
 }

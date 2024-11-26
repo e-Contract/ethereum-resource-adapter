@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018-2021 e-Contract.be BV.
+ * Copyright (C) 2018-2024 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -255,6 +255,41 @@ public class DefaultGasPriceOracle implements GasPriceOracleSpi {
                 this.pendingTransactions.clear();
                 this.agingPendingTransactions.clear();
             }
+        }
+    }
+
+    /**
+     * For the moment we provide a very basic implementation here. Later on we
+     * can enhance this.
+     *
+     * @return
+     */
+    @Override
+    public BigInteger getMaxFeePerGas() {
+        try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
+            BigInteger gasPrice = ethereumConnection.getGasPrice();
+            BigInteger maxFeePerGas = gasPrice.multiply(BigInteger.valueOf(2));
+            return maxFeePerGas;
+        } catch (ResourceException ex) {
+            LOGGER.error("JCA error: " + ex.getMessage(), ex);
+            return null;
+        }
+    }
+
+    /**
+     * For the moment we provide a very basic implementation here. Later on we
+     * can enhance this.
+     *
+     * @param maxDuration
+     * @return
+     */
+    @Override
+    public BigInteger getMaxPriorityFeePerGas(Integer maxDuration) {
+        try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
+            return ethereumConnection.getMaxPriorityFeePerGas();
+        } catch (ResourceException ex) {
+            LOGGER.error("JCA error: " + ex.getMessage(), ex);
+            return null;
         }
     }
 }

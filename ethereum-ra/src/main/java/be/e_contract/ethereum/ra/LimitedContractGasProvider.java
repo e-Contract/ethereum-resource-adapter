@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018-2020 e-Contract.be BV.
+ * Copyright (C) 2018-2024 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.methods.response.EthBlock;
+import org.web3j.tx.gas.ContractEIP1559GasProvider;
 import org.web3j.tx.gas.ContractGasProvider;
 
 /**
@@ -32,7 +33,7 @@ import org.web3j.tx.gas.ContractGasProvider;
  *
  * @author Frank Cornelis
  */
-public class LimitedContractGasProvider implements ContractGasProvider {
+public class LimitedContractGasProvider implements ContractEIP1559GasProvider {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LimitedContractGasProvider.class);
 
@@ -85,10 +86,46 @@ public class LimitedContractGasProvider implements ContractGasProvider {
             return gasLimit;
         }
         BigInteger blockGasLimit = block.getGasLimit();
-        if (blockGasLimit.compareTo(gasLimit) == -1) {
+        if (blockGasLimit.compareTo(gasLimit) < 0) {
             LOGGER.warn("limiting gas limit to {}", blockGasLimit);
             return blockGasLimit;
         }
         return gasLimit;
+    }
+
+    @Override
+    public boolean isEIP1559Enabled() {
+        if (!(this.contractGasProvider instanceof ContractEIP1559GasProvider)) {
+            return false;
+        }
+        ContractEIP1559GasProvider contractEIP1559GasProvider = (ContractEIP1559GasProvider) this.contractGasProvider;
+        return contractEIP1559GasProvider.isEIP1559Enabled();
+    }
+
+    @Override
+    public long getChainId() {
+        if (!(this.contractGasProvider instanceof ContractEIP1559GasProvider)) {
+            new UnsupportedOperationException();
+        }
+        ContractEIP1559GasProvider contractEIP1559GasProvider = (ContractEIP1559GasProvider) this.contractGasProvider;
+        return contractEIP1559GasProvider.getChainId();
+    }
+
+    @Override
+    public BigInteger getMaxFeePerGas(String contractFunc) {
+        if (!(this.contractGasProvider instanceof ContractEIP1559GasProvider)) {
+            new UnsupportedOperationException();
+        }
+        ContractEIP1559GasProvider contractEIP1559GasProvider = (ContractEIP1559GasProvider) this.contractGasProvider;
+        return contractEIP1559GasProvider.getMaxFeePerGas(contractFunc);
+    }
+
+    @Override
+    public BigInteger getMaxPriorityFeePerGas(String contractFunc) {
+        if (!(this.contractGasProvider instanceof ContractEIP1559GasProvider)) {
+            new UnsupportedOperationException();
+        }
+        ContractEIP1559GasProvider contractEIP1559GasProvider = (ContractEIP1559GasProvider) this.contractGasProvider;
+        return contractEIP1559GasProvider.getMaxPriorityFeePerGas(contractFunc);
     }
 }

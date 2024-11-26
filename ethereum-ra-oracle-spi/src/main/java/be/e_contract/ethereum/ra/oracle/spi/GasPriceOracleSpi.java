@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018 e-Contract.be BVBA.
+ * Copyright (C) 2018-2024 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -30,8 +30,24 @@ public interface GasPriceOracleSpi extends Serializable {
     /**
      * Gives back the oracle gas price, given the maximum transaction duration.
      *
-     * @param maxDuration the optional maximal transaction duration.
+     * @param maxDuration the optional maximum transaction duration.
      * @return the gas price in wei.
      */
     BigInteger getGasPrice(Integer maxDuration);
+
+    /**
+     * Gives back the oracle maximum fee per gas.
+     *
+     * @return the maximum fee per gas in wei.
+     */
+    BigInteger getMaxFeePerGas();
+
+    /**
+     * Gives back the maximum priority fee per gas, given the maximum
+     * transaction duration.
+     *
+     * @param maxDuration the optional maximum transaction duration.
+     * @return the maximum priority fee per gas in wei.
+     */
+    BigInteger getMaxPriorityFeePerGas(Integer maxDuration);
 }

@@ -18,6 +18,13 @@
             </resource-ref>
         </session>
         <session>
+            <ejb-name>DemoContractGasProvider</ejb-name>
+            <resource-ref>
+                <res-ref-name>EthereumConnectionFactory</res-ref-name>
+                <jndi-name>java:/EthereumConnectionFactory</jndi-name>
+            </resource-ref>
+        </session>
+        <session>
             <ejb-name>EthereumAdminBean</ejb-name>
             <resource-ref>
                 <res-ref-name>EthereumAdmin</res-ref-name>

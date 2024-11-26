@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018-2019 e-Contract.be BVBA.
+ * Copyright (C) 2018-2024 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -55,4 +55,26 @@ public interface GasPriceOracle {
      * be.e_contract.ethereum.ra.oracle.api.UnknownGasPriceOracleException
      */
     BigInteger getGasPrice(String oracle, Integer maxDuration) throws UnknownGasPriceOracleException;
+
+    /**
+     * Gives back the oracle maximum fee per gas.
+     *
+     * @param oracle the name of the oracle to be used.
+     * @return the maximum fee per gas in wei.
+     * @throws
+     * be.e_contract.ethereum.ra.oracle.api.UnknownGasPriceOracleException
+     */
+    BigInteger getMaxFeePerGas(String oracle) throws UnknownGasPriceOracleException;
+
+    /**
+     * Gives back the maximum priority fee per gas as determined by the oracle,
+     * given the maximum transaction duration.
+     *
+     * @param oracle the name of the oracle to be used.
+     * @param maxDuration the optional maximum transaction duration.
+     * @return the maximum priority fee per gas in wei.
+     * @throws
+     * be.e_contract.ethereum.ra.oracle.api.UnknownGasPriceOracleException
+     */
+    BigInteger getMaxPriorityFeePerGas(String oracle, Integer maxDuration) throws UnknownGasPriceOracleException;
 }

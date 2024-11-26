@@ -31,6 +31,7 @@ cd wildfly-26.1.3.Final/bin
  Run the integration tests via:
 
 +--
+cd ethereum-resource-adapter
 mvn clean install -Pintegration-tests-wildfly
 +--
 
@@ -46,6 +47,7 @@ cd jboss-eap-7.4/bin
  Run the integration tests via:
 
 +--
+cd ethereum-resource-adapter
 mvn clean install -Pintegration-tests-wildfly
 +--
 

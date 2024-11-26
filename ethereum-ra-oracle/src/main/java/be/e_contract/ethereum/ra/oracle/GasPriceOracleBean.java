@@ -1,6 +1,6 @@
 /*
  * Ethereum JCA Resource Adapter Project.
- * Copyright (C) 2018 e-Contract.be BVBA.
+ * Copyright (C) 2018-2024 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -119,5 +119,33 @@ public class GasPriceOracleBean implements GasPriceOracle {
             gasPriceOracleTypeAnnotation = clazz.getAnnotation(GasPriceOracleType.class);
         }
         return gasPriceOracleTypeAnnotation;
+    }
+
+    @Override
+    public BigInteger getMaxFeePerGas(String oracle) throws UnknownGasPriceOracleException {
+        Instance<GasPriceOracleSpi> gasPriceOracleInstance = this.gasPriceOracleTypes.select(new GasPriceOracleTypeQualifier(oracle));
+        if (gasPriceOracleInstance.isUnsatisfied()) {
+            throw new UnknownGasPriceOracleException();
+        }
+        if (gasPriceOracleInstance.isAmbiguous()) {
+            throw new UnknownGasPriceOracleException();
+        }
+        GasPriceOracleSpi gasPriceOracle = gasPriceOracleInstance.get();
+        BigInteger maxFeePerGas = gasPriceOracle.getMaxFeePerGas();
+        return maxFeePerGas;
+    }
+
+    @Override
+    public BigInteger getMaxPriorityFeePerGas(String oracle, Integer maxDuration) throws UnknownGasPriceOracleException {
+        Instance<GasPriceOracleSpi> gasPriceOracleInstance = this.gasPriceOracleTypes.select(new GasPriceOracleTypeQualifier(oracle));
+        if (gasPriceOracleInstance.isUnsatisfied()) {
+            throw new UnknownGasPriceOracleException();
+        }
+        if (gasPriceOracleInstance.isAmbiguous()) {
+            throw new UnknownGasPriceOracleException();
+        }
+        GasPriceOracleSpi gasPriceOracle = gasPriceOracleInstance.get();
+        BigInteger maxPriorityFeePerGas = gasPriceOracle.getMaxPriorityFeePerGas(maxDuration);
+        return maxPriorityFeePerGas;
     }
 }
