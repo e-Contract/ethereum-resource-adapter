@@ -58,4 +58,9 @@ public class TransactionTest {
     public void testTransaction() throws Exception {
         this.transactionBean.performTransaction();
     }
+
+    @Test
+    public void testTransactionEIP1559() throws Exception {
+        this.transactionBean.performTransactionEIP1559();
+    }
 }

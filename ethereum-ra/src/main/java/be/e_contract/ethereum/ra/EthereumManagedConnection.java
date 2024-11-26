@@ -608,6 +608,19 @@ public class EthereumManagedConnection implements ManagedConnection {
         return sendRawTransaction(hexValue);
     }
 
+    String sendTransaction(Credentials credentials, String to, BigInteger value,
+            BigInteger maxFeePerGas, BigInteger maxPriorityFeePerGas, long chainId) throws Exception {
+        BigInteger nonce = getNextNonce(credentials.getAddress());
+        BigInteger gasLimit = BigInteger.valueOf(21000);
+        RawTransaction rawTransaction = RawTransaction.createEtherTransaction(
+                chainId, nonce, gasLimit, to, value, maxPriorityFeePerGas, maxFeePerGas);
+
+        byte[] signedTransaction = TransactionEncoder.signMessage(rawTransaction, credentials);
+
+        String hexValue = Numeric.toHexString(signedTransaction);
+        return sendRawTransaction(hexValue);
+    }
+
     EthBlock.Block getBlock(DefaultBlockParameter defaultBlockParameter, boolean returnFullTransactionObjects) throws Exception {
         Web3j web3j = getWeb3j();
         EthBlock.Block block = web3j.ethGetBlockByNumber(defaultBlockParameter, returnFullTransactionObjects).send().getBlock();

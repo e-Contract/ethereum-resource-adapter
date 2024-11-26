@@ -281,6 +281,22 @@ public class EthereumConnectionImpl implements EthereumConnection {
     }
 
     @Override
+    public String sendTransaction(Credentials credentials, String to, BigInteger value,
+            BigInteger maxFeePerGas, BigInteger maxPriorityFeePerGas, Long chainId) throws ResourceException, EthereumException {
+        checkIfClosed();
+        try {
+            return this.ethereumManagedConnection.sendTransaction(credentials, to, value, maxFeePerGas,
+                    maxPriorityFeePerGas, chainId);
+        } catch (EthereumException ex) {
+            LOGGER.error("ethereum error: " + ex.getMessage(), ex);
+            throw ex;
+        } catch (Exception ex) {
+            LOGGER.error("error: " + ex.getMessage(), ex);
+            throw new ResourceException(ex);
+        }
+    }
+
+    @Override
     public EthBlock.Block getBlock(DefaultBlockParameter defaultBlockParameter, boolean returnFullTransactionObjects) throws ResourceException {
         checkIfClosed();
         try {

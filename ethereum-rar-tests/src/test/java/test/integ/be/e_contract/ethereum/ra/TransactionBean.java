@@ -91,6 +91,59 @@ public class TransactionBean {
         }
     }
 
+    public void performTransactionEIP1559() throws Exception {
+        Security.addProvider(new BouncyCastleProvider());
+        try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {
+            List<String> accounts = ethereumConnection.getAccounts();
+            String account = accounts.get(0);
+
+            ECKeyPair ecKeyPair = Keys.createEcKeyPair();
+            String address = "0x" + Keys.getAddress(ecKeyPair);
+
+            BigInteger gasPrice = ethereumConnection.getGasPrice();
+            BigInteger nonce = ethereumConnection.getTransactionCount(account);
+            BigInteger value = Convert.toWei(BigDecimal.valueOf(10), Convert.Unit.ETHER).toBigInteger();
+            String transactionHash = ethereumConnection.sendAccountTransaction(account, address, value, gasPrice, nonce);
+
+            TransactionConfirmation transactionConfirmation = ethereumConnection.getTransactionConfirmation(transactionHash);
+            while (transactionConfirmation.getConfirmingBlocks() == 0) {
+                Thread.sleep(1000);
+                transactionConfirmation = ethereumConnection.getTransactionConfirmation(transactionHash);
+            }
+            BigInteger balance = ethereumConnection.getBalance(address);
+            assertEquals(value, balance);
+
+            ECKeyPair ecKeyPair2 = Keys.createEcKeyPair();
+            String address2 = "0x" + Keys.getAddress(ecKeyPair2);
+            Credentials credentials = Credentials.create(ecKeyPair);
+            BigInteger value2 = Convert.toWei(BigDecimal.valueOf(0.1), Convert.Unit.ETHER).toBigInteger();
+            Long chainId = ethereumConnection.getChainId();
+
+            BigInteger maxFeePerGas = ethereumConnection.getGasPrice().multiply(BigInteger.valueOf(2));
+            BigInteger maxPriorityFeePerGas = ethereumConnection.getMaxPriorityFeePerGas();
+
+            LocalTransaction localTransaction = ethereumConnection.getLocalTransaction();
+            localTransaction.begin();
+            BigInteger totalValue2 = BigInteger.ZERO;
+            for (int idx = 0; idx < 10; idx++) {
+                totalValue2 = totalValue2.add(value2);
+                transactionHash = ethereumConnection.sendTransaction(credentials, address2, value2, maxFeePerGas, maxPriorityFeePerGas,
+                        chainId);
+            }
+            localTransaction.commit();
+
+            transactionConfirmation = ethereumConnection.getTransactionConfirmation(transactionHash);
+            while (transactionConfirmation.getConfirmingBlocks() == 0) {
+                Thread.sleep(1000);
+                transactionConfirmation = ethereumConnection.getTransactionConfirmation(transactionHash);
+            }
+            BigInteger balance2 = ethereumConnection.getBalance(address2);
+            assertEquals(totalValue2, balance2);
+        } finally {
+            Security.removeProvider(BouncyCastleProvider.PROVIDER_NAME);
+        }
+    }
+
     public void performSingleTransaction() throws Exception {
         Security.addProvider(new BouncyCastleProvider());
         try (EthereumConnection ethereumConnection = this.ethereumConnectionFactory.getConnection()) {

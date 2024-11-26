@@ -212,6 +212,23 @@ public interface EthereumConnection extends Connection, AutoCloseable {
             BigInteger gasPrice, Long chainId) throws ResourceException, EthereumException;
 
     /**
+     * Sends an Ethereum EIP-1559 transaction. Supports JTA transactions. The
+     * nonce is managed internally, so fast transactions are possible.
+     *
+     * @param credentials
+     * @param to
+     * @param value
+     * @param maxFeePerGas
+     * @param maxPriorityFeePerGas
+     * @param chainId
+     * @return the transaction hash.
+     * @throws javax.resource.ResourceException
+     * @throws be.e_contract.ethereum.ra.api.EthereumException
+     */
+    String sendTransaction(Credentials credentials, String to, BigInteger value,
+            BigInteger maxFeePerGas, BigInteger maxPriorityFeePerGas, Long chainId) throws ResourceException, EthereumException;
+
+    /**
      * Gives back the net version.
      *
      * @return the net version.
