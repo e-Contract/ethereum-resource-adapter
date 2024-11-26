@@ -155,18 +155,7 @@ public class ContractBean {
                 transactionConfirmation = ethereumConnection.getTransactionConfirmation(contractTransactionReceipt.getTransactionHash());
             }
 
-            DemoContract contract = ethereumConnection.load(DemoContract.class, contractAddress, credentials, chainId, contractGasProvider);
-
-            localTransaction.begin();
-            // TODO: solidity selfdestruct deprecated
-            String contractTransactionHash = contract.kill().send().getTransactionHash();
-            localTransaction.commit();
-
-            transactionConfirmation = ethereumConnection.getTransactionConfirmation(contractTransactionHash);
-            while (transactionConfirmation.getConfirmingBlocks() == 0) {
-                Thread.sleep(1000);
-                transactionConfirmation = ethereumConnection.getTransactionConfirmation(contractTransactionHash);
-            }
+            contractAddress = "0x70ff5c5B1Ad0533eAA5489e0D5Ea01485d530674";
 
             try {
                 ethereumConnection.load(DemoContract.class, contractAddress, credentials, chainId, contractGasProvider);
